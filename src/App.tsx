@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import Categories from './pages/Categories'
 import Flashcards from './pages/Flashcards'
+import Quiz from './pages/Quiz'
 
 type Screen =
   | { name: 'home' }
   | { name: 'categories' }
   | { name: 'flashcards'; categoryId: string }
+  | { name: 'quiz'; categoryId: string }
 
 function App() {
   const [screen, setScreen] = useState<Screen>({ name: 'home' })
@@ -19,8 +21,12 @@ function App() {
 
         {screen.name === 'categories' && (
           <Categories
-            onSelectCategory={(categoryId) =>
-              setScreen({ name: 'flashcards', categoryId })
+            onSelectCategory={(categoryId, mode) =>
+              setScreen(
+                mode === 'quiz'
+                  ? { name: 'quiz', categoryId }
+                  : { name: 'flashcards', categoryId },
+              )
             }
             onBack={() => setScreen({ name: 'home' })}
           />
@@ -30,6 +36,14 @@ function App() {
           <Flashcards
             categoryId={screen.categoryId}
             onBack={() => setScreen({ name: 'categories' })}
+          />
+        )}
+
+        {screen.name === 'quiz' && (
+          <Quiz
+            categoryId={screen.categoryId}
+            onExitToCategories={() => setScreen({ name: 'categories' })}
+            onExitToHome={() => setScreen({ name: 'home' })}
           />
         )}
       </main>
