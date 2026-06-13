@@ -1,4 +1,5 @@
 import { categories } from '../data/words'
+import { knownInCategory, useProgress } from '../hooks/useProgress'
 
 export type StudyMode = 'flashcards' | 'quiz'
 
@@ -8,6 +9,8 @@ interface CategoriesProps {
 }
 
 function Categories({ onSelectCategory, onBack }: CategoriesProps) {
+  const progress = useProgress()
+
   return (
     <div className="flex min-h-screen w-full flex-col px-5 py-8">
       <header className="mb-6">
@@ -27,7 +30,14 @@ function Categories({ onSelectCategory, onBack }: CategoriesProps) {
       </header>
 
       <ul className="flex flex-col gap-3">
-        {categories.map((category) => (
+        {categories.map((category) => {
+          const total = category.words.length
+          const learned = knownInCategory(
+            progress,
+            category.words.map((w) => w.id),
+          )
+          const percent = total > 0 ? Math.round((learned / total) * 100) : 0
+          return (
           <li
             key={category.id}
             className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"
@@ -43,6 +53,19 @@ function Categories({ onSelectCategory, onBack }: CategoriesProps) {
                 <span className="text-sm text-slate-500">
                   {category.words.length} слов
                 </span>
+              </span>
+            </div>
+
+            {/* Mini progress: known words in this category */}
+            <div className="mt-3 flex items-center gap-2">
+              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-200">
+                <div
+                  className="h-full rounded-full bg-emerald-500 transition-all duration-500 ease-out"
+                  style={{ width: `${percent}%` }}
+                />
+              </div>
+              <span className="shrink-0 text-xs font-medium text-slate-400">
+                {learned} / {total}
               </span>
             </div>
 
@@ -63,7 +86,8 @@ function Categories({ onSelectCategory, onBack }: CategoriesProps) {
               </button>
             </div>
           </li>
-        ))}
+          )
+        })}
       </ul>
     </div>
   )

@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { getCategoryById, type Word } from '../data/words'
+import { recordQuizResult, type QuizAnswer } from '../hooks/useProgress'
 import { buildQuiz, type QuizQuestion } from '../utils/quiz'
 import QuizResult from './QuizResult'
 
@@ -20,9 +21,13 @@ function Quiz({ categoryId, onExitToCategories, onExitToHome }: QuizProps) {
   const [finished, setFinished] = useState(false)
 
   const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  // Per-round answers, accumulated synchronously so the final result can be
+  // written to progress as soon as the last question is answered.
+  const answers = useRef<QuizAnswer[]>([])
 
   function restart() {
     if (advanceTimer.current) clearTimeout(advanceTimer.current)
+    answers.current = []
     setQuestions(buildQuiz(categoryId))
     setIndex(0)
     setSelected(null)
@@ -69,6 +74,7 @@ function Quiz({ categoryId, onExitToCategories, onExitToHome }: QuizProps) {
 
     setSelected(option)
     const isCorrect = option === question.correct
+    answers.current.push({ wordId: question.word.id, correct: isCorrect })
     if (isCorrect) {
       setScore((s) => s + 1)
     } else {
@@ -80,6 +86,7 @@ function Quiz({ categoryId, onExitToCategories, onExitToHome }: QuizProps) {
         setIndex((i) => i + 1)
         setSelected(null)
       } else {
+        recordQuizResult(answers.current)
         setFinished(true)
       }
     }, 1000)

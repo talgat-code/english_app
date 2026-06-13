@@ -697,3 +697,15 @@ export const categories: Category[] = [
 export function getCategoryById(id: string): Category | undefined {
   return categories.find((category) => category.id === id)
 }
+
+/** Every word across all categories, flattened. */
+export const allWords: Word[] = categories.flatMap((category) => category.words)
+
+/** Total number of words available to learn. */
+export const totalWordCount = allWords.length
+
+const wordsById = new Map(allWords.map((word) => [word.id, word]))
+
+export function getWordById(id: string): Word | undefined {
+  return wordsById.get(id)
+}

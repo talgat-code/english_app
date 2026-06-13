@@ -1,4 +1,4 @@
-import { categories, getCategoryById, type Word } from '../data/words'
+import { allWords, getCategoryById, type Word } from '../data/words'
 
 export interface QuizQuestion {
   word: Word
@@ -18,8 +18,6 @@ function shuffle<T>(items: T[]): T[] {
   }
   return result
 }
-
-const allWords: Word[] = categories.flatMap((category) => category.words)
 
 /** Pick 3 wrong russian translations, preferring the same category. */
 function pickDistractors(answer: Word, pool: Word[]): string[] {

@@ -1,21 +1,30 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { getCategoryById } from '../data/words'
+import {
+  markWord,
+  recordCardsViewed,
+  useProgress,
+  type WordStatus,
+} from '../hooks/useProgress'
 
 interface FlashcardsProps {
   categoryId: string
   onBack: () => void
 }
 
-type Status = 'known' | 'learning'
-
 function Flashcards({ categoryId, onBack }: FlashcardsProps) {
   const category = getCategoryById(categoryId)
+  const saved = useProgress()
 
   const [index, setIndex] = useState(0)
   const [flipped, setFlipped] = useState(false)
-  const [statuses, setStatuses] = useState<Record<string, Status>>({})
 
   const touchStartX = useRef<number | null>(null)
+
+  // Opening flashcards counts as a study activity (keeps the daily streak).
+  useEffect(() => {
+    recordCardsViewed()
+  }, [])
 
   if (!category) {
     return (
@@ -51,8 +60,8 @@ function Flashcards({ categoryId, onBack }: FlashcardsProps) {
     goTo(index + 1)
   }
 
-  function setStatus(status: Status) {
-    setStatuses((prev) => ({ ...prev, [word.id]: status }))
+  function setStatus(status: WordStatus) {
+    markWord(word.id, status)
     // Auto-advance to the next card if there is one.
     if (index < total - 1) {
       setTimeout(() => goTo(index + 1), 180)
@@ -72,7 +81,7 @@ function Flashcards({ categoryId, onBack }: FlashcardsProps) {
     touchStartX.current = null
   }
 
-  const currentStatus = statuses[word.id]
+  const currentStatus = saved.words[word.id]?.status
 
   return (
     <div className="flex min-h-screen w-full flex-col px-5 py-6">
