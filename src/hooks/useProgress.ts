@@ -233,6 +233,19 @@ export function difficultWords(
     .slice(0, limit)
 }
 
+/** All quiz-tested words with less than 60% correct answers. */
+export function reviewWords(state: ProgressState): DifficultWord[] {
+  return difficultWords(state, Number.MAX_SAFE_INTEGER).filter(
+    (word) => word.correct / (word.correct + word.incorrect) < 0.6,
+  )
+}
+
+/** Whether the user had a streak but missed yesterday. */
+export function isStreakInterrupted(state: ProgressState): boolean {
+  const { lastActiveDate } = state.stats
+  return Boolean(lastActiveDate && diffDays(lastActiveDate, dateKey()) > 1)
+}
+
 // --- hook --------------------------------------------------------------------
 
 /** Subscribe a component to the shared progress state. */

@@ -1,20 +1,30 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import {
+  isStreakInterrupted,
+  reviewWords,
+  useProgress,
+} from './hooks/useProgress'
 import Categories from './pages/Categories'
 import Flashcards from './pages/Flashcards'
 import Quiz from './pages/Quiz'
+import Review from './pages/Review'
 import Stats from './pages/Stats'
 
 type Screen =
   | { name: 'home' }
   | { name: 'categories' }
+  | { name: 'review' }
   | { name: 'stats' }
   | { name: 'flashcards'; categoryId: string }
   | { name: 'quiz'; categoryId: string }
 
-type Tab = 'learn' | 'stats' | 'home'
+type Tab = 'home' | 'learn' | 'review' | 'stats'
 
 function App() {
   const [screen, setScreen] = useState<Screen>({ name: 'home' })
+  const progress = useProgress()
+  const hardWordCount = reviewWords(progress).length
+  const streakInterrupted = isStreakInterrupted(progress)
 
   // The tab bar is shown on the top-level destinations. It's hidden during the
   // focused study flows (flashcards / quiz), which have their own bottom
@@ -22,17 +32,21 @@ function App() {
   const showTabBar =
     screen.name === 'home' ||
     screen.name === 'categories' ||
+    screen.name === 'review' ||
     screen.name === 'stats'
 
   const activeTab: Tab =
     screen.name === 'stats'
       ? 'stats'
+      : screen.name === 'review'
+        ? 'review'
       : screen.name === 'home'
         ? 'home'
         : 'learn'
 
   function goToTab(tab: Tab) {
     if (tab === 'learn') setScreen({ name: 'categories' })
+    else if (tab === 'review') setScreen({ name: 'review' })
     else if (tab === 'stats') setScreen({ name: 'stats' })
     else setScreen({ name: 'home' })
   }
@@ -41,7 +55,12 @@ function App() {
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <main className={`mx-auto w-full max-w-[480px] ${showTabBar ? 'pb-20' : ''}`}>
         {screen.name === 'home' && (
-          <Home onStart={() => setScreen({ name: 'categories' })} />
+          <Home
+            hardWordCount={hardWordCount}
+            streakInterrupted={streakInterrupted}
+            onStart={() => setScreen({ name: 'categories' })}
+            onReview={() => setScreen({ name: 'review' })}
+          />
         )}
 
         {screen.name === 'categories' && (
@@ -58,6 +77,7 @@ function App() {
         )}
 
         {screen.name === 'stats' && <Stats />}
+        {screen.name === 'review' && <Review />}
 
         {screen.name === 'flashcards' && (
           <Flashcards
@@ -75,23 +95,31 @@ function App() {
         )}
       </main>
 
-      {showTabBar && <TabBar active={activeTab} onNavigate={goToTab} />}
+      {showTabBar && (
+        <TabBar
+          active={activeTab}
+          hasReviewWords={hardWordCount > 0}
+          onNavigate={goToTab}
+        />
+      )}
     </div>
   )
 }
 
 interface TabBarProps {
   active: Tab
+  hasReviewWords: boolean
   onNavigate: (tab: Tab) => void
 }
 
 const TABS: { id: Tab; emoji: string; label: string }[] = [
-  { id: 'learn', emoji: '📚', label: 'Учить' },
-  { id: 'stats', emoji: '📊', label: 'Статистика' },
   { id: 'home', emoji: '🏠', label: 'Главная' },
+  { id: 'learn', emoji: '📚', label: 'Учить' },
+  { id: 'review', emoji: '🔄', label: 'Повторение' },
+  { id: 'stats', emoji: '📊', label: 'Статистика' },
 ]
 
-function TabBar({ active, onNavigate }: TabBarProps) {
+function TabBar({ active, hasReviewWords, onNavigate }: TabBarProps) {
   return (
     <nav className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-[480px] border-t border-slate-200 bg-white/95 backdrop-blur">
       <div className="flex">
@@ -107,7 +135,15 @@ function TabBar({ active, onNavigate }: TabBarProps) {
                 isActive ? 'text-indigo-600' : 'text-slate-400 hover:text-slate-600'
               }`}
             >
-              <span className="text-xl leading-none">{tab.emoji}</span>
+              <span className="relative text-xl leading-none">
+                {tab.emoji}
+                {tab.id === 'review' && hasReviewWords && (
+                  <span
+                    className="absolute -right-1 -top-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-rose-500"
+                    aria-label="Есть слова для повторения"
+                  />
+                )}
+              </span>
               <span>{tab.label}</span>
             </button>
           )
@@ -118,24 +154,81 @@ function TabBar({ active, onNavigate }: TabBarProps) {
 }
 
 interface HomeProps {
+  hardWordCount: number
+  streakInterrupted: boolean
   onStart: () => void
+  onReview: () => void
 }
 
-function Home({ onStart }: HomeProps) {
+function Home({
+  hardWordCount,
+  streakInterrupted,
+  onStart,
+  onReview,
+}: HomeProps) {
+  const banners = [
+    ...(hardWordCount > 3
+      ? [
+          {
+            id: 'review',
+            text: `У тебя ${hardWordCount} слов для повторения 📖`,
+            action: onReview,
+          },
+        ]
+      : []),
+    ...(streakInterrupted
+      ? [
+          {
+            id: 'streak',
+            text: 'Не теряй серию! Займись английским сегодня 🔥',
+          },
+        ]
+      : []),
+  ]
+  const [bannerIndex, setBannerIndex] = useState(0)
+
+  useEffect(() => {
+    if (banners.length < 2) return
+
+    const timer = setInterval(() => {
+      setBannerIndex((current) => (current + 1) % banners.length)
+    }, 5000)
+    return () => clearInterval(timer)
+  }, [banners.length])
+
+  const banner = banners[bannerIndex % banners.length]
+
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center px-6 text-center">
-      <span className="mb-4 text-5xl">📚</span>
-      <h1 className="text-4xl font-bold tracking-tight">English App</h1>
-      <p className="mt-3 text-base text-slate-500">
-        Учи английский легко: короткие уроки, слова и практика каждый день.
-      </p>
-      <button
-        type="button"
-        onClick={onStart}
-        className="mt-8 w-full rounded-xl bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm transition-colors hover:bg-indigo-700 active:bg-indigo-800"
-      >
-        Начать
-      </button>
+    <div className="flex min-h-screen flex-col px-6 py-8 text-center">
+      {banner && (
+        <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4 text-left shadow-sm">
+          <p className="font-semibold text-indigo-950">{banner.text}</p>
+          {'action' in banner && banner.action && (
+            <button
+              type="button"
+              onClick={banner.action}
+              className="mt-3 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-700"
+            >
+              Повторить сейчас
+            </button>
+          )}
+        </div>
+      )}
+
+      <div className="flex flex-1 flex-col items-center justify-center">
+        <span className="mb-4 text-5xl">📚</span>
+        <h1 className="text-4xl font-bold tracking-tight">English App</h1>
+        <p className="mt-3 text-base text-slate-500">
+          Учи английский легко: короткие уроки, слова и практика каждый день.
+        </p>
+        <button
+          type="button"
+          onClick={onStart}
+          className="mt-8 w-full rounded-xl bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm transition-colors hover:bg-indigo-700 active:bg-indigo-800"
+        >
+          Начать
+        </button>
+      </div>
     </div>
   )
 }

@@ -6,6 +6,18 @@ import {
   useProgress,
   type WordStatus,
 } from '../hooks/useProgress'
+import { useSpeech } from '../hooks/useSpeech'
+
+const AUTO_SPEECH_KEY = 'english-app:auto-speech'
+
+function loadAutoSpeech(): boolean {
+  try {
+    const saved = localStorage.getItem(AUTO_SPEECH_KEY)
+    return saved === null ? true : saved === 'true'
+  } catch {
+    return true
+  }
+}
 
 interface FlashcardsProps {
   categoryId: string
@@ -15,16 +27,28 @@ interface FlashcardsProps {
 function Flashcards({ categoryId, onBack }: FlashcardsProps) {
   const category = getCategoryById(categoryId)
   const saved = useProgress()
+  const { speak, isSupported } = useSpeech()
 
   const [index, setIndex] = useState(0)
   const [flipped, setFlipped] = useState(false)
+  const [autoSpeech, setAutoSpeech] = useState(loadAutoSpeech)
 
   const touchStartX = useRef<number | null>(null)
+  const lastAutoSpoken = useRef<string | null>(null)
 
   // Opening flashcards counts as a study activity (keeps the daily streak).
   useEffect(() => {
     recordCardsViewed()
   }, [])
+
+  useEffect(() => {
+    if (!category || !autoSpeech || !isSupported) return
+    const word = category.words[index]
+    if (!word || lastAutoSpoken.current === word.id) return
+
+    lastAutoSpoken.current = word.id
+    speak(word.english)
+  }, [autoSpeech, category, index, isSupported, speak])
 
   if (!category) {
     return (
@@ -58,6 +82,16 @@ function Flashcards({ categoryId, onBack }: FlashcardsProps) {
 
   function handleNext() {
     goTo(index + 1)
+  }
+
+  function toggleAutoSpeech() {
+    const next = !autoSpeech
+    setAutoSpeech(next)
+    try {
+      localStorage.setItem(AUTO_SPEECH_KEY, String(next))
+    } catch {
+      // The setting still works for the current session.
+    }
   }
 
   function setStatus(status: WordStatus) {
@@ -95,9 +129,25 @@ function Flashcards({ categoryId, onBack }: FlashcardsProps) {
           >
             ← Категории
           </button>
-          <span className="text-sm font-medium text-slate-500">
-            {index + 1} из {total}
-          </span>
+          <div className="flex items-center gap-3">
+            {isSupported && (
+              <button
+                type="button"
+                onClick={toggleAutoSpeech}
+                aria-pressed={autoSpeech}
+                className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
+                  autoSpeech
+                    ? 'bg-indigo-100 text-indigo-700'
+                    : 'bg-slate-200 text-slate-500'
+                }`}
+              >
+                🔊 Авто
+              </button>
+            )}
+            <span className="text-sm font-medium text-slate-500">
+              {index + 1} из {total}
+            </span>
+          </div>
         </div>
         <div className="mt-3 flex items-center gap-3">
           <span className="text-lg">{category.emoji}</span>
@@ -113,10 +163,20 @@ function Flashcards({ categoryId, onBack }: FlashcardsProps) {
       {/* Card */}
       <div className="flex flex-1 items-center justify-center">
         <div
-          className="w-full [perspective:1200px]"
+          className="relative w-full [perspective:1200px]"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
+          {isSupported && (
+            <button
+              type="button"
+              onClick={() => speak(word.english)}
+              aria-label={`Произнести ${word.english}`}
+              className="absolute right-4 top-4 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-indigo-50 text-xl shadow-sm transition-transform hover:scale-105 active:scale-95"
+            >
+              🔊
+            </button>
+          )}
           <button
             type="button"
             onClick={() => setFlipped((f) => !f)}

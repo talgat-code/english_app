@@ -42,10 +42,18 @@ export function buildQuiz(categoryId: string): QuizQuestion[] {
   const category = getCategoryById(categoryId)
   if (!category) return []
 
-  const chosen = shuffle(category.words).slice(0, QUESTIONS_PER_ROUND)
+  return buildQuizForWords(category.words)
+}
+
+/** Build a shuffled quiz round from a specific set of words. */
+export function buildQuizForWords(
+  words: Word[],
+  limit = QUESTIONS_PER_ROUND,
+): QuizQuestion[] {
+  const chosen = shuffle(words).slice(0, limit)
 
   return chosen.map((word) => {
-    const distractors = pickDistractors(word, category.words)
+    const distractors = pickDistractors(word, words)
     const options = shuffle([word.russian, ...distractors])
     return { word, options, correct: word.russian }
   })
