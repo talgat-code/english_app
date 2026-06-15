@@ -4,20 +4,31 @@ import {
   reviewWords,
   useProgress,
 } from './hooks/useProgress'
+import AIHome from './pages/AIHome'
+import AITutor from './pages/AITutor'
+import AIWords from './pages/AIWords'
 import Categories from './pages/Categories'
 import Flashcards from './pages/Flashcards'
 import Games from './pages/Games'
 import Hangman from './pages/Hangman'
+import MyWords from './pages/MyWords'
 import Quiz from './pages/Quiz'
 import Review from './pages/Review'
 import Stats from './pages/Stats'
 import WordBuilder from './pages/WordBuilder'
 import type { GameType } from './utils/games'
+import { getMyWords } from './utils/myWords'
 
 type Screen =
   | { name: 'home' }
   | { name: 'categories' }
   | { name: 'games'; game?: GameType }
+  | { name: 'ai' }
+  | { name: 'ai-tutor' }
+  | { name: 'ai-words' }
+  | { name: 'my-words' }
+  | { name: 'my-words-flashcards' }
+  | { name: 'my-words-quiz' }
   | { name: 'review' }
   | { name: 'stats' }
   | { name: 'flashcards'; categoryId: string }
@@ -25,7 +36,7 @@ type Screen =
   | { name: 'hangman'; categoryId: string }
   | { name: 'word-builder'; categoryId: string }
 
-type Tab = 'home' | 'learn' | 'games' | 'review' | 'stats'
+type Tab = 'home' | 'learn' | 'games' | 'ai' | 'stats'
 
 function App() {
   const [screen, setScreen] = useState<Screen>({ name: 'home' })
@@ -40,13 +51,13 @@ function App() {
     screen.name === 'home' ||
     screen.name === 'categories' ||
     screen.name === 'games' ||
-    screen.name === 'review' ||
+    screen.name === 'ai' ||
     screen.name === 'stats'
 
   const activeTab: Tab = screen.name === 'stats'
     ? 'stats'
-    : screen.name === 'review'
-      ? 'review'
+    : screen.name === 'ai'
+      ? 'ai'
       : screen.name === 'games'
         ? 'games'
         : screen.name === 'home'
@@ -56,7 +67,7 @@ function App() {
   function goToTab(tab: Tab) {
     if (tab === 'learn') setScreen({ name: 'categories' })
     else if (tab === 'games') setScreen({ name: 'games' })
-    else if (tab === 'review') setScreen({ name: 'review' })
+    else if (tab === 'ai') setScreen({ name: 'ai' })
     else if (tab === 'stats') setScreen({ name: 'stats' })
     else setScreen({ name: 'home' })
   }
@@ -70,6 +81,8 @@ function App() {
             streakInterrupted={streakInterrupted}
             onStart={() => setScreen({ name: 'categories' })}
             onReview={() => setScreen({ name: 'review' })}
+            onAITutor={() => setScreen({ name: 'ai-tutor' })}
+            onAIWords={() => setScreen({ name: 'ai-words' })}
           />
         )}
 
@@ -88,6 +101,30 @@ function App() {
 
         {screen.name === 'stats' && <Stats />}
         {screen.name === 'review' && <Review />}
+        {screen.name === 'ai' && (
+          <AIHome
+            onTutor={() => setScreen({ name: 'ai-tutor' })}
+            onWords={() => setScreen({ name: 'ai-words' })}
+            onMyWords={() => setScreen({ name: 'my-words' })}
+          />
+        )}
+        {screen.name === 'ai-tutor' && (
+          <AITutor onBack={() => setScreen({ name: 'ai' })} />
+        )}
+        {screen.name === 'ai-words' && (
+          <AIWords
+            onBack={() => setScreen({ name: 'ai' })}
+            onMyWords={() => setScreen({ name: 'my-words' })}
+          />
+        )}
+        {screen.name === 'my-words' && (
+          <MyWords
+            onBack={() => setScreen({ name: 'ai' })}
+            onFlashcards={() => setScreen({ name: 'my-words-flashcards' })}
+            onQuiz={() => setScreen({ name: 'my-words-quiz' })}
+            onGenerate={() => setScreen({ name: 'ai-words' })}
+          />
+        )}
         {screen.name === 'games' && (
           <Games
             key={screen.game ?? 'menu'}
@@ -137,12 +174,29 @@ function App() {
             onGamesMenu={() => setScreen({ name: 'games' })}
           />
         )}
+
+        {screen.name === 'my-words-flashcards' && (
+          <Flashcards
+            customWords={getMyWords()}
+            categoryTitle="Мои слова"
+            categoryEmoji="💾"
+            onBack={() => setScreen({ name: 'my-words' })}
+          />
+        )}
+
+        {screen.name === 'my-words-quiz' && (
+          <Quiz
+            customWords={getMyWords()}
+            categoryEmoji="💾"
+            onExitToCategories={() => setScreen({ name: 'my-words' })}
+            onExitToHome={() => setScreen({ name: 'ai' })}
+          />
+        )}
       </main>
 
       {showTabBar && (
         <TabBar
           active={activeTab}
-          hasReviewWords={hardWordCount > 0}
           onNavigate={goToTab}
         />
       )}
@@ -152,7 +206,6 @@ function App() {
 
 interface TabBarProps {
   active: Tab
-  hasReviewWords: boolean
   onNavigate: (tab: Tab) => void
 }
 
@@ -160,11 +213,11 @@ const TABS: { id: Tab; emoji: string; label: string }[] = [
   { id: 'home', emoji: '🏠', label: 'Главная' },
   { id: 'learn', emoji: '📚', label: 'Учить' },
   { id: 'games', emoji: '🎮', label: 'Игры' },
-  { id: 'review', emoji: '🔄', label: 'Повторение' },
+  { id: 'ai', emoji: '🤖', label: 'AI' },
   { id: 'stats', emoji: '📊', label: 'Статистика' },
 ]
 
-function TabBar({ active, hasReviewWords, onNavigate }: TabBarProps) {
+function TabBar({ active, onNavigate }: TabBarProps) {
   return (
     <nav className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-[480px] border-t border-slate-200 bg-white/95 backdrop-blur">
       <div className="flex">
@@ -180,15 +233,7 @@ function TabBar({ active, hasReviewWords, onNavigate }: TabBarProps) {
                 isActive ? 'text-indigo-600' : 'text-slate-400 hover:text-slate-600'
               }`}
             >
-              <span className="relative text-xl leading-none">
-                {tab.emoji}
-                {tab.id === 'review' && hasReviewWords && (
-                  <span
-                    className="absolute -right-1 -top-0.5 h-2.5 w-2.5 rounded-full border-2 border-white bg-rose-500"
-                    aria-label="Есть слова для повторения"
-                  />
-                )}
-              </span>
+              <span className="relative text-xl leading-none">{tab.emoji}</span>
               <span>{tab.label}</span>
             </button>
           )
@@ -203,6 +248,8 @@ interface HomeProps {
   streakInterrupted: boolean
   onStart: () => void
   onReview: () => void
+  onAITutor: () => void
+  onAIWords: () => void
 }
 
 function Home({
@@ -210,6 +257,8 @@ function Home({
   streakInterrupted,
   onStart,
   onReview,
+  onAITutor,
+  onAIWords,
 }: HomeProps) {
   const banners = [
     ...(hardWordCount > 3
@@ -274,6 +323,32 @@ function Home({
           Начать
         </button>
       </div>
+
+      <section className="rounded-3xl bg-gradient-to-br from-violet-600 to-indigo-700 p-5 text-left text-white shadow-lg">
+        <div className="flex items-center gap-3">
+          <span className="text-3xl">🤖</span>
+          <div>
+            <h2 className="font-bold">AI-репетитор</h2>
+            <p className="text-xs text-white/75">Спроси или найди новые слова</p>
+          </div>
+        </div>
+        <div className="mt-4 grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={onAITutor}
+            className="min-h-11 rounded-xl bg-white px-3 text-xs font-semibold text-indigo-700 transition-all active:scale-[0.98]"
+          >
+            Спросить репетитора
+          </button>
+          <button
+            type="button"
+            onClick={onAIWords}
+            className="min-h-11 rounded-xl bg-white/15 px-3 text-xs font-semibold text-white ring-1 ring-white/30 transition-all active:scale-[0.98]"
+          >
+            Найти новые слова
+          </button>
+        </div>
+      </section>
     </div>
   )
 }

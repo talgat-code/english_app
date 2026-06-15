@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { getCategoryById } from '../data/words'
+import { getCategoryById, type Word } from '../data/words'
 import {
   markWord,
   recordCardsViewed,
@@ -9,6 +9,7 @@ import {
 import { useSpeech } from '../hooks/useSpeech'
 
 const AUTO_SPEECH_KEY = 'english-app:auto-speech'
+const EMPTY_WORDS: Word[] = []
 
 function loadAutoSpeech(): boolean {
   try {
@@ -20,12 +21,24 @@ function loadAutoSpeech(): boolean {
 }
 
 interface FlashcardsProps {
-  categoryId: string
+  categoryId?: string
+  customWords?: Word[]
+  categoryTitle?: string
+  categoryEmoji?: string
   onBack: () => void
 }
 
-function Flashcards({ categoryId, onBack }: FlashcardsProps) {
-  const category = getCategoryById(categoryId)
+function Flashcards({
+  categoryId,
+  customWords,
+  categoryTitle,
+  categoryEmoji,
+  onBack,
+}: FlashcardsProps) {
+  const category = categoryId ? getCategoryById(categoryId) : undefined
+  const words = customWords ?? category?.words ?? EMPTY_WORDS
+  const title = categoryTitle ?? category?.title ?? 'Мои слова'
+  const emoji = categoryEmoji ?? category?.emoji ?? '💾'
   const saved = useProgress()
   const { speak, isSupported } = useSpeech()
 
@@ -42,30 +55,29 @@ function Flashcards({ categoryId, onBack }: FlashcardsProps) {
   }, [])
 
   useEffect(() => {
-    if (!category || !autoSpeech || !isSupported) return
-    const word = category.words[index]
+    if (!autoSpeech || !isSupported) return
+    const word = words[index]
     if (!word || lastAutoSpoken.current === word.id) return
 
     lastAutoSpoken.current = word.id
     speak(word.english)
-  }, [autoSpeech, category, index, isSupported, speak])
+  }, [autoSpeech, index, isSupported, speak, words])
 
-  if (!category) {
+  if (words.length === 0) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center px-6 text-center">
-        <p className="text-slate-500">Категория не найдена.</p>
+        <p className="text-slate-500">Нет слов для флешкарт.</p>
         <button
           type="button"
           onClick={onBack}
           className="mt-4 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white"
         >
-          ← К категориям
+          ← Назад
         </button>
       </div>
     )
   }
 
-  const words = category.words
   const total = words.length
   const word = words[index]
   const progress = ((index + 1) / total) * 100
@@ -150,7 +162,7 @@ function Flashcards({ categoryId, onBack }: FlashcardsProps) {
           </div>
         </div>
         <div className="mt-3 flex items-center gap-3">
-          <span className="text-lg">{category.emoji}</span>
+          <span className="text-lg">{emoji}</span>
           <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-200">
             <div
               className="h-full rounded-full bg-indigo-600 transition-all duration-300 ease-out"
@@ -189,7 +201,7 @@ function Flashcards({ categoryId, onBack }: FlashcardsProps) {
             {/* Front */}
             <div className="absolute inset-0 flex flex-col items-center justify-center rounded-3xl border border-slate-100 bg-white p-6 text-center shadow-xl [backface-visibility:hidden]">
               <span className="mb-3 rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-600">
-                {category.title}
+                {title}
               </span>
               <h2 className="text-3xl font-bold tracking-tight text-slate-900">
                 {word.english}
