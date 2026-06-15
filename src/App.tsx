@@ -6,19 +6,26 @@ import {
 } from './hooks/useProgress'
 import Categories from './pages/Categories'
 import Flashcards from './pages/Flashcards'
+import Games from './pages/Games'
+import Hangman from './pages/Hangman'
 import Quiz from './pages/Quiz'
 import Review from './pages/Review'
 import Stats from './pages/Stats'
+import WordBuilder from './pages/WordBuilder'
+import type { GameType } from './utils/games'
 
 type Screen =
   | { name: 'home' }
   | { name: 'categories' }
+  | { name: 'games'; game?: GameType }
   | { name: 'review' }
   | { name: 'stats' }
   | { name: 'flashcards'; categoryId: string }
   | { name: 'quiz'; categoryId: string }
+  | { name: 'hangman'; categoryId: string }
+  | { name: 'word-builder'; categoryId: string }
 
-type Tab = 'home' | 'learn' | 'review' | 'stats'
+type Tab = 'home' | 'learn' | 'games' | 'review' | 'stats'
 
 function App() {
   const [screen, setScreen] = useState<Screen>({ name: 'home' })
@@ -32,20 +39,23 @@ function App() {
   const showTabBar =
     screen.name === 'home' ||
     screen.name === 'categories' ||
+    screen.name === 'games' ||
     screen.name === 'review' ||
     screen.name === 'stats'
 
-  const activeTab: Tab =
-    screen.name === 'stats'
-      ? 'stats'
-      : screen.name === 'review'
-        ? 'review'
-      : screen.name === 'home'
-        ? 'home'
-        : 'learn'
+  const activeTab: Tab = screen.name === 'stats'
+    ? 'stats'
+    : screen.name === 'review'
+      ? 'review'
+      : screen.name === 'games'
+        ? 'games'
+        : screen.name === 'home'
+          ? 'home'
+          : 'learn'
 
   function goToTab(tab: Tab) {
     if (tab === 'learn') setScreen({ name: 'categories' })
+    else if (tab === 'games') setScreen({ name: 'games' })
     else if (tab === 'review') setScreen({ name: 'review' })
     else if (tab === 'stats') setScreen({ name: 'stats' })
     else setScreen({ name: 'home' })
@@ -78,6 +88,22 @@ function App() {
 
         {screen.name === 'stats' && <Stats />}
         {screen.name === 'review' && <Review />}
+        {screen.name === 'games' && (
+          <Games
+            key={screen.game ?? 'menu'}
+            initialGame={screen.game}
+            onStart={(game, categoryId) => {
+              if (!categoryId) {
+                setScreen({ name: 'games', game })
+              } else if (game === 'hangman') {
+                setScreen({ name: 'hangman', categoryId })
+              } else {
+                setScreen({ name: 'word-builder', categoryId })
+              }
+            }}
+            onGamesMenu={() => setScreen({ name: 'games' })}
+          />
+        )}
 
         {screen.name === 'flashcards' && (
           <Flashcards
@@ -91,6 +117,24 @@ function App() {
             categoryId={screen.categoryId}
             onExitToCategories={() => setScreen({ name: 'categories' })}
             onExitToHome={() => setScreen({ name: 'home' })}
+          />
+        )}
+
+        {screen.name === 'hangman' && (
+          <Hangman
+            categoryId={screen.categoryId}
+            onOtherCategory={() => setScreen({ name: 'games', game: 'hangman' })}
+            onGamesMenu={() => setScreen({ name: 'games' })}
+          />
+        )}
+
+        {screen.name === 'word-builder' && (
+          <WordBuilder
+            categoryId={screen.categoryId}
+            onOtherCategory={() =>
+              setScreen({ name: 'games', game: 'word-builder' })
+            }
+            onGamesMenu={() => setScreen({ name: 'games' })}
           />
         )}
       </main>
@@ -115,6 +159,7 @@ interface TabBarProps {
 const TABS: { id: Tab; emoji: string; label: string }[] = [
   { id: 'home', emoji: '🏠', label: 'Главная' },
   { id: 'learn', emoji: '📚', label: 'Учить' },
+  { id: 'games', emoji: '🎮', label: 'Игры' },
   { id: 'review', emoji: '🔄', label: 'Повторение' },
   { id: 'stats', emoji: '📊', label: 'Статистика' },
 ]
@@ -131,7 +176,7 @@ function TabBar({ active, hasReviewWords, onNavigate }: TabBarProps) {
               type="button"
               onClick={() => onNavigate(tab.id)}
               aria-current={isActive ? 'page' : undefined}
-              className={`flex flex-1 flex-col items-center gap-0.5 py-2.5 text-xs font-medium transition-colors ${
+              className={`flex min-w-0 flex-1 flex-col items-center gap-0.5 py-2.5 text-[10px] font-medium leading-tight transition-colors ${
                 isActive ? 'text-indigo-600' : 'text-slate-400 hover:text-slate-600'
               }`}
             >

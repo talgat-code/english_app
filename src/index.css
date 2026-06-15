@@ -1,1 +1,62 @@
 @import "tailwindcss";
+
+@keyframes game-confetti-fall {
+  0% {
+    opacity: 1;
+    transform: translateY(-20px) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(260px) rotate(540deg);
+  }
+}
+
+@keyframes game-success-pop {
+  0% {
+    transform: scale(0.85);
+  }
+  60% {
+    transform: scale(1.06);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes game-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+.game-confetti {
+  position: absolute;
+  top: -14px;
+  width: 9px;
+  height: 16px;
+  border-radius: 3px;
+  animation: game-confetti-fall 1.4s ease-out forwards;
+}
+
+.game-success-pop {
+  animation: game-success-pop 350ms ease-out;
+}
+
+.game-shake {
+  animation: game-shake 300ms ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-confetti,
+  .game-success-pop,
+  .game-shake {
+    animation: none;
+  }
+}
