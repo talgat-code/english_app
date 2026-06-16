@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from 'react'
+import type { Word } from '../data/words'
 
 /**
  * Persistent learning progress, backed by localStorage.
@@ -39,6 +40,8 @@ export interface OverallStats {
 export interface ProgressState {
   words: Record<string, WordProgress>
   stats: OverallStats
+  completedLessons: string[]
+  lessonScores: Record<string, number>
 }
 
 export interface QuizAnswer {
@@ -49,6 +52,8 @@ export interface QuizAnswer {
 const emptyState: ProgressState = {
   words: {},
   stats: { totalQuizzes: 0, quizPercentSum: 0, streak: 0 },
+  completedLessons: [],
+  lessonScores: {},
 }
 
 // --- date helpers ------------------------------------------------------------
@@ -78,6 +83,10 @@ function load(): ProgressState {
     return {
       words: parsed.words ?? {},
       stats: { ...emptyState.stats, ...parsed.stats },
+      completedLessons: Array.isArray(parsed.completedLessons)
+        ? parsed.completedLessons
+        : [],
+      lessonScores: parsed.lessonScores ?? {},
     }
   } catch {
     return emptyState
@@ -140,6 +149,7 @@ function wordOrDefault(id: string): WordProgress {
 export function markWord(id: string, status: WordStatus) {
   const prev = wordOrDefault(id)
   setState({
+    ...state,
     words: {
       ...state.words,
       [id]: { ...prev, status, lastReviewed: new Date().toISOString() },
@@ -177,7 +187,35 @@ export function recordQuizResult(answers: QuizAnswer[]) {
     quizPercentSum: state.stats.quizPercentSum + percent,
   })
 
-  setState({ words, stats })
+  setState({ ...state, words, stats })
+}
+
+/** Mark a lesson as finished and add its vocabulary to the tracked dictionary. */
+export function completeLesson(lessonId: string, score: number, vocabulary: Word[]) {
+  const now = new Date().toISOString()
+  const words = { ...state.words }
+
+  for (const word of vocabulary) {
+    const prev = words[word.id] ?? { correct: 0, incorrect: 0 }
+    words[word.id] = {
+      ...prev,
+      status: prev.status ?? 'learning',
+      lastReviewed: prev.lastReviewed ?? now,
+    }
+  }
+
+  setState({
+    ...state,
+    words,
+    stats: applyActivity(state.stats),
+    completedLessons: state.completedLessons.includes(lessonId)
+      ? state.completedLessons
+      : [...state.completedLessons, lessonId],
+    lessonScores: {
+      ...state.lessonScores,
+      [lessonId]: Math.max(state.lessonScores[lessonId] ?? 0, score),
+    },
+  })
 }
 
 // --- selectors ---------------------------------------------------------------

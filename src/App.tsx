@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { getLevelInfo } from './data/lessons'
 import {
   isStreakInterrupted,
   reviewWords,
@@ -11,16 +12,25 @@ import Categories from './pages/Categories'
 import Flashcards from './pages/Flashcards'
 import Games from './pages/Games'
 import Hangman from './pages/Hangman'
+import Home from './pages/Home'
+import Lesson from './pages/Lesson'
+import LessonList from './pages/LessonList'
+import Levels from './pages/Levels'
 import MyWords from './pages/MyWords'
 import Quiz from './pages/Quiz'
 import Review from './pages/Review'
 import Stats from './pages/Stats'
 import WordBuilder from './pages/WordBuilder'
+import type { LessonLevel } from './types/lesson'
 import type { GameType } from './utils/games'
+import { nextAvailableLesson } from './utils/lessonProgress'
 import { getMyWords } from './utils/myWords'
 
 type Screen =
   | { name: 'home' }
+  | { name: 'levels' }
+  | { name: 'lesson-list'; level: LessonLevel }
+  | { name: 'lesson'; lessonId: string }
   | { name: 'categories' }
   | { name: 'games'; game?: GameType }
   | { name: 'ai' }
@@ -36,36 +46,36 @@ type Screen =
   | { name: 'hangman'; categoryId: string }
   | { name: 'word-builder'; categoryId: string }
 
-type Tab = 'home' | 'learn' | 'games' | 'ai' | 'stats'
+type Tab = 'home' | 'lessons' | 'games' | 'ai' | 'stats'
 
 function App() {
   const [screen, setScreen] = useState<Screen>({ name: 'home' })
   const progress = useProgress()
   const hardWordCount = reviewWords(progress).length
   const streakInterrupted = isStreakInterrupted(progress)
+  const nextLesson = nextAvailableLesson(progress)
+  const currentLevel = nextLesson ? getLevelInfo(nextLesson.level) : undefined
 
-  // The tab bar is shown on the top-level destinations. It's hidden during the
-  // focused study flows (flashcards / quiz), which have their own bottom
-  // controls and back navigation.
   const showTabBar =
     screen.name === 'home' ||
-    screen.name === 'categories' ||
+    screen.name === 'levels' ||
     screen.name === 'games' ||
     screen.name === 'ai' ||
     screen.name === 'stats'
 
-  const activeTab: Tab = screen.name === 'stats'
-    ? 'stats'
-    : screen.name === 'ai'
-      ? 'ai'
-      : screen.name === 'games'
-        ? 'games'
-        : screen.name === 'home'
-          ? 'home'
-          : 'learn'
+  const activeTab: Tab =
+    screen.name === 'stats'
+      ? 'stats'
+      : screen.name === 'ai'
+        ? 'ai'
+        : screen.name === 'games'
+          ? 'games'
+          : screen.name === 'levels'
+            ? 'lessons'
+            : 'home'
 
   function goToTab(tab: Tab) {
-    if (tab === 'learn') setScreen({ name: 'categories' })
+    if (tab === 'lessons') setScreen({ name: 'levels' })
     else if (tab === 'games') setScreen({ name: 'games' })
     else if (tab === 'ai') setScreen({ name: 'ai' })
     else if (tab === 'stats') setScreen({ name: 'stats' })
@@ -79,10 +89,43 @@ function App() {
           <Home
             hardWordCount={hardWordCount}
             streakInterrupted={streakInterrupted}
-            onStart={() => setScreen({ name: 'categories' })}
+            nextLesson={nextLesson}
+            currentLevel={currentLevel}
+            onContinueLesson={() => {
+              if (nextLesson) setScreen({ name: 'lesson', lessonId: nextLesson.id })
+            }}
+            onLessons={() => setScreen({ name: 'levels' })}
+            onVocabulary={() => setScreen({ name: 'categories' })}
             onReview={() => setScreen({ name: 'review' })}
             onAITutor={() => setScreen({ name: 'ai-tutor' })}
             onAIWords={() => setScreen({ name: 'ai-words' })}
+          />
+        )}
+
+        {screen.name === 'levels' && (
+          <Levels
+            onSelectLevel={(level) => setScreen({ name: 'lesson-list', level })}
+          />
+        )}
+
+        {screen.name === 'lesson-list' && (
+          <LessonList
+            level={screen.level}
+            onBack={() => setScreen({ name: 'levels' })}
+            onSelectLesson={(lessonId) => setScreen({ name: 'lesson', lessonId })}
+          />
+        )}
+
+        {screen.name === 'lesson' && (
+          <Lesson
+            key={screen.lessonId}
+            lessonId={screen.lessonId}
+            onBack={(level) =>
+              level
+                ? setScreen({ name: 'lesson-list', level })
+                : setScreen({ name: 'levels' })
+            }
+            onComplete={(level) => setScreen({ name: 'lesson-list', level })}
           />
         )}
 
@@ -194,12 +237,7 @@ function App() {
         )}
       </main>
 
-      {showTabBar && (
-        <TabBar
-          active={activeTab}
-          onNavigate={goToTab}
-        />
-      )}
+      {showTabBar && <TabBar active={activeTab} onNavigate={goToTab} />}
     </div>
   )
 }
@@ -211,7 +249,7 @@ interface TabBarProps {
 
 const TABS: { id: Tab; emoji: string; label: string }[] = [
   { id: 'home', emoji: '🏠', label: 'Главная' },
-  { id: 'learn', emoji: '📚', label: 'Учить' },
+  { id: 'lessons', emoji: '📖', label: 'Уроки' },
   { id: 'games', emoji: '🎮', label: 'Игры' },
   { id: 'ai', emoji: '🤖', label: 'AI' },
   { id: 'stats', emoji: '📊', label: 'Статистика' },
@@ -240,116 +278,6 @@ function TabBar({ active, onNavigate }: TabBarProps) {
         })}
       </div>
     </nav>
-  )
-}
-
-interface HomeProps {
-  hardWordCount: number
-  streakInterrupted: boolean
-  onStart: () => void
-  onReview: () => void
-  onAITutor: () => void
-  onAIWords: () => void
-}
-
-function Home({
-  hardWordCount,
-  streakInterrupted,
-  onStart,
-  onReview,
-  onAITutor,
-  onAIWords,
-}: HomeProps) {
-  const banners = [
-    ...(hardWordCount > 3
-      ? [
-          {
-            id: 'review',
-            text: `У тебя ${hardWordCount} слов для повторения 📖`,
-            action: onReview,
-          },
-        ]
-      : []),
-    ...(streakInterrupted
-      ? [
-          {
-            id: 'streak',
-            text: 'Не теряй серию! Займись английским сегодня 🔥',
-          },
-        ]
-      : []),
-  ]
-  const [bannerIndex, setBannerIndex] = useState(0)
-
-  useEffect(() => {
-    if (banners.length < 2) return
-
-    const timer = setInterval(() => {
-      setBannerIndex((current) => (current + 1) % banners.length)
-    }, 5000)
-    return () => clearInterval(timer)
-  }, [banners.length])
-
-  const banner = banners[bannerIndex % banners.length]
-
-  return (
-    <div className="flex min-h-screen flex-col px-6 py-8 text-center">
-      {banner && (
-        <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4 text-left shadow-sm">
-          <p className="font-semibold text-indigo-950">{banner.text}</p>
-          {'action' in banner && banner.action && (
-            <button
-              type="button"
-              onClick={banner.action}
-              className="mt-3 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-700"
-            >
-              Повторить сейчас
-            </button>
-          )}
-        </div>
-      )}
-
-      <div className="flex flex-1 flex-col items-center justify-center">
-        <span className="mb-4 text-5xl">📚</span>
-        <h1 className="text-4xl font-bold tracking-tight">English App</h1>
-        <p className="mt-3 text-base text-slate-500">
-          Учи английский легко: короткие уроки, слова и практика каждый день.
-        </p>
-        <button
-          type="button"
-          onClick={onStart}
-          className="mt-8 w-full rounded-xl bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm transition-colors hover:bg-indigo-700 active:bg-indigo-800"
-        >
-          Начать
-        </button>
-      </div>
-
-      <section className="rounded-3xl bg-gradient-to-br from-violet-600 to-indigo-700 p-5 text-left text-white shadow-lg">
-        <div className="flex items-center gap-3">
-          <span className="text-3xl">🤖</span>
-          <div>
-            <h2 className="font-bold">AI-репетитор</h2>
-            <p className="text-xs text-white/75">Спроси или найди новые слова</p>
-          </div>
-        </div>
-        <div className="mt-4 grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            onClick={onAITutor}
-            className="min-h-11 rounded-xl bg-white px-3 text-xs font-semibold text-indigo-700 transition-all active:scale-[0.98]"
-          >
-            Спросить репетитора
-          </button>
-          <button
-            type="button"
-            onClick={onAIWords}
-            className="min-h-11 rounded-xl bg-white/15 px-3 text-xs font-semibold text-white ring-1 ring-white/30 transition-all active:scale-[0.98]"
-          >
-            Найти новые слова
-          </button>
-        </div>
-      </section>
-    </div>
   )
 }
 
