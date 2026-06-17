@@ -43,7 +43,7 @@ function word(
   return { id, english, russian, transcription, example, exampleRu }
 }
 
-export const lessons: Lesson[] = [
+const coreLessons: Lesson[] = [
   {
     id: 'a1-1-greetings',
     level: 'A1',
@@ -916,6 +916,533 @@ export const lessons: Lesson[] = [
   },
 ]
 
+const expandedLessons: Lesson[] = [
+  {
+    id: 'a1-6-home-rooms',
+    level: 'A1',
+    order: 6,
+    title: 'Дом и комнаты',
+    description: 'Называем комнаты, мебель и простые действия дома.',
+    theory: {
+      explanation:
+        'Чтобы описать дом, удобно использовать This is и There is. This is показывает конкретный предмет, а There is говорит, что предмет где-то есть.',
+      rules: [
+        'Room означает комнату, house - дом как здание, home - дом как место, где живешь.',
+        'There is используют с одним предметом: There is a table.',
+        'Предлог in помогает сказать, где находится предмет: in the kitchen.',
+        'Для простого описания комнаты используй It is + прилагательное.',
+      ],
+      tips: [
+        'Kitchen, bedroom и bathroom часто идут с the, когда говорим о своем доме.',
+        'Не переводи "у меня дома есть" дословно: лучше There is или We have.',
+      ],
+    },
+    vocabulary: [
+      word('les-a1-6-house', 'House', 'Дом', 'haus', 'This house is small.', 'Этот дом маленький.'),
+      word('les-a1-6-room', 'Room', 'Комната', 'room', 'My room is clean.', 'Моя комната чистая.'),
+      word('les-a1-6-kitchen', 'Kitchen', 'Кухня', 'kich-uhn', 'My mother is in the kitchen.', 'Моя мама на кухне.'),
+      word('les-a1-6-bedroom', 'Bedroom', 'Спальня', 'bed-room', 'The bedroom is quiet.', 'Спальня тихая.'),
+      word('les-a1-6-bathroom', 'Bathroom', 'Ванная', 'bath-room', 'The bathroom is next to my room.', 'Ванная рядом с моей комнатой.'),
+      word('les-a1-6-table', 'Table', 'Стол', 'tay-buhl', 'There is a table in the room.', 'В комнате есть стол.'),
+      word('les-a1-6-chair', 'Chair', 'Стул', 'chair', 'The chair is near the table.', 'Стул рядом со столом.'),
+      word('les-a1-6-window', 'Window', 'Окно', 'win-doh', 'The window is open.', 'Окно открыто.'),
+    ],
+    examples: [
+      { english: 'There is a table in the kitchen.', russian: 'На кухне есть стол.' },
+      { english: 'My bedroom is small but quiet.', russian: 'Моя спальня маленькая, но тихая.' },
+      { english: 'The chair is near the window.', russian: 'Стул рядом с окном.' },
+      { english: 'This is our house.', russian: 'Это наш дом.' },
+      { english: 'The bathroom is next to my room.', russian: 'Ванная рядом с моей комнатой.' },
+    ],
+    exercises: [
+      {
+        type: 'fill_blank',
+        sentence: 'There is a table in the ___.',
+        answer: 'kitchen',
+        hint: 'Комната, где готовят еду.',
+      },
+      {
+        type: 'translate',
+        russian: 'Моя комната чистая.',
+        correctAnswer: 'My room is clean.',
+        alternativeAnswers: ['My room is clean'],
+      },
+      {
+        type: 'choose_correct',
+        question: 'Как сказать "в комнате есть стол"?',
+        options: ['It is a table room.', 'There is a table in the room.', 'The room have table.', 'A table is room.'],
+        correctIndex: 1,
+      },
+    ],
+  },
+  {
+    id: 'a1-7-weather',
+    level: 'A1',
+    order: 7,
+    title: 'Погода',
+    description: 'Говорим о погоде простыми фразами: тепло, холодно, дождливо.',
+    theory: {
+      explanation:
+        'В английском погоду обычно описывают через It is: It is sunny, It is cold. It здесь не переводится как конкретный предмет, оно просто нужно для грамматики.',
+      rules: [
+        'Для погоды используй It is или It\'s: It is rainy.',
+        'Today помогает уточнить, что погода сейчас: It is windy today.',
+        'Very усиливает прилагательное: very cold, very hot.',
+        'Like можно использовать для предпочтений: I like sunny weather.',
+      ],
+      tips: [
+        'Не говори Weather is cold today, если описываешь обычную погоду. Естественнее: It is cold today.',
+        'Sunny, rainy, windy - это прилагательные, они не требуют артикля.',
+      ],
+    },
+    vocabulary: [
+      word('les-a1-7-weather', 'Weather', 'Погода', 'weh-thur', 'The weather is nice.', 'Погода хорошая.'),
+      word('les-a1-7-sunny', 'Sunny', 'Солнечно', 'sun-ee', 'It is sunny today.', 'Сегодня солнечно.'),
+      word('les-a1-7-rainy', 'Rainy', 'Дождливо', 'ray-nee', 'It is rainy in London.', 'В Лондоне дождливо.'),
+      word('les-a1-7-windy', 'Windy', 'Ветрено', 'win-dee', 'It is windy outside.', 'На улице ветрено.'),
+      word('les-a1-7-cold', 'Cold', 'Холодно', 'kohld', 'It is cold in winter.', 'Зимой холодно.'),
+      word('les-a1-7-hot', 'Hot', 'Жарко', 'hot', 'It is hot today.', 'Сегодня жарко.'),
+      word('les-a1-7-cloudy', 'Cloudy', 'Облачно', 'klau-dee', 'The sky is cloudy.', 'Небо облачное.'),
+      word('les-a1-7-outside', 'Outside', 'Снаружи / на улице', 'aut-said', 'It is cold outside.', 'На улице холодно.'),
+    ],
+    examples: [
+      { english: 'It is sunny today.', russian: 'Сегодня солнечно.' },
+      { english: 'It is very cold outside.', russian: 'На улице очень холодно.' },
+      { english: 'I like rainy weather.', russian: 'Мне нравится дождливая погода.' },
+      { english: 'The sky is cloudy.', russian: 'Небо облачное.' },
+      { english: 'Is it hot today?', russian: 'Сегодня жарко?' },
+    ],
+    exercises: [
+      {
+        type: 'fill_blank',
+        sentence: 'It is ___ today.',
+        answer: 'sunny',
+        hint: 'Солнечно по-английски.',
+      },
+      {
+        type: 'translate',
+        russian: 'На улице холодно.',
+        correctAnswer: 'It is cold outside.',
+        alternativeAnswers: ['It is cold outside', 'It\'s cold outside.'],
+      },
+      {
+        type: 'choose_correct',
+        question: 'Какая фраза естественно описывает погоду?',
+        options: ['It is rainy.', 'Rainy is it.', 'The rainy today.', 'I am rainy.'],
+        correctIndex: 0,
+      },
+    ],
+  },
+  {
+    id: 'a1-8-clothes',
+    level: 'A1',
+    order: 8,
+    title: 'Одежда',
+    description: 'Называем одежду и описываем, что на человеке надето.',
+    theory: {
+      explanation:
+        'Для одежды важно различать wear и have. Wear означает "носить на себе", а have - "иметь". Чтобы описать одежду сейчас, используй I am wearing.',
+      rules: [
+        'I wear jeans обычно значит "я ношу джинсы вообще".',
+        'I am wearing jeans значит "я сейчас в джинсах".',
+        'Цвет ставится перед одеждой: a black jacket.',
+        'Shoes всегда обычно во множественном числе: my shoes are black.',
+      ],
+      tips: [
+        'A shirt, a dress, a jacket - один предмет одежды.',
+        'Jeans, trousers, shoes лучше запоминать как plural-слова.',
+      ],
+    },
+    vocabulary: [
+      word('les-a1-8-shirt', 'Shirt', 'Рубашка', 'shert', 'He is wearing a white shirt.', 'Он в белой рубашке.'),
+      word('les-a1-8-dress', 'Dress', 'Платье', 'dres', 'She likes this dress.', 'Ей нравится это платье.'),
+      word('les-a1-8-jeans', 'Jeans', 'Джинсы', 'jeenz', 'My jeans are blue.', 'Мои джинсы синие.'),
+      word('les-a1-8-shoes', 'Shoes', 'Обувь / туфли', 'shooz', 'These shoes are new.', 'Эти туфли новые.'),
+      word('les-a1-8-jacket', 'Jacket', 'Куртка', 'jak-it', 'Take your jacket.', 'Возьми куртку.'),
+      word('les-a1-8-hat', 'Hat', 'Шапка / шляпа', 'hat', 'The hat is red.', 'Шапка красная.'),
+      word('les-a1-8-wear', 'Wear', 'Носить', 'wair', 'I wear a coat in winter.', 'Зимой я ношу пальто.'),
+      word('les-a1-8-new', 'New', 'Новый', 'noo', 'My new shoes are comfortable.', 'Моя новая обувь удобная.'),
+    ],
+    examples: [
+      { english: 'I am wearing a blue shirt.', russian: 'Я сейчас в синей рубашке.' },
+      { english: 'Her shoes are new.', russian: 'Ее туфли новые.' },
+      { english: 'He wears a jacket in winter.', russian: 'Зимой он носит куртку.' },
+      { english: 'This dress is beautiful.', russian: 'Это платье красивое.' },
+      { english: 'My jeans are black.', russian: 'Мои джинсы черные.' },
+    ],
+    exercises: [
+      {
+        type: 'fill_blank',
+        sentence: 'I am ___ a blue shirt.',
+        answer: 'wearing',
+        hint: 'Сейчас на мне: am + wearing.',
+      },
+      {
+        type: 'translate',
+        russian: 'Мои джинсы черные.',
+        correctAnswer: 'My jeans are black.',
+        alternativeAnswers: ['My jeans are black'],
+      },
+      {
+        type: 'choose_correct',
+        question: 'Что правильно про shoes?',
+        options: ['My shoes is new.', 'My shoes are new.', 'My shoe are new.', 'My shoes am new.'],
+        correctIndex: 1,
+      },
+    ],
+  },
+  {
+    id: 'a2-6-there-is-are',
+    level: 'A2',
+    order: 6,
+    title: 'There is / There are',
+    description: 'Говорим, что где-то что-то есть: один предмет или несколько.',
+    theory: {
+      explanation:
+        'There is и There are помогают описывать место. There is используется с одним предметом, There are - с несколькими.',
+      rules: [
+        'There is a book on the table.',
+        'There are two chairs in the room.',
+        'В отрицании добавь not: There is not a sofa.',
+        'В вопросе поставь is/are вперед: Is there a cafe near here?',
+      ],
+      tips: [
+        'Выбирай is или are по существительному после конструкции.',
+        'В разговоре There is часто сокращают до There\'s.',
+      ],
+    },
+    vocabulary: [
+      word('les-a2-6-there', 'There', 'Там / конструкция есть', 'thair', 'There is a cafe here.', 'Здесь есть кафе.'),
+      word('les-a2-6-map', 'Map', 'Карта', 'map', 'There is a map on the wall.', 'На стене есть карта.'),
+      word('les-a2-6-sofa', 'Sofa', 'Диван', 'soh-fuh', 'There is a sofa in the room.', 'В комнате есть диван.'),
+      word('les-a2-6-lamp', 'Lamp', 'Лампа', 'lamp', 'There is a lamp near the bed.', 'Рядом с кроватью есть лампа.'),
+      word('les-a2-6-cafe', 'Cafe', 'Кафе', 'ka-fay', 'There is a cafe near the station.', 'Рядом со станцией есть кафе.'),
+      word('les-a2-6-near', 'Near', 'Рядом', 'neer', 'The cafe is near my house.', 'Кафе рядом с моим домом.'),
+      word('les-a2-6-many', 'Many', 'Много', 'men-ee', 'There are many people here.', 'Здесь много людей.'),
+      word('les-a2-6-some', 'Some', 'Несколько / немного', 'sum', 'There are some books on the shelf.', 'На полке есть несколько книг.'),
+    ],
+    examples: [
+      { english: 'There is a lamp near the bed.', russian: 'Рядом с кроватью есть лампа.' },
+      { english: 'There are three books on the table.', russian: 'На столе три книги.' },
+      { english: 'Is there a cafe near here?', russian: 'Рядом есть кафе?' },
+      { english: 'There are not many people here.', russian: 'Здесь не много людей.' },
+      { english: 'There is no sofa in the room.', russian: 'В комнате нет дивана.' },
+    ],
+    exercises: [
+      {
+        type: 'fill_blank',
+        sentence: 'There ___ two chairs in the room.',
+        answer: 'are',
+        hint: 'Two chairs - множественное число.',
+      },
+      {
+        type: 'translate',
+        russian: 'Рядом есть кафе?',
+        correctAnswer: 'Is there a cafe near here?',
+        alternativeAnswers: ['Is there a cafe near here', 'Is there a cafe nearby?'],
+      },
+      {
+        type: 'choose_correct',
+        question: 'Выбери правильную фразу.',
+        options: ['There is two books.', 'There are two books.', 'There are a book.', 'There be two books.'],
+        correctIndex: 1,
+      },
+    ],
+  },
+  {
+    id: 'a2-7-countable-uncountable',
+    level: 'A2',
+    order: 7,
+    title: 'Исчисляемое и неисчисляемое',
+    description: 'Разбираемся с some, any, much и many.',
+    theory: {
+      explanation:
+        'В английском важно понимать, можно ли считать предметы по одному. Apples - исчисляемое, water - неисчисляемое. От этого зависит выбор many или much.',
+      rules: [
+        'Many используют с исчисляемыми словами: many apples.',
+        'Much используют с неисчисляемыми словами: much water.',
+        'Some часто используют в утвердительных предложениях.',
+        'Any часто используют в вопросах и отрицаниях.',
+      ],
+      tips: [
+        'Money в английском обычно неисчисляемое: much money.',
+        'Advice тоже неисчисляемое: some advice, не advices.',
+      ],
+    },
+    vocabulary: [
+      word('les-a2-7-water', 'Water', 'Вода', 'waw-ter', 'I need some water.', 'Мне нужно немного воды.'),
+      word('les-a2-7-money', 'Money', 'Деньги', 'mun-ee', 'Do you have any money?', 'У тебя есть деньги?'),
+      word('les-a2-7-advice', 'Advice', 'Совет', 'ad-vais', 'She gave me some advice.', 'Она дала мне совет.'),
+      word('les-a2-7-apple', 'Apple', 'Яблоко', 'ap-uhl', 'There are many apples.', 'Есть много яблок.'),
+      word('les-a2-7-bottle', 'Bottle', 'Бутылка', 'bot-uhl', 'I bought a bottle of water.', 'Я купил бутылку воды.'),
+      word('les-a2-7-some', 'Some', 'Немного / несколько', 'sum', 'I have some questions.', 'У меня есть несколько вопросов.'),
+      word('les-a2-7-any', 'Any', 'Какой-нибудь / нисколько', 'en-ee', 'Do you have any questions?', 'У тебя есть вопросы?'),
+      word('les-a2-7-much', 'Much', 'Много', 'much', 'There is not much time.', 'Времени не много.'),
+    ],
+    examples: [
+      { english: 'I have some apples.', russian: 'У меня есть несколько яблок.' },
+      { english: 'Do you have any water?', russian: 'У тебя есть вода?' },
+      { english: 'There is not much time.', russian: 'Времени не много.' },
+      { english: 'There are many students here.', russian: 'Здесь много студентов.' },
+      { english: 'She gave me some advice.', russian: 'Она дала мне совет.' },
+    ],
+    exercises: [
+      {
+        type: 'fill_blank',
+        sentence: 'There is not ___ time.',
+        answer: 'much',
+        hint: 'Time обычно неисчисляемое.',
+      },
+      {
+        type: 'translate',
+        russian: 'У тебя есть вопросы?',
+        correctAnswer: 'Do you have any questions?',
+        alternativeAnswers: ['Do you have any questions', 'Have you got any questions?'],
+      },
+      {
+        type: 'choose_correct',
+        question: 'Что правильно с advice?',
+        options: ['Many advices', 'Some advice', 'An advice', 'A few advice'],
+        correctIndex: 1,
+      },
+    ],
+  },
+  {
+    id: 'a2-8-polite-requests',
+    level: 'A2',
+    order: 8,
+    title: 'Вежливые просьбы',
+    description: 'Просим о помощи и разрешении через can, could и may.',
+    theory: {
+      explanation:
+        'Can подходит для обычной просьбы, could звучит мягче, may - формальнее. После них основной глагол идет без to.',
+      rules: [
+        'Can you help me? - обычная просьба.',
+        'Could you help me? - более вежливо.',
+        'May I come in? - формальное разрешение.',
+        'После can/could/may глагол идет в базовой форме: help, open, use.',
+      ],
+      tips: [
+        'Добавляй please в конце или начале просьбы.',
+        'Could you...? часто звучит лучше в сервисе, офисе и переписке.',
+      ],
+    },
+    vocabulary: [
+      word('les-a2-8-can', 'Can', 'Мочь', 'kan', 'Can you help me?', 'Ты можешь мне помочь?'),
+      word('les-a2-8-could', 'Could', 'Мог бы', 'kood', 'Could you open the window?', 'Не могли бы вы открыть окно?'),
+      word('les-a2-8-may', 'May', 'Можно / могу', 'may', 'May I come in?', 'Можно войти?'),
+      word('les-a2-8-help', 'Help', 'Помогать', 'help', 'Please help me.', 'Пожалуйста, помоги мне.'),
+      word('les-a2-8-open', 'Open', 'Открывать', 'oh-puhn', 'Could you open the door?', 'Не могли бы вы открыть дверь?'),
+      word('les-a2-8-close', 'Close', 'Закрывать', 'klohz', 'Can you close the window?', 'Можешь закрыть окно?'),
+      word('les-a2-8-borrow', 'Borrow', 'Одолжить', 'bor-oh', 'May I borrow your pen?', 'Можно одолжить твою ручку?'),
+      word('les-a2-8-minute', 'Minute', 'Минута', 'min-it', 'Could you wait a minute?', 'Не могли бы вы подождать минуту?'),
+    ],
+    examples: [
+      { english: 'Could you help me, please?', russian: 'Не могли бы вы мне помочь?' },
+      { english: 'Can I use your phone?', russian: 'Можно мне воспользоваться твоим телефоном?' },
+      { english: 'May I come in?', russian: 'Можно войти?' },
+      { english: 'Could you wait a minute?', russian: 'Не могли бы вы подождать минуту?' },
+      { english: 'Can you close the window?', russian: 'Можешь закрыть окно?' },
+    ],
+    exercises: [
+      {
+        type: 'fill_blank',
+        sentence: 'Could you ___ me, please?',
+        answer: 'help',
+        hint: 'После could нужен базовый глагол.',
+      },
+      {
+        type: 'translate',
+        russian: 'Можно войти?',
+        correctAnswer: 'May I come in?',
+        alternativeAnswers: ['May I come in', 'Can I come in?'],
+      },
+      {
+        type: 'choose_correct',
+        question: 'Какая просьба звучит вежливее?',
+        options: ['Open window.', 'Could you open the window?', 'You open window?', 'Opening the window?'],
+        correctIndex: 1,
+      },
+    ],
+  },
+  {
+    id: 'b1-6-gerund-infinitive',
+    level: 'B1',
+    order: 6,
+    title: 'Gerund и Infinitive',
+    description: 'Выбираем между doing и to do после частых глаголов.',
+    theory: {
+      explanation:
+        'После одних глаголов нужен герундий с -ing, после других - инфинитив с to. Это лучше запоминать вместе с глаголом: enjoy doing, want to do.',
+      rules: [
+        'Enjoy, avoid, finish часто требуют -ing: I enjoy reading.',
+        'Want, decide, plan часто требуют to + verb: I want to travel.',
+        'После would like ставим to: I would like to order.',
+        'После prepositions обычно нужен -ing: after working, without asking.',
+      ],
+      tips: [
+        'Запоминай связки, а не отдельные слова: decide to, enjoy doing.',
+        'Like может работать с обеими формами, но смысл иногда меняется.',
+      ],
+    },
+    vocabulary: [
+      word('les-b1-6-enjoy', 'Enjoy', 'Наслаждаться / любить', 'en-joi', 'I enjoy reading.', 'Мне нравится читать.'),
+      word('les-b1-6-avoid', 'Avoid', 'Избегать', 'uh-void', 'Avoid making the same mistake.', 'Избегай той же ошибки.'),
+      word('les-b1-6-finish', 'Finish', 'Заканчивать', 'fin-ish', 'She finished writing the report.', 'Она закончила писать отчет.'),
+      word('les-b1-6-decide', 'Decide', 'Решать', 'di-said', 'We decided to stay.', 'Мы решили остаться.'),
+      word('les-b1-6-plan', 'Plan', 'Планировать', 'plan', 'They plan to move soon.', 'Они планируют скоро переехать.'),
+      word('les-b1-6-want', 'Want', 'Хотеть', 'wont', 'I want to improve my English.', 'Я хочу улучшить английский.'),
+      word('les-b1-6-practice', 'Practice', 'Практиковать', 'prak-tis', 'Practice speaking every day.', 'Практикуй говорение каждый день.'),
+      word('les-b1-6-without', 'Without', 'Без', 'with-out', 'He left without saying goodbye.', 'Он ушел, не попрощавшись.'),
+    ],
+    examples: [
+      { english: 'I enjoy learning new words.', russian: 'Мне нравится учить новые слова.' },
+      { english: 'She decided to change her job.', russian: 'Она решила сменить работу.' },
+      { english: 'We finished watching the film.', russian: 'Мы закончили смотреть фильм.' },
+      { english: 'He wants to speak better.', russian: 'Он хочет говорить лучше.' },
+      { english: 'They left without saying goodbye.', russian: 'Они ушли, не попрощавшись.' },
+    ],
+    exercises: [
+      {
+        type: 'fill_blank',
+        sentence: 'I enjoy ___ English.',
+        answer: 'learning',
+        hint: 'После enjoy нужен глагол с -ing.',
+      },
+      {
+        type: 'translate',
+        russian: 'Она решила остаться.',
+        correctAnswer: 'She decided to stay.',
+        alternativeAnswers: ['She decided to stay'],
+      },
+      {
+        type: 'choose_correct',
+        question: 'Что правильно после want?',
+        options: ['want improving', 'want to improve', 'want improve', 'want improved'],
+        correctIndex: 1,
+      },
+    ],
+  },
+  {
+    id: 'b1-7-relative-clauses',
+    level: 'B1',
+    order: 7,
+    title: 'Relative Clauses',
+    description: 'Добавляем уточнения через who, which и where.',
+    theory: {
+      explanation:
+        'Relative clauses помогают соединять предложения и уточнять человека, предмет или место. Who - для людей, which - для предметов, where - для мест.',
+      rules: [
+        'Who используют для людей: The teacher who helped me.',
+        'Which используют для вещей и идей: The book which I bought.',
+        'Where используют для мест: The cafe where we met.',
+        'Уточняющая часть стоит сразу после слова, которое объясняет.',
+      ],
+      tips: [
+        'That часто может заменить who или which в разговорной речи.',
+        'Не повторяй местоимение внутри clause: The book which I bought it - ошибка.',
+      ],
+    },
+    vocabulary: [
+      word('les-b1-7-who', 'Who', 'Который / кто', 'hoo', 'The woman who called is my manager.', 'Женщина, которая звонила, мой менеджер.'),
+      word('les-b1-7-which', 'Which', 'Который / какой', 'wich', 'The book which I bought is useful.', 'Книга, которую я купил, полезная.'),
+      word('les-b1-7-where', 'Where', 'Где / в котором', 'wair', 'This is the cafe where we met.', 'Это кафе, где мы встретились.'),
+      word('les-b1-7-that', 'That', 'Который', 'that', 'The film that we watched was funny.', 'Фильм, который мы смотрели, был смешным.'),
+      word('les-b1-7-teacher', 'Teacher', 'Учитель', 'tee-chur', 'The teacher who helped me is kind.', 'Учитель, который помог мне, добрый.'),
+      word('les-b1-7-place', 'Place', 'Место', 'plays', 'This is the place where I work.', 'Это место, где я работаю.'),
+      word('les-b1-7-useful', 'Useful', 'Полезный', 'yoos-fuhl', 'This app is useful.', 'Это приложение полезное.'),
+      word('les-b1-7-met', 'Met', 'Встретил / встретились', 'met', 'We met in this cafe.', 'Мы встретились в этом кафе.'),
+    ],
+    examples: [
+      { english: 'The teacher who helped me is kind.', russian: 'Учитель, который помог мне, добрый.' },
+      { english: 'The book which I bought is useful.', russian: 'Книга, которую я купил, полезная.' },
+      { english: 'This is the cafe where we met.', russian: 'Это кафе, где мы встретились.' },
+      { english: 'The film that we watched was funny.', russian: 'Фильм, который мы смотрели, был смешным.' },
+      { english: 'I know a person who speaks five languages.', russian: 'Я знаю человека, который говорит на пяти языках.' },
+    ],
+    exercises: [
+      {
+        type: 'fill_blank',
+        sentence: 'This is the cafe ___ we met.',
+        answer: 'where',
+        hint: 'Для места используем where.',
+      },
+      {
+        type: 'translate',
+        russian: 'Я знаю человека, который говорит по-английски.',
+        correctAnswer: 'I know a person who speaks English.',
+        alternativeAnswers: ['I know a person who speaks English', 'I know someone who speaks English.'],
+      },
+      {
+        type: 'choose_correct',
+        question: 'Что правильно для предмета?',
+        options: ['The book who I bought', 'The book which I bought', 'The book where I bought', 'The book what I bought'],
+        correctIndex: 1,
+      },
+    ],
+  },
+  {
+    id: 'b1-8-phrasal-verbs',
+    level: 'B1',
+    order: 8,
+    title: 'Фразовые глаголы',
+    description: 'Разбираем частые глаголы с up, on, off и out.',
+    theory: {
+      explanation:
+        'Фразовый глагол состоит из глагола и маленького слова, которое меняет смысл: get up, turn on, find out. Их лучше учить в контексте.',
+      rules: [
+        'Get up означает вставать с кровати.',
+        'Turn on - включить, turn off - выключить.',
+        'Find out означает узнать информацию.',
+        'Look after означает заботиться о ком-то.',
+      ],
+      tips: [
+        'Не пытайся всегда переводить части отдельно: значение часто новое.',
+        'Записывай фразовый глагол с примером, а не как отдельный перевод.',
+      ],
+    },
+    vocabulary: [
+      word('les-b1-8-get-up', 'Get up', 'Вставать', 'get up', 'I get up at seven.', 'Я встаю в семь.'),
+      word('les-b1-8-turn-on', 'Turn on', 'Включать', 'turn on', 'Turn on the light, please.', 'Включи свет, пожалуйста.'),
+      word('les-b1-8-turn-off', 'Turn off', 'Выключать', 'turn off', 'Turn off your phone.', 'Выключи телефон.'),
+      word('les-b1-8-find-out', 'Find out', 'Узнать', 'faind out', 'I need to find out the price.', 'Мне нужно узнать цену.'),
+      word('les-b1-8-look-after', 'Look after', 'Присматривать / заботиться', 'look af-ter', 'She looks after her sister.', 'Она присматривает за сестрой.'),
+      word('les-b1-8-give-up', 'Give up', 'Сдаваться / бросать', 'giv up', 'Do not give up.', 'Не сдавайся.'),
+      word('les-b1-8-pick-up', 'Pick up', 'Подбирать / забирать', 'pik up', 'Can you pick me up?', 'Можешь меня забрать?'),
+      word('les-b1-8-calm-down', 'Calm down', 'Успокоиться', 'kahm down', 'Please calm down.', 'Пожалуйста, успокойся.'),
+    ],
+    examples: [
+      { english: 'I get up early on weekdays.', russian: 'По будням я встаю рано.' },
+      { english: 'Please turn off the light.', russian: 'Пожалуйста, выключи свет.' },
+      { english: 'We need to find out the address.', russian: 'Нам нужно узнать адрес.' },
+      { english: 'She looks after her younger brother.', russian: 'Она присматривает за младшим братом.' },
+      { english: 'Do not give up after one mistake.', russian: 'Не сдавайся после одной ошибки.' },
+    ],
+    exercises: [
+      {
+        type: 'fill_blank',
+        sentence: 'Please turn ___ the light.',
+        answer: 'off',
+        hint: 'Выключить - turn off.',
+      },
+      {
+        type: 'translate',
+        russian: 'Не сдавайся.',
+        correctAnswer: 'Do not give up.',
+        alternativeAnswers: ['Do not give up', 'Don\'t give up.'],
+      },
+      {
+        type: 'choose_correct',
+        question: 'Как сказать "узнать информацию"?',
+        options: ['Find out', 'Look after', 'Turn off', 'Get up'],
+        correctIndex: 0,
+      },
+    ],
+  },
+]
+
+export const lessons: Lesson[] = [...coreLessons, ...expandedLessons]
+
 export function getLessonsByLevel(level: LessonLevel): Lesson[] {
   return lessons
     .filter((lesson) => lesson.level === level)
@@ -929,4 +1456,3 @@ export function getLessonById(id: string): Lesson | undefined {
 export function getLevelInfo(level: LessonLevel): LessonLevelInfo | undefined {
   return lessonLevels.find((item) => item.id === level)
 }
-

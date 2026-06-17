@@ -138,7 +138,9 @@ function Home({
         >
           <span>
             <span className="block text-sm font-semibold text-slate-950">Уроки</span>
-            <span className="mt-0.5 block text-xs text-slate-500">A1, A2, B1</span>
+            <span className="mt-0.5 block text-xs text-slate-500">
+              A1, A2, B1 и предлоги
+            </span>
           </span>
           <span className="text-sm text-slate-400">→</span>
         </button>
