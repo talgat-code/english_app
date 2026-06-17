@@ -139,7 +139,7 @@ function Home({
           <span>
             <span className="block text-sm font-semibold text-slate-950">Уроки</span>
             <span className="mt-0.5 block text-xs text-slate-500">
-              A1, A2, B1 и предлоги
+              A1, A2, B1, предлоги и gerund
             </span>
           </span>
           <span className="text-sm text-slate-400">→</span>

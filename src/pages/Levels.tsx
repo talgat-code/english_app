@@ -7,6 +7,7 @@ import {
   isLevelComplete,
   isLevelUnlocked,
 } from '../utils/lessonProgress'
+import GerundInfinitive from './GerundInfinitive'
 import Prepositions from './Prepositions'
 
 interface LevelsProps {
@@ -15,9 +16,9 @@ interface LevelsProps {
 
 function Levels({ onSelectLevel }: LevelsProps) {
   const progress = useProgress()
-  const [activeTab, setActiveTab] = useState<'levels' | 'prepositions'>(
-    'levels',
-  )
+  const [activeTab, setActiveTab] = useState<
+    'levels' | 'prepositions' | 'gerund'
+  >('levels')
 
   return (
     <div className="flex min-h-screen w-full flex-col px-5 py-6">
@@ -30,11 +31,11 @@ function Levels({ onSelectLevel }: LevelsProps) {
         </h1>
       </header>
 
-      <div className="mt-5 grid grid-cols-2 rounded-lg border border-slate-200 bg-white p-1">
+      <div className="mt-5 grid grid-cols-3 rounded-lg border border-slate-200 bg-white p-1">
         <button
           type="button"
           onClick={() => setActiveTab('levels')}
-          className={`min-h-10 rounded-md text-sm font-semibold transition-colors ${
+          className={`min-h-10 rounded-md text-xs font-semibold transition-colors ${
             activeTab === 'levels'
               ? 'bg-slate-950 text-white'
               : 'text-slate-500 hover:bg-slate-50'
@@ -45,13 +46,24 @@ function Levels({ onSelectLevel }: LevelsProps) {
         <button
           type="button"
           onClick={() => setActiveTab('prepositions')}
-          className={`min-h-10 rounded-md text-sm font-semibold transition-colors ${
+          className={`min-h-10 rounded-md text-xs font-semibold transition-colors ${
             activeTab === 'prepositions'
               ? 'bg-slate-950 text-white'
               : 'text-slate-500 hover:bg-slate-50'
           }`}
         >
           Предлоги
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('gerund')}
+          className={`min-h-10 rounded-md text-xs font-semibold transition-colors ${
+            activeTab === 'gerund'
+              ? 'bg-slate-950 text-white'
+              : 'text-slate-500 hover:bg-slate-50'
+          }`}
+        >
+          Gerund
         </button>
       </div>
 
@@ -128,8 +140,10 @@ function Levels({ onSelectLevel }: LevelsProps) {
             )
           })}
         </ul>
-      ) : (
+      ) : activeTab === 'prepositions' ? (
         <Prepositions />
+      ) : (
+        <GerundInfinitive />
       )}
     </div>
   )
