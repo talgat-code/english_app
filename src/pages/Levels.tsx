@@ -15,23 +15,24 @@ function Levels({ onSelectLevel }: LevelsProps) {
   const progress = useProgress()
 
   return (
-    <div className="flex min-h-screen w-full flex-col px-5 py-8">
-      <header className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-          Уроки
-        </h1>
-        <p className="mt-1 text-sm text-slate-500">
-          Двигайся по уровням от A1 к B1
+    <div className="flex min-h-screen w-full flex-col px-5 py-6">
+      <header className="border-b border-slate-200 pb-5">
+        <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+          Учебный план
         </p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">
+          Уровни
+        </h1>
       </header>
 
-      <ul className="flex flex-col gap-4">
+      <ul className="mt-5 flex flex-col gap-3">
         {lessonLevels.map((level) => {
           const total = getLessonsByLevel(level.id).length
           const completed = completedLessonCount(progress, level.id)
           const percent = total > 0 ? Math.round((completed / total) * 100) : 0
           const locked = !isLevelUnlocked(progress, level.id)
           const complete = isLevelComplete(progress, level.id)
+          const status = locked ? 'Закрыт' : complete ? 'Завершен' : 'Доступен'
 
           return (
             <li key={level.id}>
@@ -41,39 +42,54 @@ function Levels({ onSelectLevel }: LevelsProps) {
                   if (!locked) onSelectLevel(level.id)
                 }}
                 disabled={locked}
-                className={`w-full rounded-2xl border p-5 text-left shadow-sm transition-all active:scale-[0.99] ${
+                className={`w-full rounded-lg border p-4 text-left transition-colors ${
                   locked
-                    ? 'border-slate-100 bg-slate-100 text-slate-400'
-                    : 'border-slate-100 bg-white text-slate-900 hover:border-indigo-200 hover:shadow-md'
+                    ? 'border-slate-200 bg-slate-100 text-slate-400'
+                    : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
                 }`}
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-wide text-indigo-500">
-                      {level.id} · {level.name}
-                    </p>
-                    <h2 className="mt-1 text-xl font-bold tracking-tight">
-                      {level.title}
-                    </h2>
-                  </div>
-                  <span className="text-2xl">
-                    {locked ? '🔒' : complete ? '🏆' : '📖'}
+                <div className="flex items-start gap-4">
+                  <span
+                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-md border text-sm font-semibold ${
+                      locked
+                        ? 'border-slate-200 bg-white text-slate-400'
+                        : 'border-slate-300 bg-slate-50 text-slate-900'
+                    }`}
+                  >
+                    {level.id}
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="flex items-center justify-between gap-3">
+                      <span className="text-base font-semibold text-slate-950">
+                        {level.name}
+                      </span>
+                      <span
+                        className={`rounded-md px-2 py-1 text-xs font-semibold ${
+                          complete
+                            ? 'bg-emerald-50 text-emerald-700'
+                            : locked
+                              ? 'bg-slate-200 text-slate-500'
+                              : 'bg-slate-100 text-slate-700'
+                        }`}
+                      >
+                        {status}
+                      </span>
+                    </span>
+                    <span className="mt-1 block text-sm leading-relaxed text-slate-500">
+                      {level.description}
+                    </span>
                   </span>
                 </div>
 
-                <p className="mt-3 text-sm leading-relaxed text-slate-500">
-                  {level.description}
-                </p>
-
                 <div className="mt-4 flex items-center gap-3">
-                  <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-200">
+                  <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-200">
                     <div
-                      className="h-full rounded-full bg-indigo-600 transition-all duration-500 ease-out"
+                      className="h-full rounded-full bg-slate-900 transition-all duration-500 ease-out"
                       style={{ width: `${percent}%` }}
                     />
                   </div>
                   <span className="shrink-0 text-xs font-semibold text-slate-500">
-                    {completed} из {total}
+                    {completed}/{total}
                   </span>
                 </div>
               </button>
@@ -86,4 +102,3 @@ function Levels({ onSelectLevel }: LevelsProps) {
 }
 
 export default Levels
-

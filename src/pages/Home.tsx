@@ -32,7 +32,7 @@ function Home({
       ? [
           {
             id: 'review',
-            text: `У тебя ${hardWordCount} слов для повторения 📖`,
+            text: `К повторению: ${hardWordCount} слов`,
             action: onReview,
           },
         ]
@@ -41,7 +41,7 @@ function Home({
       ? [
           {
             id: 'streak',
-            text: 'Не теряй серию! Займись английским сегодня 🔥',
+            text: 'Серия прервалась. Сегодня можно спокойно вернуться в ритм.',
           },
         ]
       : []),
@@ -60,130 +60,130 @@ function Home({
   const banner = banners[bannerIndex % banners.length]
 
   return (
-    <div className="flex min-h-screen flex-col px-6 py-8">
+    <div className="flex min-h-screen flex-col px-5 py-6">
+      <header className="border-b border-slate-200 pb-5">
+        <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+          English App
+        </p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">
+          Сегодняшнее обучение
+        </h1>
+      </header>
+
       {banner && (
-        <div className="mb-5 rounded-2xl border border-indigo-100 bg-indigo-50 p-4 text-left shadow-sm">
-          <p className="font-semibold text-indigo-950">{banner.text}</p>
-          {'action' in banner && banner.action && (
-            <button
-              type="button"
-              onClick={banner.action}
-              className="mt-3 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-700"
-            >
-              Повторить сейчас
-            </button>
-          )}
+        <div className="mt-5 rounded-lg border border-slate-200 bg-white p-4">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-sm font-medium text-slate-800">{banner.text}</p>
+            {'action' in banner && banner.action && (
+              <button
+                type="button"
+                onClick={banner.action}
+                className="shrink-0 rounded-md border border-slate-300 px-3 py-2 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+              >
+                Повторить
+              </button>
+            )}
+          </div>
         </div>
       )}
 
-      <header className="pt-2 text-center">
-        <span className="text-5xl">📚</span>
-        <h1 className="mt-4 text-4xl font-bold tracking-tight text-slate-900">
-          English App
-        </h1>
-        <p className="mt-3 text-base text-slate-500">
-          Короткие уроки, слова и практика каждый день.
-        </p>
-      </header>
-
-      <section className="mt-8 rounded-3xl border border-slate-100 bg-white p-5 text-left shadow-sm">
+      <section className="mt-5 rounded-lg border border-slate-200 bg-white p-4">
         <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-wide text-indigo-500">
-              Продолжить обучение
+          <div className="min-w-0">
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+              Продолжить
             </p>
             {nextLesson ? (
               <>
-                <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-900">
-                  {currentLevel?.id} · урок {nextLesson.order}
-                </h2>
-                <p className="mt-1 text-sm font-semibold text-slate-700">
+                <div className="mt-3 flex items-center gap-2 text-xs font-semibold text-slate-500">
+                  <span className="rounded-md bg-slate-100 px-2 py-1 text-slate-700">
+                    {currentLevel?.id}
+                  </span>
+                  <span>Урок {nextLesson.order}</span>
+                </div>
+                <h2 className="mt-3 text-xl font-semibold leading-tight text-slate-950">
                   {nextLesson.title}
-                </p>
+                </h2>
                 <p className="mt-2 text-sm leading-relaxed text-slate-500">
                   {nextLesson.description}
                 </p>
               </>
             ) : (
               <>
-                <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-900">
-                  Поздравляем!
+                <h2 className="mt-3 text-xl font-semibold text-slate-950">
+                  Все уроки пройдены
                 </h2>
                 <p className="mt-2 text-sm leading-relaxed text-slate-500">
-                  Ты прошел все уроки 🏆
+                  Можно закрепить слова или вернуться к любому уровню.
                 </p>
               </>
             )}
           </div>
-          <span className="text-3xl">{nextLesson ? '🚀' : '🏆'}</span>
         </div>
 
-        {nextLesson ? (
-          <button
-            type="button"
-            onClick={onContinueLesson}
-            className="mt-5 min-h-12 w-full rounded-2xl bg-indigo-600 px-5 font-semibold text-white transition-all hover:bg-indigo-700 active:scale-[0.98]"
-          >
-            Продолжить
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={onLessons}
-            className="mt-5 min-h-12 w-full rounded-2xl bg-slate-900 px-5 font-semibold text-white transition-all hover:bg-slate-800 active:scale-[0.98]"
-          >
-            Посмотреть уровни
-          </button>
-        )}
+        <button
+          type="button"
+          onClick={nextLesson ? onContinueLesson : onLessons}
+          className="mt-5 min-h-11 w-full rounded-lg bg-slate-950 px-5 text-sm font-semibold text-white transition-colors hover:bg-slate-800 active:bg-slate-900"
+        >
+          {nextLesson ? 'Продолжить урок' : 'Открыть уровни'}
+        </button>
       </section>
 
-      <section className="mt-5 grid grid-cols-2 gap-3">
+      <section className="mt-4 overflow-hidden rounded-lg border border-slate-200 bg-white">
         <button
           type="button"
           onClick={onLessons}
-          className="min-h-24 rounded-2xl border border-slate-100 bg-white p-4 text-left shadow-sm transition-all hover:border-indigo-200 active:scale-[0.98]"
+          className="flex min-h-16 w-full items-center justify-between border-b border-slate-100 px-4 text-left transition-colors hover:bg-slate-50"
         >
-          <span className="text-2xl">📖</span>
-          <span className="mt-2 block text-sm font-bold text-slate-900">
-            Уроки
+          <span>
+            <span className="block text-sm font-semibold text-slate-950">Уроки</span>
+            <span className="mt-0.5 block text-xs text-slate-500">A1, A2, B1</span>
           </span>
-          <span className="mt-1 block text-xs text-slate-500">A1 → B1</span>
+          <span className="text-sm text-slate-400">→</span>
         </button>
         <button
           type="button"
           onClick={onVocabulary}
-          className="min-h-24 rounded-2xl border border-slate-100 bg-white p-4 text-left shadow-sm transition-all hover:border-indigo-200 active:scale-[0.98]"
+          className="flex min-h-16 w-full items-center justify-between px-4 text-left transition-colors hover:bg-slate-50"
         >
-          <span className="text-2xl">🗂️</span>
-          <span className="mt-2 block text-sm font-bold text-slate-900">
-            Словарь
+          <span>
+            <span className="block text-sm font-semibold text-slate-950">
+              Словарь
+            </span>
+            <span className="mt-0.5 block text-xs text-slate-500">
+              Карточки и квизы
+            </span>
           </span>
-          <span className="mt-1 block text-xs text-slate-500">Карточки и квизы</span>
+          <span className="text-sm text-slate-400">→</span>
         </button>
       </section>
 
-      <section className="mt-5 rounded-3xl bg-gradient-to-br from-violet-600 to-indigo-700 p-5 text-left text-white shadow-lg">
-        <div className="flex items-center gap-3">
-          <span className="text-3xl">🤖</span>
+      <section className="mt-4 rounded-lg border border-slate-200 bg-white p-4">
+        <div className="flex items-start justify-between gap-4">
           <div>
-            <h2 className="font-bold">AI-репетитор</h2>
-            <p className="text-xs text-white/75">Спроси или найди новые слова</p>
+            <h2 className="text-base font-semibold text-slate-950">
+              AI-помощник
+            </h2>
+            <p className="mt-1 text-sm leading-relaxed text-slate-500">
+              Вопросы по теме и подбор новых слов.
+            </p>
           </div>
         </div>
         <div className="mt-4 grid grid-cols-2 gap-2">
           <button
             type="button"
             onClick={onAITutor}
-            className="min-h-11 rounded-xl bg-white px-3 text-xs font-semibold text-indigo-700 transition-all active:scale-[0.98]"
+            className="min-h-10 rounded-md border border-slate-300 px-3 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-50"
           >
-            Спросить репетитора
+            Спросить
           </button>
           <button
             type="button"
             onClick={onAIWords}
-            className="min-h-11 rounded-xl bg-white/15 px-3 text-xs font-semibold text-white ring-1 ring-white/30 transition-all active:scale-[0.98]"
+            className="min-h-10 rounded-md bg-slate-100 px-3 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-200"
           >
-            Найти новые слова
+            Новые слова
           </button>
         </div>
       </section>
@@ -192,4 +192,3 @@ function Home({
 }
 
 export default Home
-
