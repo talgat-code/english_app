@@ -16,35 +16,32 @@ function LessonList({ level, onBack, onSelectLesson }: LessonListProps) {
 
   return (
     <div className="flex min-h-screen w-full flex-col px-5 py-6">
-      <header className="mb-5">
+      <header className="border-b border-slate-200 pb-5">
         <button
           type="button"
           onClick={onBack}
-          className="text-sm font-medium text-slate-500 hover:text-slate-800"
+          className="text-sm font-semibold text-slate-500 hover:text-slate-900"
         >
           ← Уровни
         </button>
-        <p className="mt-5 text-xs font-bold uppercase tracking-wide text-indigo-500">
-          {levelInfo?.name}
+        <p className="mt-5 text-xs font-semibold uppercase tracking-wide text-slate-400">
+          {level} · {levelInfo?.name}
         </p>
-        <h1 className="mt-1 text-3xl font-bold tracking-tight text-slate-900">
-          {level} уроки
+        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">
+          Уроки уровня
         </h1>
-        <p className="mt-2 text-sm text-slate-500">
-          Проходи уроки по порядку, чтобы открыть следующий.
-        </p>
       </header>
 
-      <ul className="flex flex-col gap-3">
+      <ul className="mt-5 flex flex-col gap-2">
         {lessons.map((lesson) => {
           const completed = progress.completedLessons.includes(lesson.id)
           const unlocked = isLessonUnlocked(progress, lesson)
           const score = progress.lessonScores[lesson.id]
           const status = completed
-            ? '✅ Пройден'
+            ? 'Пройден'
             : unlocked
-              ? '🔓 Доступен'
-              : '🔒 Заблокирован'
+              ? 'Доступен'
+              : 'Закрыт'
 
           return (
             <li key={lesson.id}>
@@ -54,41 +51,39 @@ function LessonList({ level, onBack, onSelectLesson }: LessonListProps) {
                   if (unlocked) onSelectLesson(lesson.id)
                 }}
                 disabled={!unlocked}
-                className={`w-full rounded-2xl border p-4 text-left shadow-sm transition-all active:scale-[0.99] ${
+                className={`w-full rounded-lg border px-4 py-3 text-left transition-colors ${
                   unlocked
-                    ? 'border-slate-100 bg-white hover:border-indigo-200 hover:shadow-md'
-                    : 'border-slate-100 bg-slate-100 text-slate-400'
+                    ? 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
+                    : 'border-slate-200 bg-slate-100 text-slate-400'
                 }`}
               >
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                   <span
-                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-sm font-bold ${
+                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-md border text-sm font-semibold ${
                       completed
-                        ? 'bg-emerald-50 text-emerald-600'
+                        ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
                         : unlocked
-                          ? 'bg-indigo-50 text-indigo-600'
-                          : 'bg-white/70 text-slate-400'
+                          ? 'border-slate-300 bg-slate-50 text-slate-900'
+                          : 'border-slate-200 bg-white text-slate-400'
                     }`}
                   >
                     {lesson.order}
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block font-bold text-slate-900">
+                    <span className="block text-sm font-semibold text-slate-950">
                       {lesson.title}
                     </span>
-                    <span className="mt-0.5 block text-sm text-slate-500">
+                    <span className="mt-0.5 block text-xs text-slate-500">
                       {status}
                       {completed && typeof score === 'number'
-                        ? ` · лучший результат ${score}%`
+                        ? ` · ${score}%`
                         : ''}
                     </span>
                   </span>
+                  <span className="text-sm text-slate-400">
+                    {unlocked ? '→' : '—'}
+                  </span>
                 </div>
-                {!unlocked && (
-                  <p className="mt-3 text-xs text-slate-400">
-                    Нужно пройти предыдущий урок.
-                  </p>
-                )}
               </button>
             </li>
           )
@@ -99,4 +94,3 @@ function LessonList({ level, onBack, onSelectLesson }: LessonListProps) {
 }
 
 export default LessonList
-

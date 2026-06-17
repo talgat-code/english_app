@@ -83,7 +83,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className="min-h-screen bg-zinc-50 text-slate-900">
       <main className={`mx-auto w-full max-w-[480px] ${showTabBar ? 'pb-20' : ''}`}>
         {screen.name === 'home' && (
           <Home
@@ -247,12 +247,12 @@ interface TabBarProps {
   onNavigate: (tab: Tab) => void
 }
 
-const TABS: { id: Tab; emoji: string; label: string }[] = [
-  { id: 'home', emoji: '🏠', label: 'Главная' },
-  { id: 'lessons', emoji: '📖', label: 'Уроки' },
-  { id: 'games', emoji: '🎮', label: 'Игры' },
-  { id: 'ai', emoji: '🤖', label: 'AI' },
-  { id: 'stats', emoji: '📊', label: 'Статистика' },
+const TABS: { id: Tab; label: string }[] = [
+  { id: 'home', label: 'Главная' },
+  { id: 'lessons', label: 'Уроки' },
+  { id: 'games', label: 'Игры' },
+  { id: 'ai', label: 'AI' },
+  { id: 'stats', label: 'Статистика' },
 ]
 
 function TabBar({ active, onNavigate }: TabBarProps) {
@@ -267,11 +267,13 @@ function TabBar({ active, onNavigate }: TabBarProps) {
               type="button"
               onClick={() => onNavigate(tab.id)}
               aria-current={isActive ? 'page' : undefined}
-              className={`flex min-w-0 flex-1 flex-col items-center gap-0.5 py-2.5 text-[10px] font-medium leading-tight transition-colors ${
-                isActive ? 'text-indigo-600' : 'text-slate-400 hover:text-slate-600'
+              className={`relative flex min-h-14 min-w-0 flex-1 items-center justify-center px-1 text-[11px] font-semibold leading-tight transition-colors ${
+                isActive ? 'text-slate-950' : 'text-slate-400 hover:text-slate-600'
               }`}
             >
-              <span className="relative text-xl leading-none">{tab.emoji}</span>
+              {isActive && (
+                <span className="absolute top-0 h-0.5 w-7 rounded-full bg-slate-950" />
+              )}
               <span>{tab.label}</span>
             </button>
           )
