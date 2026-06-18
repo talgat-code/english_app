@@ -13,6 +13,7 @@ import Flashcards from './pages/Flashcards'
 import Games from './pages/Games'
 import Hangman from './pages/Hangman'
 import Home from './pages/Home'
+import IrregularVerbs from './pages/IrregularVerbs'
 import Lesson from './pages/Lesson'
 import LessonList from './pages/LessonList'
 import Levels from './pages/Levels'
@@ -41,6 +42,7 @@ type Screen =
   | { name: 'my-words-quiz' }
   | { name: 'review' }
   | { name: 'stats' }
+  | { name: 'irregular-verbs' }
   | { name: 'flashcards'; categoryId: string }
   | { name: 'quiz'; categoryId: string }
   | { name: 'hangman'; categoryId: string }
@@ -99,6 +101,7 @@ function App() {
             onReview={() => setScreen({ name: 'review' })}
             onAITutor={() => setScreen({ name: 'ai-tutor' })}
             onAIWords={() => setScreen({ name: 'ai-words' })}
+            onIrregularVerbs={() => setScreen({ name: 'irregular-verbs' })}
           />
         )}
 
@@ -144,6 +147,9 @@ function App() {
 
         {screen.name === 'stats' && <Stats />}
         {screen.name === 'review' && <Review />}
+        {screen.name === 'irregular-verbs' && (
+          <IrregularVerbs onBack={() => setScreen({ name: 'home' })} />
+        )}
         {screen.name === 'ai' && (
           <AIHome
             onTutor={() => setScreen({ name: 'ai-tutor' })}

@@ -13,6 +13,7 @@ interface HomeProps {
   onReview: () => void
   onAITutor: () => void
   onAIWords: () => void
+  onIrregularVerbs: () => void
 }
 
 function Home({
@@ -26,6 +27,7 @@ function Home({
   onReview,
   onAITutor,
   onAIWords,
+  onIrregularVerbs,
 }: HomeProps) {
   const banners = [
     ...(hardWordCount > 3
@@ -147,7 +149,7 @@ function Home({
         <button
           type="button"
           onClick={onVocabulary}
-          className="flex min-h-16 w-full items-center justify-between px-4 text-left transition-colors hover:bg-slate-50"
+          className="flex min-h-16 w-full items-center justify-between border-b border-slate-100 px-4 text-left transition-colors hover:bg-slate-50"
         >
           <span>
             <span className="block text-sm font-semibold text-slate-950">
@@ -155,6 +157,21 @@ function Home({
             </span>
             <span className="mt-0.5 block text-xs text-slate-500">
               Карточки и квизы
+            </span>
+          </span>
+          <span className="text-sm text-slate-400">→</span>
+        </button>
+        <button
+          type="button"
+          onClick={onIrregularVerbs}
+          className="flex min-h-16 w-full items-center justify-between px-4 text-left transition-colors hover:bg-slate-50"
+        >
+          <span>
+            <span className="block text-sm font-semibold text-slate-950">
+              Неправильные глаголы
+            </span>
+            <span className="mt-0.5 block text-xs text-slate-500">
+              V1, V2, V3 и быстрые карточки
             </span>
           </span>
           <span className="text-sm text-slate-400">→</span>
