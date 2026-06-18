@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { getCategoryById, type Word } from '../data/words'
 import { recordQuizResult, type QuizAnswer } from '../hooks/useProgress'
 import { useSpeech } from '../hooks/useSpeech'
-import { askClaude } from '../utils/claudeApi'
+import { askOpenAI } from '../utils/openaiApi'
 import { buildQuiz, buildQuizForWords, type QuizQuestion } from '../utils/quiz'
 import QuizResult from './QuizResult'
 
@@ -134,7 +134,7 @@ function Quiz({
     setExplanationLoading(true)
     setExplanationError('')
     try {
-      const text = await askClaude({
+      const text = await askOpenAI({
         maxTokens: 250,
         messages: [
           {
@@ -249,7 +249,7 @@ function Quiz({
                 className="min-h-11 w-full rounded-xl bg-violet-600 px-4 text-sm font-semibold text-white disabled:opacity-60"
               >
                 {explanationLoading
-                  ? 'Claude думает...'
+                  ? 'GPT думает...'
                   : explanationError
                     ? 'Попробовать объяснить снова 🤖'
                     : 'Объясни 🤖'}

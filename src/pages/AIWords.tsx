@@ -1,9 +1,39 @@
 import { useState } from 'react'
-import type { GeneratedWord } from '../types/api'
-import { askClaude } from '../utils/claudeApi'
+import type { GeneratedWord, OpenAITextFormat } from '../types/api'
+import { askOpenAI } from '../utils/openaiApi'
 import { addMyWord, getMyWords } from '../utils/myWords'
 
 const POPULAR_TOPICS = ['Спорт', 'Еда', 'Технологии', 'Кино', 'Бизнес', 'Природа']
+
+const WORD_LIST_RESPONSE_FORMAT: OpenAITextFormat = {
+  type: 'json_schema',
+  name: 'generated_words',
+  strict: true,
+  schema: {
+    type: 'object',
+    additionalProperties: false,
+    properties: {
+      words: {
+        type: 'array',
+        minItems: 1,
+        maxItems: 10,
+        items: {
+          type: 'object',
+          additionalProperties: false,
+          properties: {
+            english: { type: 'string' },
+            russian: { type: 'string' },
+            transcription: { type: 'string' },
+            example: { type: 'string' },
+            exampleTranslation: { type: 'string' },
+          },
+          required: ['english', 'russian', 'transcription', 'example', 'exampleTranslation'],
+        },
+      },
+    },
+    required: ['words'],
+  },
+}
 
 interface AIWordsProps {
   onBack: () => void
@@ -21,9 +51,19 @@ function isGeneratedWord(value: unknown): value is GeneratedWord {
 function parseWords(text: string): GeneratedWord[] {
   const cleaned = text.replace(/^```(?:json)?\s*|\s*```$/gi, '').trim()
   const parsed = JSON.parse(cleaned) as unknown
-  if (!Array.isArray(parsed)) throw new Error('Claude вернул не JSON-массив.')
-  const words = parsed.filter(isGeneratedWord)
-  if (words.length === 0) throw new Error('В ответе Claude нет подходящих слов.')
+  const list =
+    Array.isArray(parsed) ||
+    (parsed &&
+      typeof parsed === 'object' &&
+      Array.isArray((parsed as { words?: unknown }).words))
+      ? Array.isArray(parsed)
+        ? parsed
+        : (parsed as { words: unknown[] }).words
+      : null
+
+  if (!list) throw new Error('GPT вернул неподходящий JSON.')
+  const words = list.filter(isGeneratedWord)
+  if (words.length === 0) throw new Error('В ответе GPT нет подходящих слов.')
   return words.slice(0, 10)
 }
 
@@ -47,15 +87,15 @@ function AIWords({ onBack, onMyWords }: AIWordsProps) {
     setError('')
 
     try {
-      const response = await askClaude({
+      const response = await askOpenAI({
         maxTokens: 1800,
+        responseFormat: WORD_LIST_RESPONSE_FORMAT,
         messages: [
           {
             role: 'user',
             content: `Сгенерируй 10 полезных английских слов по теме: ${trimmed}.
-Ответь ТОЛЬКО валидным JSON массивом без markdown, без пояснений.
-Формат каждого объекта:
-{ "english": "...", "russian": "...", "transcription": "...", "example": "...", "exampleTranslation": "..." }
+Ответь ТОЛЬКО валидным JSON объектом без markdown, без пояснений.
+Формат: { "words": [{ "english": "...", "russian": "...", "transcription": "...", "example": "...", "exampleTranslation": "..." }] }
 Транскрипция в формате [trænskrɪpʃən]. Пример — простое предложение.`,
           },
         ],
@@ -96,7 +136,7 @@ function AIWords({ onBack, onMyWords }: AIWordsProps) {
 
       <h1 className="text-3xl font-bold tracking-tight text-slate-900">Новые слова ✨</h1>
       <p className="mt-2 text-sm text-slate-500">
-        Введи тему, и Claude соберёт полезную подборку.
+        Введи тему, и GPT соберёт полезную подборку.
       </p>
 
       <form

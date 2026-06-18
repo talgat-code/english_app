@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import type { ClaudeMessage } from '../types/api'
-import { askClaude } from '../utils/claudeApi'
+import type { AiMessage } from '../types/api'
+import { askOpenAI } from '../utils/openaiApi'
 
 const CHAT_KEY = 'english-app:ai-tutor-chat:v1'
 const SYSTEM_PROMPT =
@@ -13,7 +13,7 @@ const QUICK_QUESTIONS = [
   'Объясни условные предложения',
 ]
 
-interface ChatItem extends ClaudeMessage {
+interface ChatItem extends AiMessage {
   id: string
 }
 
@@ -30,7 +30,7 @@ function loadChat(): ChatItem[] {
   }
 }
 
-function makeChatItem(role: ClaudeMessage['role'], content: string): ChatItem {
+function makeChatItem(role: AiMessage['role'], content: string): ChatItem {
   return {
     id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
     role,
@@ -66,8 +66,8 @@ function AITutor({ onBack }: AITutorProps) {
     setLoading(true)
 
     try {
-      const answer = await askClaude({
-        system: SYSTEM_PROMPT,
+      const answer = await askOpenAI({
+        instructions: SYSTEM_PROMPT,
         messages: nextMessages.map(({ role, content }) => ({ role, content })),
       })
       setMessages((current) => [...current, makeChatItem('assistant', answer)].slice(-20))
@@ -97,7 +97,7 @@ function AITutor({ onBack }: AITutorProps) {
         </button>
         <div className="text-center">
           <h1 className="font-bold text-slate-900">AI-репетитор 🤖</h1>
-          <p className="text-xs text-emerald-600">Claude</p>
+          <p className="text-xs text-emerald-600">GPT</p>
         </div>
         <button
           type="button"
