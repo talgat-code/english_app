@@ -5,6 +5,8 @@ export interface IrregularVerb {
   pastParticiple: string
   russian: string
   example: string
+  exampleTranslation?: string
+  note?: string
 }
 
 export const irregularVerbs: IrregularVerb[] = [
@@ -15,6 +17,8 @@ export const irregularVerbs: IrregularVerb[] = [
     pastParticiple: 'been',
     russian: 'быть',
     example: 'I have been busy today.',
+    exampleTranslation: 'Я был занят сегодня.',
+    note: 'Was используется с I / he / she / it, were — с you / we / they.',
   },
   {
     id: 'become',
@@ -22,7 +26,8 @@ export const irregularVerbs: IrregularVerb[] = [
     pastSimple: 'became',
     pastParticiple: 'become',
     russian: 'становиться',
-    example: 'She became confident.',
+    example: 'She became more confident.',
+    exampleTranslation: 'Она стала увереннее.',
   },
   {
     id: 'begin',
@@ -31,6 +36,7 @@ export const irregularVerbs: IrregularVerb[] = [
     pastParticiple: 'begun',
     russian: 'начинать',
     example: 'The lesson has begun.',
+    exampleTranslation: 'Урок уже начался.',
   },
   {
     id: 'break',
@@ -39,6 +45,7 @@ export const irregularVerbs: IrregularVerb[] = [
     pastParticiple: 'broken',
     russian: 'ломать',
     example: 'He broke his phone.',
+    exampleTranslation: 'Он сломал свой телефон.',
   },
   {
     id: 'bring',
@@ -47,6 +54,7 @@ export const irregularVerbs: IrregularVerb[] = [
     pastParticiple: 'brought',
     russian: 'приносить',
     example: 'I brought my notebook.',
+    exampleTranslation: 'Я принес свою тетрадь.',
   },
   {
     id: 'build',
@@ -55,6 +63,7 @@ export const irregularVerbs: IrregularVerb[] = [
     pastParticiple: 'built',
     russian: 'строить',
     example: 'They built a small house.',
+    exampleTranslation: 'Они построили небольшой дом.',
   },
   {
     id: 'buy',
@@ -63,6 +72,7 @@ export const irregularVerbs: IrregularVerb[] = [
     pastParticiple: 'bought',
     russian: 'покупать',
     example: 'We bought fresh bread.',
+    exampleTranslation: 'Мы купили свежий хлеб.',
   },
   {
     id: 'catch',
@@ -71,6 +81,7 @@ export const irregularVerbs: IrregularVerb[] = [
     pastParticiple: 'caught',
     russian: 'ловить',
     example: 'I caught the bus.',
+    exampleTranslation: 'Я успел на автобус.',
   },
   {
     id: 'choose',
@@ -78,7 +89,8 @@ export const irregularVerbs: IrregularVerb[] = [
     pastSimple: 'chose',
     pastParticiple: 'chosen',
     russian: 'выбирать',
-    example: 'She chose the blue dress.',
+    example: 'Have you chosen a topic yet?',
+    exampleTranslation: 'Ты уже выбрал тему?',
   },
   {
     id: 'come',
@@ -86,7 +98,8 @@ export const irregularVerbs: IrregularVerb[] = [
     pastSimple: 'came',
     pastParticiple: 'come',
     russian: 'приходить',
-    example: 'They have come home.',
+    example: 'She came home late.',
+    exampleTranslation: 'Она пришла домой поздно.',
   },
   {
     id: 'cost',
@@ -94,7 +107,17 @@ export const irregularVerbs: IrregularVerb[] = [
     pastSimple: 'cost',
     pastParticiple: 'cost',
     russian: 'стоить',
-    example: 'It cost ten dollars.',
+    example: 'The book cost twenty dollars.',
+    exampleTranslation: 'Книга стоила двадцать долларов.',
+  },
+  {
+    id: 'cut',
+    base: 'cut',
+    pastSimple: 'cut',
+    pastParticiple: 'cut',
+    russian: 'резать',
+    example: 'She cut the paper carefully.',
+    exampleTranslation: 'Она аккуратно разрезала бумагу.',
   },
   {
     id: 'do',
@@ -103,6 +126,16 @@ export const irregularVerbs: IrregularVerb[] = [
     pastParticiple: 'done',
     russian: 'делать',
     example: 'I have done my homework.',
+    exampleTranslation: 'Я сделал домашнее задание.',
+  },
+  {
+    id: 'draw',
+    base: 'draw',
+    pastSimple: 'drew',
+    pastParticiple: 'drawn',
+    russian: 'рисовать',
+    example: 'She drew a map.',
+    exampleTranslation: 'Она нарисовала карту.',
   },
   {
     id: 'drink',
@@ -111,6 +144,7 @@ export const irregularVerbs: IrregularVerb[] = [
     pastParticiple: 'drunk',
     russian: 'пить',
     example: 'He drank a glass of water.',
+    exampleTranslation: 'Он выпил стакан воды.',
   },
   {
     id: 'drive',
@@ -118,7 +152,8 @@ export const irregularVerbs: IrregularVerb[] = [
     pastSimple: 'drove',
     pastParticiple: 'driven',
     russian: 'водить',
-    example: 'We drove to the city.',
+    example: 'He drove to the airport.',
+    exampleTranslation: 'Он поехал в аэропорт на машине.',
   },
   {
     id: 'eat',
@@ -127,6 +162,7 @@ export const irregularVerbs: IrregularVerb[] = [
     pastParticiple: 'eaten',
     russian: 'есть',
     example: 'She has eaten breakfast.',
+    exampleTranslation: 'Она уже позавтракала.',
   },
   {
     id: 'fall',
@@ -135,6 +171,7 @@ export const irregularVerbs: IrregularVerb[] = [
     pastParticiple: 'fallen',
     russian: 'падать',
     example: 'The leaves fell quietly.',
+    exampleTranslation: 'Листья тихо падали.',
   },
   {
     id: 'feel',
@@ -143,6 +180,16 @@ export const irregularVerbs: IrregularVerb[] = [
     pastParticiple: 'felt',
     russian: 'чувствовать',
     example: 'I felt better yesterday.',
+    exampleTranslation: 'Вчера я чувствовал себя лучше.',
+  },
+  {
+    id: 'fight',
+    base: 'fight',
+    pastSimple: 'fought',
+    pastParticiple: 'fought',
+    russian: 'сражаться',
+    example: 'They fought for their rights.',
+    exampleTranslation: 'Они боролись за свои права.',
   },
   {
     id: 'find',
@@ -151,6 +198,7 @@ export const irregularVerbs: IrregularVerb[] = [
     pastParticiple: 'found',
     russian: 'находить',
     example: 'He found his keys.',
+    exampleTranslation: 'Он нашел свои ключи.',
   },
   {
     id: 'fly',
@@ -158,7 +206,8 @@ export const irregularVerbs: IrregularVerb[] = [
     pastSimple: 'flew',
     pastParticiple: 'flown',
     russian: 'летать',
-    example: 'The plane has flown away.',
+    example: 'The plane flew over the city.',
+    exampleTranslation: 'Самолет пролетел над городом.',
   },
   {
     id: 'forget',
@@ -166,15 +215,18 @@ export const irregularVerbs: IrregularVerb[] = [
     pastSimple: 'forgot',
     pastParticiple: 'forgotten',
     russian: 'забывать',
-    example: 'I forgot your address.',
+    example: 'I have forgotten my password.',
+    exampleTranslation: 'Я забыл свой пароль.',
   },
   {
     id: 'get',
     base: 'get',
     pastSimple: 'got',
-    pastParticiple: 'gotten',
+    pastParticiple: 'got / gotten',
     russian: 'получать',
     example: 'She got a new job.',
+    exampleTranslation: 'Она получила новую работу.',
+    note: 'Gotten чаще используется в американском английском, got — в британском.',
   },
   {
     id: 'give',
@@ -183,14 +235,16 @@ export const irregularVerbs: IrregularVerb[] = [
     pastParticiple: 'given',
     russian: 'давать',
     example: 'They have given us advice.',
+    exampleTranslation: 'Они дали нам совет.',
   },
   {
     id: 'go',
     base: 'go',
     pastSimple: 'went',
     pastParticiple: 'gone',
-    russian: 'идти',
+    russian: 'идти, ехать',
     example: 'He went to school.',
+    exampleTranslation: 'Он пошел в школу.',
   },
   {
     id: 'grow',
@@ -198,7 +252,8 @@ export const irregularVerbs: IrregularVerb[] = [
     pastSimple: 'grew',
     pastParticiple: 'grown',
     russian: 'расти',
-    example: 'The city has grown fast.',
+    example: 'The city has grown quickly.',
+    exampleTranslation: 'Город быстро вырос.',
   },
   {
     id: 'have',
@@ -207,6 +262,7 @@ export const irregularVerbs: IrregularVerb[] = [
     pastParticiple: 'had',
     russian: 'иметь',
     example: 'We had a great time.',
+    exampleTranslation: 'Мы отлично провели время.',
   },
   {
     id: 'hear',
@@ -215,6 +271,34 @@ export const irregularVerbs: IrregularVerb[] = [
     pastParticiple: 'heard',
     russian: 'слышать',
     example: 'I heard your question.',
+    exampleTranslation: 'Я услышал твой вопрос.',
+  },
+  {
+    id: 'hide',
+    base: 'hide',
+    pastSimple: 'hid',
+    pastParticiple: 'hidden',
+    russian: 'прятать',
+    example: 'She hid the key under the mat.',
+    exampleTranslation: 'Она спрятала ключ под ковриком.',
+  },
+  {
+    id: 'hold',
+    base: 'hold',
+    pastSimple: 'held',
+    pastParticiple: 'held',
+    russian: 'держать',
+    example: 'He held the door open.',
+    exampleTranslation: 'Он придержал дверь открытой.',
+  },
+  {
+    id: 'keep',
+    base: 'keep',
+    pastSimple: 'kept',
+    pastParticiple: 'kept',
+    russian: 'хранить, держать',
+    example: 'Keep this note safe.',
+    exampleTranslation: 'Храни эту записку в безопасности.',
   },
   {
     id: 'know',
@@ -222,23 +306,44 @@ export const irregularVerbs: IrregularVerb[] = [
     pastSimple: 'knew',
     pastParticiple: 'known',
     russian: 'знать',
-    example: 'I have known him for years.',
+    example: 'I have known her for years.',
+    exampleTranslation: 'Я знаю ее много лет.',
   },
   {
     id: 'leave',
     base: 'leave',
     pastSimple: 'left',
     pastParticiple: 'left',
-    russian: 'уходить',
+    russian: 'уходить, покидать',
     example: 'She left early.',
+    exampleTranslation: 'Она ушла рано.',
+  },
+  {
+    id: 'lose',
+    base: 'lose',
+    pastSimple: 'lost',
+    pastParticiple: 'lost',
+    russian: 'терять',
+    example: 'We lost the match.',
+    exampleTranslation: 'Мы проиграли матч.',
   },
   {
     id: 'make',
     base: 'make',
     pastSimple: 'made',
     pastParticiple: 'made',
-    russian: 'делать',
+    russian: 'делать, создавать',
     example: 'He made dinner.',
+    exampleTranslation: 'Он приготовил ужин.',
+  },
+  {
+    id: 'mean',
+    base: 'mean',
+    pastSimple: 'meant',
+    pastParticiple: 'meant',
+    russian: 'значить, иметь в виду',
+    example: 'The word meant something different.',
+    exampleTranslation: 'Это слово означало что-то другое.',
   },
   {
     id: 'meet',
@@ -247,6 +352,7 @@ export const irregularVerbs: IrregularVerb[] = [
     pastParticiple: 'met',
     russian: 'встречать',
     example: 'We met last week.',
+    exampleTranslation: 'Мы встретились на прошлой неделе.',
   },
   {
     id: 'pay',
@@ -255,6 +361,16 @@ export const irregularVerbs: IrregularVerb[] = [
     pastParticiple: 'paid',
     russian: 'платить',
     example: 'I paid for the ticket.',
+    exampleTranslation: 'Я заплатил за билет.',
+  },
+  {
+    id: 'put',
+    base: 'put',
+    pastSimple: 'put',
+    pastParticiple: 'put',
+    russian: 'класть, ставить',
+    example: 'He put the keys on the table.',
+    exampleTranslation: 'Он положил ключи на стол.',
   },
   {
     id: 'read',
@@ -262,7 +378,27 @@ export const irregularVerbs: IrregularVerb[] = [
     pastSimple: 'read',
     pastParticiple: 'read',
     russian: 'читать',
-    example: 'She read the article.',
+    example: 'I read the article yesterday.',
+    exampleTranslation: 'Я прочитал статью вчера.',
+    note: 'В Past Simple и Past Participle пишется read, но произносится /red/.',
+  },
+  {
+    id: 'ride',
+    base: 'ride',
+    pastSimple: 'rode',
+    pastParticiple: 'ridden',
+    russian: 'ехать верхом, кататься',
+    example: 'She rode her bike to school.',
+    exampleTranslation: 'Она поехала в школу на велосипеде.',
+  },
+  {
+    id: 'ring',
+    base: 'ring',
+    pastSimple: 'rang',
+    pastParticiple: 'rung',
+    russian: 'звонить',
+    example: 'The phone rang twice.',
+    exampleTranslation: 'Телефон зазвонил дважды.',
   },
   {
     id: 'run',
@@ -270,7 +406,8 @@ export const irregularVerbs: IrregularVerb[] = [
     pastSimple: 'ran',
     pastParticiple: 'run',
     russian: 'бегать',
-    example: 'He ran five kilometers.',
+    example: 'He has run five kilometers today.',
+    exampleTranslation: 'Сегодня он пробежал пять километров.',
   },
   {
     id: 'say',
@@ -279,6 +416,7 @@ export const irregularVerbs: IrregularVerb[] = [
     pastParticiple: 'said',
     russian: 'сказать',
     example: 'She said hello.',
+    exampleTranslation: 'Она сказала «привет».',
   },
   {
     id: 'see',
@@ -287,6 +425,7 @@ export const irregularVerbs: IrregularVerb[] = [
     pastParticiple: 'seen',
     russian: 'видеть',
     example: 'I have seen this film.',
+    exampleTranslation: 'Я видел этот фильм.',
   },
   {
     id: 'sell',
@@ -294,7 +433,8 @@ export const irregularVerbs: IrregularVerb[] = [
     pastSimple: 'sold',
     pastParticiple: 'sold',
     russian: 'продавать',
-    example: 'They sold their car.',
+    example: 'The company sold its old office.',
+    exampleTranslation: 'Компания продала свой старый офис.',
   },
   {
     id: 'send',
@@ -303,6 +443,62 @@ export const irregularVerbs: IrregularVerb[] = [
     pastParticiple: 'sent',
     russian: 'отправлять',
     example: 'I sent you a message.',
+    exampleTranslation: 'Я отправил тебе сообщение.',
+  },
+  {
+    id: 'set',
+    base: 'set',
+    pastSimple: 'set',
+    pastParticiple: 'set',
+    russian: 'устанавливать',
+    example: 'She set an alarm for seven.',
+    exampleTranslation: 'Она поставила будильник на семь.',
+  },
+  {
+    id: 'show',
+    base: 'show',
+    pastSimple: 'showed',
+    pastParticiple: 'shown / showed',
+    russian: 'показывать',
+    example: 'She has shown me the photos.',
+    exampleTranslation: 'Она показала мне фотографии.',
+    note: 'Shown встречается чаще, но showed тоже возможно.',
+  },
+  {
+    id: 'shut',
+    base: 'shut',
+    pastSimple: 'shut',
+    pastParticiple: 'shut',
+    russian: 'закрывать',
+    example: 'They shut the door quietly.',
+    exampleTranslation: 'Они тихо закрыли дверь.',
+  },
+  {
+    id: 'sing',
+    base: 'sing',
+    pastSimple: 'sang',
+    pastParticiple: 'sung',
+    russian: 'петь',
+    example: 'She sang beautifully.',
+    exampleTranslation: 'Она красиво пела.',
+  },
+  {
+    id: 'sit',
+    base: 'sit',
+    pastSimple: 'sat',
+    pastParticiple: 'sat',
+    russian: 'сидеть',
+    example: 'I sat near the window.',
+    exampleTranslation: 'Я сидел возле окна.',
+  },
+  {
+    id: 'sleep',
+    base: 'sleep',
+    pastSimple: 'slept',
+    pastParticiple: 'slept',
+    russian: 'спать',
+    example: 'The baby slept for three hours.',
+    exampleTranslation: 'Ребенок спал три часа.',
   },
   {
     id: 'speak',
@@ -311,6 +507,43 @@ export const irregularVerbs: IrregularVerb[] = [
     pastParticiple: 'spoken',
     russian: 'говорить',
     example: 'We spoke in English.',
+    exampleTranslation: 'Мы говорили на английском.',
+  },
+  {
+    id: 'spend',
+    base: 'spend',
+    pastSimple: 'spent',
+    pastParticiple: 'spent',
+    russian: 'тратить, проводить',
+    example: 'I spent all day studying.',
+    exampleTranslation: 'Я провел весь день за учебой.',
+  },
+  {
+    id: 'stand',
+    base: 'stand',
+    pastSimple: 'stood',
+    pastParticiple: 'stood',
+    russian: 'стоять',
+    example: 'He stood by the door.',
+    exampleTranslation: 'Он стоял у двери.',
+  },
+  {
+    id: 'steal',
+    base: 'steal',
+    pastSimple: 'stole',
+    pastParticiple: 'stolen',
+    russian: 'красть',
+    example: 'Someone stole my bike.',
+    exampleTranslation: 'Кто-то украл мой велосипед.',
+  },
+  {
+    id: 'swim',
+    base: 'swim',
+    pastSimple: 'swam',
+    pastParticiple: 'swum',
+    russian: 'плавать',
+    example: 'We swam in the lake.',
+    exampleTranslation: 'Мы плавали в озере.',
   },
   {
     id: 'take',
@@ -319,22 +552,25 @@ export const irregularVerbs: IrregularVerb[] = [
     pastParticiple: 'taken',
     russian: 'брать',
     example: 'She took a photo.',
+    exampleTranslation: 'Она сделала фотографию.',
   },
   {
     id: 'teach',
     base: 'teach',
     pastSimple: 'taught',
     pastParticiple: 'taught',
-    russian: 'учить',
+    russian: 'учить, преподавать',
     example: 'He taught me English.',
+    exampleTranslation: 'Он учил меня английскому.',
   },
   {
     id: 'tell',
     base: 'tell',
     pastSimple: 'told',
     pastParticiple: 'told',
-    russian: 'рассказывать',
-    example: 'They told us the truth.',
+    russian: 'рассказывать, говорить',
+    example: 'She told us the truth.',
+    exampleTranslation: 'Она сказала нам правду.',
   },
   {
     id: 'think',
@@ -343,6 +579,7 @@ export const irregularVerbs: IrregularVerb[] = [
     pastParticiple: 'thought',
     russian: 'думать',
     example: 'I thought about it.',
+    exampleTranslation: 'Я подумал об этом.',
   },
   {
     id: 'understand',
@@ -351,6 +588,34 @@ export const irregularVerbs: IrregularVerb[] = [
     pastParticiple: 'understood',
     russian: 'понимать',
     example: 'She understood the rule.',
+    exampleTranslation: 'Она поняла правило.',
+  },
+  {
+    id: 'wake',
+    base: 'wake',
+    pastSimple: 'woke',
+    pastParticiple: 'woken',
+    russian: 'просыпаться, будить',
+    example: 'I woke up early.',
+    exampleTranslation: 'Я проснулся рано.',
+  },
+  {
+    id: 'wear',
+    base: 'wear',
+    pastSimple: 'wore',
+    pastParticiple: 'worn',
+    russian: 'носить',
+    example: 'She wore a red coat.',
+    exampleTranslation: 'Она была в красном пальто.',
+  },
+  {
+    id: 'win',
+    base: 'win',
+    pastSimple: 'won',
+    pastParticiple: 'won',
+    russian: 'выигрывать',
+    example: 'Our team won the match.',
+    exampleTranslation: 'Наша команда выиграла матч.',
   },
   {
     id: 'write',
@@ -359,5 +624,29 @@ export const irregularVerbs: IrregularVerb[] = [
     pastParticiple: 'written',
     russian: 'писать',
     example: 'He has written a letter.',
+    exampleTranslation: 'Он написал письмо.',
   },
 ]
+
+export const irregularVerbById = new Map(
+  irregularVerbs.map((verb) => [verb.id, verb] as const),
+)
+
+export function findIrregularVerbs(query: string): IrregularVerb[] {
+  const normalizedQuery = query.trim().toLowerCase()
+
+  if (!normalizedQuery) return irregularVerbs
+
+  return irregularVerbs.filter((verb) => {
+    const searchableText = [
+      verb.base,
+      verb.pastSimple,
+      verb.pastParticiple,
+      verb.russian,
+    ]
+      .join(' ')
+      .toLowerCase()
+
+    return searchableText.includes(normalizedQuery)
+  })
+}
