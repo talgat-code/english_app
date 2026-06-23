@@ -13,22 +13,32 @@ export interface WordProgress {
   lastReviewed?: string
 }
 
-export interface OverallStats {
+export interface QuizStats {
   totalQuizzes: number
   quizPercentSum: number
+}
+
+export interface OverallStats extends QuizStats {
   streak: number
   lastActiveDate?: string
 }
 
 export interface ProgressState {
   words: Record<string, WordProgress>
+  idiomProgress: Record<string, WordProgress>
   stats: OverallStats
+  idiomStats: QuizStats
   completedLessons: string[]
   lessonScores: Record<string, number>
 }
 
 export interface QuizAnswer {
   wordId: string
+  correct: boolean
+}
+
+export interface IdiomQuizAnswer {
+  idiomId: string
   correct: boolean
 }
 
@@ -39,14 +49,29 @@ export interface DifficultWord {
   percent: number
 }
 
+export interface DifficultIdiom {
+  idiomId: string
+  correct: number
+  incorrect: number
+  percent: number
+}
+
+function createEmptyQuizStats(): QuizStats {
+  return {
+    totalQuizzes: 0,
+    quizPercentSum: 0,
+  }
+}
+
 function createEmptyState(): ProgressState {
   return {
     words: {},
+    idiomProgress: {},
     stats: {
-      totalQuizzes: 0,
-      quizPercentSum: 0,
+      ...createEmptyQuizStats(),
       streak: 0,
     },
+    idiomStats: createEmptyQuizStats(),
     completedLessons: [],
     lessonScores: {},
   }
@@ -118,6 +143,13 @@ function normalizeWordProgress(value: Record<string, unknown>): WordProgress {
   return progress
 }
 
+function normalizeQuizStats(value: Record<string, unknown>): QuizStats {
+  return {
+    totalQuizzes: toNonNegativeInteger(value.totalQuizzes),
+    quizPercentSum: toNonNegativeNumber(value.quizPercentSum),
+  }
+}
+
 function normalizeState(value: unknown): ProgressState {
   if (!isRecord(value)) {
     return createEmptyState()
@@ -134,11 +166,21 @@ function normalizeState(value: unknown): ProgressState {
     words[id] = normalizeWordProgress(rawProgress)
   }
 
+  const idiomProgress: Record<string, WordProgress> = {}
+  const rawIdiomProgress = isRecord(value.idiomProgress) ? value.idiomProgress : {}
+
+  for (const [rawId, rawProgress] of Object.entries(rawIdiomProgress)) {
+    const id = rawId.trim()
+
+    if (!id || !isRecord(rawProgress)) continue
+
+    idiomProgress[id] = normalizeWordProgress(rawProgress)
+  }
+
   const rawStats = isRecord(value.stats) ? value.stats : {}
 
   const stats: OverallStats = {
-    totalQuizzes: toNonNegativeInteger(rawStats.totalQuizzes),
-    quizPercentSum: toNonNegativeNumber(rawStats.quizPercentSum),
+    ...normalizeQuizStats(rawStats),
     streak: toNonNegativeInteger(rawStats.streak),
   }
 
@@ -146,6 +188,9 @@ function normalizeState(value: unknown): ProgressState {
   if (lastActiveDate) {
     stats.lastActiveDate = lastActiveDate
   }
+
+  const rawIdiomStats = isRecord(value.idiomStats) ? value.idiomStats : {}
+  const idiomStats = normalizeQuizStats(rawIdiomStats)
 
   const completedLessons = Array.isArray(value.completedLessons)
     ? Array.from(
@@ -173,7 +218,9 @@ function normalizeState(value: unknown): ProgressState {
 
   return {
     words,
+    idiomProgress,
     stats,
+    idiomStats,
     completedLessons,
     lessonScores,
   }
@@ -309,26 +356,29 @@ function applyActivity(stats: OverallStats): OverallStats {
   }
 }
 
-function getWordProgress(
-  words: Record<string, WordProgress>,
-  wordId: string,
+function getTrackedProgress(
+  collection: Record<string, WordProgress>,
+  itemId: string,
 ): WordProgress {
-  return words[wordId] ?? { correct: 0, incorrect: 0 }
+  return collection[itemId] ?? { correct: 0, incorrect: 0 }
 }
 
-// --- actions -----------------------------------------------------------------
-
-export function markWord(wordId: string, status: WordStatus) {
-  const id = wordId.trim()
+function markTrackedItem(
+  collectionKey: 'words' | 'idiomProgress',
+  itemId: string,
+  status: WordStatus,
+) {
+  const id = itemId.trim()
 
   if (!id) return
 
-  const previous = getWordProgress(state.words, id)
+  const collection = state[collectionKey]
+  const previous = getTrackedProgress(collection, id)
 
   commit({
     ...state,
-    words: {
-      ...state.words,
+    [collectionKey]: {
+      ...collection,
       [id]: {
         ...previous,
         status,
@@ -337,6 +387,105 @@ export function markWord(wordId: string, status: WordStatus) {
     },
     stats: applyActivity(state.stats),
   })
+}
+
+function applyQuizAnswers(
+  collection: Record<string, WordProgress>,
+  answers: Array<{ id: string; correct: boolean }>,
+) {
+  const nextCollection = { ...collection }
+  const now = new Date().toISOString()
+
+  let correctCount = 0
+  let answeredCount = 0
+
+  for (const answer of answers) {
+    const id = answer.id.trim()
+
+    if (!id) continue
+
+    const previous = getTrackedProgress(nextCollection, id)
+    const isCorrect = answer.correct === true
+
+    nextCollection[id] = {
+      ...previous,
+      correct: previous.correct + (isCorrect ? 1 : 0),
+      incorrect: previous.incorrect + (isCorrect ? 0 : 1),
+      lastReviewed: now,
+    }
+
+    if (isCorrect) {
+      correctCount += 1
+    }
+
+    answeredCount += 1
+  }
+
+  return {
+    nextCollection,
+    correctCount,
+    answeredCount,
+  }
+}
+
+function countKnown(collection: Record<string, WordProgress>): number {
+  return Object.values(collection).filter((item) => item.status === 'known').length
+}
+
+function countKnownIds(
+  collection: Record<string, WordProgress>,
+  itemIds: string[],
+): number {
+  return itemIds.reduce((count, id) => {
+    return count + (collection[id]?.status === 'known' ? 1 : 0)
+  }, 0)
+}
+
+function averageFromStats(stats: QuizStats): number {
+  if (stats.totalQuizzes === 0) return 0
+
+  return Math.round(stats.quizPercentSum / stats.totalQuizzes)
+}
+
+function buildDifficultEntries(
+  collection: Record<string, WordProgress>,
+  limit = 5,
+) {
+  const safeLimit = Number.isFinite(limit)
+    ? Math.max(0, Math.trunc(limit))
+    : Number.MAX_SAFE_INTEGER
+
+  return Object.entries(collection)
+    .map(([id, item]) => {
+      const attempts = item.correct + item.incorrect
+
+      return {
+        id,
+        correct: item.correct,
+        incorrect: item.incorrect,
+        percent: attempts > 0 ? Math.round((item.correct / attempts) * 100) : 0,
+        attempts,
+      }
+    })
+    .filter((item) => item.attempts > 0)
+    .sort((a, b) => {
+      return (
+        a.percent - b.percent ||
+        b.incorrect - a.incorrect ||
+        b.attempts - a.attempts
+      )
+    })
+    .slice(0, safeLimit)
+}
+
+// --- actions -----------------------------------------------------------------
+
+export function markWord(wordId: string, status: WordStatus) {
+  markTrackedItem('words', wordId, status)
+}
+
+export function markIdiom(idiomId: string, status: WordStatus) {
+  markTrackedItem('idiomProgress', idiomId, status)
 }
 
 export function recordCardsViewed() {
@@ -353,33 +502,13 @@ export function recordCardsViewed() {
 }
 
 export function recordQuizResult(answers: QuizAnswer[]) {
-  const words = { ...state.words }
-  const now = new Date().toISOString()
-
-  let correctCount = 0
-  let answeredCount = 0
-
-  for (const answer of answers) {
-    const wordId = answer.wordId?.trim()
-
-    if (!wordId) continue
-
-    const previous = getWordProgress(words, wordId)
-    const isCorrect = answer.correct === true
-
-    words[wordId] = {
-      ...previous,
-      correct: previous.correct + (isCorrect ? 1 : 0),
-      incorrect: previous.incorrect + (isCorrect ? 0 : 1),
-      lastReviewed: now,
-    }
-
-    if (isCorrect) {
-      correctCount++
-    }
-
-    answeredCount++
-  }
+  const { nextCollection, correctCount, answeredCount } = applyQuizAnswers(
+    state.words,
+    answers.map((answer) => ({
+      id: answer.wordId,
+      correct: answer.correct,
+    })),
+  )
 
   // Do not count an empty or malformed quiz as a completed quiz.
   if (answeredCount === 0) return
@@ -394,8 +523,32 @@ export function recordQuizResult(answers: QuizAnswer[]) {
 
   commit({
     ...state,
-    words,
+    words: nextCollection,
     stats,
+  })
+}
+
+export function recordIdiomQuizResult(answers: IdiomQuizAnswer[]) {
+  const { nextCollection, correctCount, answeredCount } = applyQuizAnswers(
+    state.idiomProgress,
+    answers.map((answer) => ({
+      id: answer.idiomId,
+      correct: answer.correct,
+    })),
+  )
+
+  if (answeredCount === 0) return
+
+  const percent = Math.round((correctCount / answeredCount) * 100)
+
+  commit({
+    ...state,
+    idiomProgress: nextCollection,
+    idiomStats: {
+      totalQuizzes: state.idiomStats.totalQuizzes + 1,
+      quizPercentSum: state.idiomStats.quizPercentSum + percent,
+    },
+    stats: applyActivity(state.stats),
   })
 }
 
@@ -416,7 +569,7 @@ export function completeLesson(
 
     if (!wordId) continue
 
-    const previous = getWordProgress(words, wordId)
+    const previous = getTrackedProgress(words, wordId)
 
     words[wordId] = {
       ...previous,
@@ -445,58 +598,61 @@ export function completeLesson(
 // --- selectors ---------------------------------------------------------------
 
 export function averageScore(progress: ProgressState): number {
-  const { totalQuizzes, quizPercentSum } = progress.stats
+  return averageFromStats(progress.stats)
+}
 
-  if (totalQuizzes === 0) return 0
-
-  return Math.round(quizPercentSum / totalQuizzes)
+export function averageIdiomScore(progress: ProgressState): number {
+  return averageFromStats(progress.idiomStats)
 }
 
 export function knownWordsCount(progress: ProgressState): number {
-  return Object.values(progress.words).filter(
-    (word) => word.status === 'known',
-  ).length
+  return countKnown(progress.words)
+}
+
+export function knownIdiomsCount(progress: ProgressState): number {
+  return countKnown(progress.idiomProgress)
 }
 
 export function knownInCategory(
   progress: ProgressState,
   wordIds: string[],
 ): number {
-  return wordIds.reduce((count, id) => {
-    return count + (progress.words[id]?.status === 'known' ? 1 : 0)
-  }, 0)
+  return countKnownIds(progress.words, wordIds)
+}
+
+export function knownInIdiomCategory(
+  progress: ProgressState,
+  idiomIds: string[],
+): number {
+  return countKnownIds(progress.idiomProgress, idiomIds)
 }
 
 export function difficultWords(
   progress: ProgressState,
   limit = 5,
 ): DifficultWord[] {
-  const safeLimit = Number.isFinite(limit)
-    ? Math.max(0, Math.trunc(limit))
-    : Number.MAX_SAFE_INTEGER
+  return buildDifficultEntries(progress.words, limit).map(
+    (word) => ({
+      wordId: word.id,
+      correct: word.correct,
+      incorrect: word.incorrect,
+      percent: word.percent,
+    }),
+  )
+}
 
-  return Object.entries(progress.words)
-    .map(([wordId, word]) => {
-      const attempts = word.correct + word.incorrect
-
-      return {
-        wordId,
-        correct: word.correct,
-        incorrect: word.incorrect,
-        percent: attempts > 0 ? Math.round((word.correct / attempts) * 100) : 0,
-        attempts,
-      }
-    })
-    .filter((word) => word.attempts > 0)
-    .sort((a, b) => {
-      return (
-        a.percent - b.percent ||
-        b.incorrect - a.incorrect ||
-        b.attempts - a.attempts
-      )
-    })
-    .slice(0, safeLimit)
-    .map(({ attempts: _attempts, ...word }) => word)
+export function difficultIdioms(
+  progress: ProgressState,
+  limit = 5,
+): DifficultIdiom[] {
+  return buildDifficultEntries(progress.idiomProgress, limit).map(
+    (idiom) => ({
+      idiomId: idiom.id,
+      correct: idiom.correct,
+      incorrect: idiom.incorrect,
+      percent: idiom.percent,
+    }),
+  )
 }
 
 export function reviewWords(progress: ProgressState): DifficultWord[] {

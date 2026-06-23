@@ -35,7 +35,7 @@ function clamp(value: number, min: number, max: number) {
 }
 
 export function useSpeech() {
-  const [isSupported, setIsSupported] = useState(false)
+  const [isSupported] = useState(isSpeechSupported)
   const [isSpeaking, setIsSpeaking] = useState(false)
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([])
 
@@ -43,8 +43,6 @@ export function useSpeech() {
 
   useEffect(() => {
     if (!isSpeechSupported()) return
-
-    setIsSupported(true)
 
     const synth = window.speechSynthesis
 

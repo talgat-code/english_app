@@ -1,10 +1,13 @@
 import { useState } from 'react'
+import { getIdiomOfDay, type IdiomFilter } from './data/idioms'
 import { getLevelInfo } from './data/lessons'
 import {
   isStreakInterrupted,
   reviewWords,
   useProgress,
 } from './hooks/useProgress'
+import { useNotificationSettings } from './hooks/useNotifications'
+import { useReminderCheck } from './hooks/useReminderCheck'
 import AIHome from './pages/AIHome'
 import AITutor from './pages/AITutor'
 import AIWords from './pages/AIWords'
@@ -13,13 +16,17 @@ import Flashcards from './pages/Flashcards'
 import Games from './pages/Games'
 import Hangman from './pages/Hangman'
 import Home from './pages/Home'
+import IdiomQuiz from './pages/IdiomQuiz'
+import Idioms from './pages/Idioms'
 import IrregularVerbs from './pages/IrregularVerbs'
 import Lesson from './pages/Lesson'
 import LessonList from './pages/LessonList'
 import Levels from './pages/Levels'
 import MyWords from './pages/MyWords'
+import Onboarding from './pages/Onboarding'
 import Quiz from './pages/Quiz'
 import Review from './pages/Review'
+import Settings from './pages/Settings'
 import Stats from './pages/Stats'
 import WordBuilder from './pages/WordBuilder'
 import type { LessonLevel } from './types/lesson'
@@ -42,7 +49,10 @@ type Screen =
   | { name: 'my-words-quiz' }
   | { name: 'review' }
   | { name: 'stats' }
+  | { name: 'settings' }
   | { name: 'irregular-verbs' }
+  | { name: 'idioms'; category?: IdiomFilter; idiomId?: string }
+  | { name: 'idiom-quiz'; category?: IdiomFilter }
   | { name: 'flashcards'; categoryId: string }
   | { name: 'quiz'; categoryId: string }
   | { name: 'hangman'; categoryId: string }
@@ -53,17 +63,24 @@ type Tab = 'home' | 'lessons' | 'games' | 'ai' | 'stats'
 function App() {
   const [screen, setScreen] = useState<Screen>({ name: 'home' })
   const progress = useProgress()
+  const notificationSettings = useNotificationSettings()
   const hardWordCount = reviewWords(progress).length
   const streakInterrupted = isStreakInterrupted(progress)
   const nextLesson = nextAvailableLesson(progress)
   const currentLevel = nextLesson ? getLevelInfo(nextLesson.level) : undefined
+  const idiomOfDay = getIdiomOfDay()
+
+  useReminderCheck(progress.stats.lastActiveDate)
+
+  const appReady = notificationSettings.onboardingCompleted
 
   const showTabBar =
-    screen.name === 'home' ||
-    screen.name === 'levels' ||
-    screen.name === 'games' ||
-    screen.name === 'ai' ||
-    screen.name === 'stats'
+    appReady &&
+    (screen.name === 'home' ||
+      screen.name === 'levels' ||
+      screen.name === 'games' ||
+      screen.name === 'ai' ||
+      screen.name === 'stats')
 
   const activeTab: Tab =
     screen.name === 'stats'
@@ -87,17 +104,28 @@ function App() {
   return (
     <div className="min-h-screen bg-zinc-50 text-slate-900">
       <main className={`mx-auto w-full max-w-[480px] ${showTabBar ? 'pb-20' : ''}`}>
-        {screen.name === 'home' && (
+        {!appReady && <Onboarding onDone={() => setScreen({ name: 'home' })} />}
+
+        {appReady && screen.name === 'home' && (
           <Home
             hardWordCount={hardWordCount}
             streakInterrupted={streakInterrupted}
             nextLesson={nextLesson}
             currentLevel={currentLevel}
+            idiomOfDay={idiomOfDay}
             onContinueLesson={() => {
               if (nextLesson) setScreen({ name: 'lesson', lessonId: nextLesson.id })
             }}
             onLessons={() => setScreen({ name: 'levels' })}
             onVocabulary={() => setScreen({ name: 'categories' })}
+            onIdioms={() => setScreen({ name: 'idioms' })}
+            onOpenIdiomOfDay={() =>
+              setScreen({
+                name: 'idioms',
+                category: idiomOfDay.category,
+                idiomId: idiomOfDay.id,
+              })
+            }
             onReview={() => setScreen({ name: 'review' })}
             onAITutor={() => setScreen({ name: 'ai-tutor' })}
             onAIWords={() => setScreen({ name: 'ai-words' })}
@@ -105,13 +133,11 @@ function App() {
           />
         )}
 
-        {screen.name === 'levels' && (
-          <Levels
-            onSelectLevel={(level) => setScreen({ name: 'lesson-list', level })}
-          />
+        {appReady && screen.name === 'levels' && (
+          <Levels onSelectLevel={(level) => setScreen({ name: 'lesson-list', level })} />
         )}
 
-        {screen.name === 'lesson-list' && (
+        {appReady && screen.name === 'lesson-list' && (
           <LessonList
             level={screen.level}
             onBack={() => setScreen({ name: 'levels' })}
@@ -119,7 +145,7 @@ function App() {
           />
         )}
 
-        {screen.name === 'lesson' && (
+        {appReady && screen.name === 'lesson' && (
           <Lesson
             key={screen.lessonId}
             lessonId={screen.lessonId}
@@ -132,7 +158,7 @@ function App() {
           />
         )}
 
-        {screen.name === 'categories' && (
+        {appReady && screen.name === 'categories' && (
           <Categories
             onSelectCategory={(categoryId, mode) =>
               setScreen(
@@ -145,28 +171,58 @@ function App() {
           />
         )}
 
-        {screen.name === 'stats' && <Stats />}
-        {screen.name === 'review' && <Review />}
-        {screen.name === 'irregular-verbs' && (
+        {appReady && screen.name === 'stats' && (
+          <Stats onSettings={() => setScreen({ name: 'settings' })} />
+        )}
+
+        {appReady && screen.name === 'settings' && (
+          <Settings onBack={() => setScreen({ name: 'stats' })} />
+        )}
+
+        {appReady && screen.name === 'review' && <Review />}
+
+        {appReady && screen.name === 'irregular-verbs' && (
           <IrregularVerbs onBack={() => setScreen({ name: 'home' })} />
         )}
-        {screen.name === 'ai' && (
+
+        {appReady && screen.name === 'idioms' && (
+          <Idioms
+            key={`${screen.category ?? 'all'}:${screen.idiomId ?? 'list'}`}
+            initialCategory={screen.category}
+            initialExpandedIdiomId={screen.idiomId}
+            onBack={() => setScreen({ name: 'home' })}
+            onStartQuiz={(category) => setScreen({ name: 'idiom-quiz', category })}
+          />
+        )}
+
+        {appReady && screen.name === 'idiom-quiz' && (
+          <IdiomQuiz
+            category={screen.category}
+            onBack={() => setScreen({ name: 'idioms', category: screen.category })}
+            onHome={() => setScreen({ name: 'home' })}
+          />
+        )}
+
+        {appReady && screen.name === 'ai' && (
           <AIHome
             onTutor={() => setScreen({ name: 'ai-tutor' })}
             onWords={() => setScreen({ name: 'ai-words' })}
             onMyWords={() => setScreen({ name: 'my-words' })}
           />
         )}
-        {screen.name === 'ai-tutor' && (
+
+        {appReady && screen.name === 'ai-tutor' && (
           <AITutor onBack={() => setScreen({ name: 'ai' })} />
         )}
-        {screen.name === 'ai-words' && (
+
+        {appReady && screen.name === 'ai-words' && (
           <AIWords
             onBack={() => setScreen({ name: 'ai' })}
             onMyWords={() => setScreen({ name: 'my-words' })}
           />
         )}
-        {screen.name === 'my-words' && (
+
+        {appReady && screen.name === 'my-words' && (
           <MyWords
             onBack={() => setScreen({ name: 'ai' })}
             onFlashcards={() => setScreen({ name: 'my-words-flashcards' })}
@@ -174,7 +230,8 @@ function App() {
             onGenerate={() => setScreen({ name: 'ai-words' })}
           />
         )}
-        {screen.name === 'games' && (
+
+        {appReady && screen.name === 'games' && (
           <Games
             key={screen.game ?? 'menu'}
             initialGame={screen.game}
@@ -191,14 +248,14 @@ function App() {
           />
         )}
 
-        {screen.name === 'flashcards' && (
+        {appReady && screen.name === 'flashcards' && (
           <Flashcards
             categoryId={screen.categoryId}
             onBack={() => setScreen({ name: 'categories' })}
           />
         )}
 
-        {screen.name === 'quiz' && (
+        {appReady && screen.name === 'quiz' && (
           <Quiz
             categoryId={screen.categoryId}
             onExitToCategories={() => setScreen({ name: 'categories' })}
@@ -206,7 +263,7 @@ function App() {
           />
         )}
 
-        {screen.name === 'hangman' && (
+        {appReady && screen.name === 'hangman' && (
           <Hangman
             categoryId={screen.categoryId}
             onOtherCategory={() => setScreen({ name: 'games', game: 'hangman' })}
@@ -214,17 +271,15 @@ function App() {
           />
         )}
 
-        {screen.name === 'word-builder' && (
+        {appReady && screen.name === 'word-builder' && (
           <WordBuilder
             categoryId={screen.categoryId}
-            onOtherCategory={() =>
-              setScreen({ name: 'games', game: 'word-builder' })
-            }
+            onOtherCategory={() => setScreen({ name: 'games', game: 'word-builder' })}
             onGamesMenu={() => setScreen({ name: 'games' })}
           />
         )}
 
-        {screen.name === 'my-words-flashcards' && (
+        {appReady && screen.name === 'my-words-flashcards' && (
           <Flashcards
             customWords={getMyWords()}
             categoryTitle="Мои слова"
@@ -233,7 +288,7 @@ function App() {
           />
         )}
 
-        {screen.name === 'my-words-quiz' && (
+        {appReady && screen.name === 'my-words-quiz' && (
           <Quiz
             customWords={getMyWords()}
             categoryEmoji="💾"
