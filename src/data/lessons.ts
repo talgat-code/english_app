@@ -40,7 +40,15 @@ function word(
   example: string,
   exampleRu: string,
 ): Word {
-  return { id, english, russian, transcription, example, exampleRu }
+  return {
+    id,
+    english,
+    russian,
+    transcription,
+    example,
+    exampleRu,
+    difficulty: 'easy',
+  }
 }
 
 const coreLessons: Lesson[] = [

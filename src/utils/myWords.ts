@@ -38,6 +38,7 @@ export function addMyWord(generated: GeneratedWord): Word[] {
     transcription: generated.transcription.replace(/^\[|\]$/g, '').trim(),
     example: generated.example.trim(),
     exampleRu: generated.exampleTranslation.trim(),
+    difficulty: 'medium',
   }
   const next = [word, ...words]
   saveMyWords(next)
