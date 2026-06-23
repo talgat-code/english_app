@@ -26,7 +26,11 @@ function ProgressBar({ value }: { value: number }) {
   )
 }
 
-function Stats() {
+interface StatsProps {
+  onSettings: () => void
+}
+
+function Stats({ onSettings }: StatsProps) {
   const progress = useProgress()
 
   const known = knownWordsCount(progress)
@@ -36,13 +40,22 @@ function Stats() {
 
   return (
     <div className="flex min-h-screen w-full flex-col px-5 py-8">
-      <header className="mb-6">
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-          Статистика
-        </h1>
-        <p className="mt-1 text-sm text-slate-500">
-          Твой прогресс в изучении английского
-        </p>
+      <header className="mb-6 flex items-start justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+            Статистика
+          </h1>
+          <p className="mt-1 text-sm text-slate-500">
+            Твой прогресс в изучении английского
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={onSettings}
+          className="rounded-2xl border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+        >
+          Настройки
+        </button>
       </header>
 
       {/* Streak */}
