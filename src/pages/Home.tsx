@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import type { Idiom } from '../data/idioms'
 import type { LessonLevelInfo } from '../data/lessons'
 import type { Lesson } from '../types/lesson'
 
@@ -10,10 +11,13 @@ interface HomeProps {
   onContinueLesson: () => void
   onLessons: () => void
   onVocabulary: () => void
+  onIdioms: () => void
+  onOpenIdiomOfDay: () => void
   onReview: () => void
   onAITutor: () => void
   onAIWords: () => void
   onIrregularVerbs: () => void
+  idiomOfDay: Idiom
 }
 
 function Home({
@@ -24,10 +28,13 @@ function Home({
   onContinueLesson,
   onLessons,
   onVocabulary,
+  onIdioms,
+  onOpenIdiomOfDay,
   onReview,
   onAITutor,
   onAIWords,
   onIrregularVerbs,
+  idiomOfDay,
 }: HomeProps) {
   const banners = [
     ...(hardWordCount > 3
@@ -132,6 +139,30 @@ function Home({
         </button>
       </section>
 
+      <button
+        type="button"
+        onClick={onOpenIdiomOfDay}
+        className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-4 text-left transition-colors hover:bg-amber-100/70"
+      >
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <p className="text-xs font-semibold uppercase tracking-wide text-amber-600">
+              Идиома дня 💡
+            </p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950">
+              {idiomOfDay.phrase}
+            </h2>
+            <p className="mt-1 text-sm italic text-slate-400">
+              "{idiomOfDay.literal}"
+            </p>
+            <p className="mt-3 text-sm leading-relaxed text-slate-700">
+              {idiomOfDay.meaning}
+            </p>
+          </div>
+          <span className="text-sm text-amber-600">→</span>
+        </div>
+      </button>
+
       <section className="mt-4 overflow-hidden rounded-lg border border-slate-200 bg-white">
         <button
           type="button"
@@ -157,6 +188,21 @@ function Home({
             </span>
             <span className="mt-0.5 block text-xs text-slate-500">
               Карточки и квизы
+            </span>
+          </span>
+          <span className="text-sm text-slate-400">→</span>
+        </button>
+        <button
+          type="button"
+          onClick={onIdioms}
+          className="flex min-h-16 w-full items-center justify-between border-b border-slate-100 px-4 text-left transition-colors hover:bg-slate-50"
+        >
+          <span>
+            <span className="block text-sm font-semibold text-slate-950">
+              Идиомы
+            </span>
+            <span className="mt-0.5 block text-xs text-slate-500">
+              Живая речь, выражения и квиз по значениям
             </span>
           </span>
           <span className="text-sm text-slate-400">→</span>

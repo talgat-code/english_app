@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { getIdiomOfDay, type IdiomFilter } from './data/idioms'
 import { getLevelInfo } from './data/lessons'
 import {
   isStreakInterrupted,
@@ -15,6 +16,8 @@ import Flashcards from './pages/Flashcards'
 import Games from './pages/Games'
 import Hangman from './pages/Hangman'
 import Home from './pages/Home'
+import IdiomQuiz from './pages/IdiomQuiz'
+import Idioms from './pages/Idioms'
 import IrregularVerbs from './pages/IrregularVerbs'
 import Lesson from './pages/Lesson'
 import LessonList from './pages/LessonList'
@@ -48,6 +51,8 @@ type Screen =
   | { name: 'stats' }
   | { name: 'settings' }
   | { name: 'irregular-verbs' }
+  | { name: 'idioms'; category?: IdiomFilter; idiomId?: string }
+  | { name: 'idiom-quiz'; category?: IdiomFilter }
   | { name: 'flashcards'; categoryId: string }
   | { name: 'quiz'; categoryId: string }
   | { name: 'hangman'; categoryId: string }
@@ -63,6 +68,7 @@ function App() {
   const streakInterrupted = isStreakInterrupted(progress)
   const nextLesson = nextAvailableLesson(progress)
   const currentLevel = nextLesson ? getLevelInfo(nextLesson.level) : undefined
+  const idiomOfDay = getIdiomOfDay()
 
   useReminderCheck(progress.stats.lastActiveDate)
 
@@ -106,11 +112,20 @@ function App() {
             streakInterrupted={streakInterrupted}
             nextLesson={nextLesson}
             currentLevel={currentLevel}
+            idiomOfDay={idiomOfDay}
             onContinueLesson={() => {
               if (nextLesson) setScreen({ name: 'lesson', lessonId: nextLesson.id })
             }}
             onLessons={() => setScreen({ name: 'levels' })}
             onVocabulary={() => setScreen({ name: 'categories' })}
+            onIdioms={() => setScreen({ name: 'idioms' })}
+            onOpenIdiomOfDay={() =>
+              setScreen({
+                name: 'idioms',
+                category: idiomOfDay.category,
+                idiomId: idiomOfDay.id,
+              })
+            }
             onReview={() => setScreen({ name: 'review' })}
             onAITutor={() => setScreen({ name: 'ai-tutor' })}
             onAIWords={() => setScreen({ name: 'ai-words' })}
@@ -168,6 +183,24 @@ function App() {
 
         {appReady && screen.name === 'irregular-verbs' && (
           <IrregularVerbs onBack={() => setScreen({ name: 'home' })} />
+        )}
+
+        {appReady && screen.name === 'idioms' && (
+          <Idioms
+            key={`${screen.category ?? 'all'}:${screen.idiomId ?? 'list'}`}
+            initialCategory={screen.category}
+            initialExpandedIdiomId={screen.idiomId}
+            onBack={() => setScreen({ name: 'home' })}
+            onStartQuiz={(category) => setScreen({ name: 'idiom-quiz', category })}
+          />
+        )}
+
+        {appReady && screen.name === 'idiom-quiz' && (
+          <IdiomQuiz
+            category={screen.category}
+            onBack={() => setScreen({ name: 'idioms', category: screen.category })}
+            onHome={() => setScreen({ name: 'home' })}
+          />
         )}
 
         {appReady && screen.name === 'ai' && (
