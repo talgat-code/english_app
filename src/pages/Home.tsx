@@ -12,6 +12,7 @@ interface HomeProps {
   onLessons: () => void
   onVocabulary: () => void
   onIdioms: () => void
+  onPhrasalVerbs: () => void
   onOpenIdiomOfDay: () => void
   onReview: () => void
   onAITutor: () => void
@@ -29,6 +30,7 @@ function Home({
   onLessons,
   onVocabulary,
   onIdioms,
+  onPhrasalVerbs,
   onOpenIdiomOfDay,
   onReview,
   onAITutor,
@@ -203,6 +205,21 @@ function Home({
             </span>
             <span className="mt-0.5 block text-xs text-slate-500">
               Живая речь, выражения и квиз по значениям
+            </span>
+          </span>
+          <span className="text-sm text-slate-400">→</span>
+        </button>
+        <button
+          type="button"
+          onClick={onPhrasalVerbs}
+          className="flex min-h-16 w-full items-center justify-between border-b border-slate-100 px-4 text-left transition-colors hover:bg-slate-50"
+        >
+          <span>
+            <span className="block text-sm font-semibold text-slate-950">
+              Фразовые глаголы
+            </span>
+            <span className="mt-0.5 block text-xs text-slate-500">
+              Give up, look for, get over и квиз по значениям
             </span>
           </span>
           <span className="text-sm text-slate-400">→</span>

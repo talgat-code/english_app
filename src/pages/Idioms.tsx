@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import CategoryChips from '../components/CategoryChips'
+import VocabularyTabs from '../components/VocabularyTabs'
 import {
   getIdiomById,
   getIdiomsByCategory,
@@ -18,6 +20,8 @@ interface IdiomsProps {
   initialCategory?: IdiomFilter
   initialExpandedIdiomId?: string
   onBack: () => void
+  onWords: () => void
+  onPhrasalVerbs: () => void
   onStartQuiz: (category: IdiomFilter) => void
 }
 
@@ -25,6 +29,8 @@ function Idioms({
   initialCategory = 'all',
   initialExpandedIdiomId,
   onBack,
+  onWords,
+  onPhrasalVerbs,
   onStartQuiz,
 }: IdiomsProps) {
   const initialExpandedIdiom = initialExpandedIdiomId
@@ -99,6 +105,13 @@ function Idioms({
         </div>
       </header>
 
+      <VocabularyTabs
+        active="idioms"
+        onWords={onWords}
+        onIdioms={() => undefined}
+        onPhrasalVerbs={onPhrasalVerbs}
+      />
+
       <section className="mb-5 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
         <div className="flex items-center justify-between gap-3">
           <div>
@@ -118,36 +131,11 @@ function Idioms({
         </div>
       </section>
 
-      <div className="mb-5 flex flex-wrap gap-2">
-        <button
-          type="button"
-          onClick={() => handleCategoryChange('all')}
-          className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
-            activeCategory === 'all'
-              ? 'bg-slate-950 text-white'
-              : 'bg-white text-slate-600 shadow-sm ring-1 ring-slate-200 hover:bg-slate-50'
-          }`}
-        >
-          Все
-        </button>
-        {idiomCategories.map((category) => {
-          const active = category.id === activeCategory
-          return (
-            <button
-              key={category.id}
-              type="button"
-              onClick={() => handleCategoryChange(category.id)}
-              className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
-                active
-                  ? 'bg-slate-950 text-white'
-                  : 'bg-white text-slate-600 shadow-sm ring-1 ring-slate-200 hover:bg-slate-50'
-              }`}
-            >
-              {category.label}
-            </button>
-          )
-        })}
-      </div>
+      <CategoryChips
+        active={activeCategory}
+        categories={idiomCategories}
+        onChange={handleCategoryChange}
+      />
 
       <ul className="flex flex-col gap-3">
         {visibleIdioms.map((idiom) => {

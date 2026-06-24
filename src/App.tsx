@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { getIdiomOfDay, type IdiomFilter } from './data/idioms'
 import { getLevelInfo } from './data/lessons'
+import type { PhrasalVerbFilter } from './data/phrasalVerbs'
 import {
   isStreakInterrupted,
   reviewWords,
@@ -24,6 +25,8 @@ import LessonList from './pages/LessonList'
 import Levels from './pages/Levels'
 import MyWords from './pages/MyWords'
 import Onboarding from './pages/Onboarding'
+import PhrasalVerbQuiz from './pages/PhrasalVerbQuiz'
+import PhrasalVerbs from './pages/PhrasalVerbs'
 import Quiz from './pages/Quiz'
 import Review from './pages/Review'
 import Settings from './pages/Settings'
@@ -53,6 +56,8 @@ type Screen =
   | { name: 'irregular-verbs' }
   | { name: 'idioms'; category?: IdiomFilter; idiomId?: string }
   | { name: 'idiom-quiz'; category?: IdiomFilter }
+  | { name: 'phrasal-verbs'; category?: PhrasalVerbFilter }
+  | { name: 'phrasal-verb-quiz'; category?: PhrasalVerbFilter }
   | { name: 'flashcards'; categoryId: string }
   | { name: 'quiz'; categoryId: string }
   | { name: 'hangman'; categoryId: string }
@@ -119,6 +124,7 @@ function App() {
             onLessons={() => setScreen({ name: 'levels' })}
             onVocabulary={() => setScreen({ name: 'categories' })}
             onIdioms={() => setScreen({ name: 'idioms' })}
+            onPhrasalVerbs={() => setScreen({ name: 'phrasal-verbs' })}
             onOpenIdiomOfDay={() =>
               setScreen({
                 name: 'idioms',
@@ -168,6 +174,8 @@ function App() {
               )
             }
             onBack={() => setScreen({ name: 'home' })}
+            onIdioms={() => setScreen({ name: 'idioms' })}
+            onPhrasalVerbs={() => setScreen({ name: 'phrasal-verbs' })}
           />
         )}
 
@@ -191,6 +199,8 @@ function App() {
             initialCategory={screen.category}
             initialExpandedIdiomId={screen.idiomId}
             onBack={() => setScreen({ name: 'home' })}
+            onWords={() => setScreen({ name: 'categories' })}
+            onPhrasalVerbs={() => setScreen({ name: 'phrasal-verbs' })}
             onStartQuiz={(category) => setScreen({ name: 'idiom-quiz', category })}
           />
         )}
@@ -199,6 +209,29 @@ function App() {
           <IdiomQuiz
             category={screen.category}
             onBack={() => setScreen({ name: 'idioms', category: screen.category })}
+            onHome={() => setScreen({ name: 'home' })}
+          />
+        )}
+
+        {appReady && screen.name === 'phrasal-verbs' && (
+          <PhrasalVerbs
+            key={screen.category ?? 'all'}
+            initialCategory={screen.category}
+            onBack={() => setScreen({ name: 'home' })}
+            onWords={() => setScreen({ name: 'categories' })}
+            onIdioms={() => setScreen({ name: 'idioms' })}
+            onStartQuiz={(category) =>
+              setScreen({ name: 'phrasal-verb-quiz', category })
+            }
+          />
+        )}
+
+        {appReady && screen.name === 'phrasal-verb-quiz' && (
+          <PhrasalVerbQuiz
+            category={screen.category}
+            onBack={() =>
+              setScreen({ name: 'phrasal-verbs', category: screen.category })
+            }
             onHome={() => setScreen({ name: 'home' })}
           />
         )}

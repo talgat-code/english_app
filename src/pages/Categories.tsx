@@ -1,3 +1,4 @@
+import VocabularyTabs from '../components/VocabularyTabs'
 import { categories } from '../data/words'
 import { knownInCategory, useProgress } from '../hooks/useProgress'
 
@@ -6,9 +7,16 @@ export type StudyMode = 'flashcards' | 'quiz'
 interface CategoriesProps {
   onSelectCategory: (categoryId: string, mode: StudyMode) => void
   onBack: () => void
+  onIdioms: () => void
+  onPhrasalVerbs: () => void
 }
 
-function Categories({ onSelectCategory, onBack }: CategoriesProps) {
+function Categories({
+  onSelectCategory,
+  onBack,
+  onIdioms,
+  onPhrasalVerbs,
+}: CategoriesProps) {
   const progress = useProgress()
 
   return (
@@ -28,6 +36,13 @@ function Categories({ onSelectCategory, onBack }: CategoriesProps) {
           Учи слова карточками или проверяй себя квизом
         </p>
       </header>
+
+      <VocabularyTabs
+        active="words"
+        onWords={() => undefined}
+        onIdioms={onIdioms}
+        onPhrasalVerbs={onPhrasalVerbs}
+      />
 
       <ul className="flex flex-col gap-3">
         {categories.map((category) => {
