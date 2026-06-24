@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { getIdiomOfDay, type IdiomFilter } from './data/idioms'
 import { getLevelInfo } from './data/lessons'
 import type { PhrasalVerbFilter } from './data/phrasalVerbs'
@@ -106,9 +106,12 @@ function App() {
     else setScreen({ name: 'home' })
   }
 
+  const screenKey = Object.values(screen).join(':')
+
   return (
-    <div className="min-h-screen bg-zinc-50 text-slate-900">
-      <main className={`mx-auto w-full max-w-[480px] ${showTabBar ? 'pb-20' : ''}`}>
+    <div className="min-h-screen bg-background text-text-primary">
+      <main className={`mx-auto w-full max-w-[480px] ${showTabBar ? 'pb-tab-safe' : 'pb-safe'}`}>
+        <div key={screenKey} className="page-transition">
         {!appReady && <Onboarding onDone={() => setScreen({ name: 'home' })} />}
 
         {appReady && screen.name === 'home' && (
@@ -329,6 +332,7 @@ function App() {
             onExitToHome={() => setScreen({ name: 'ai' })}
           />
         )}
+        </div>
       </main>
 
       {showTabBar && <TabBar active={activeTab} onNavigate={goToTab} />}
@@ -351,8 +355,8 @@ const TABS: { id: Tab; label: string }[] = [
 
 function TabBar({ active, onNavigate }: TabBarProps) {
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-[480px] border-t border-slate-200 bg-white/95 backdrop-blur">
-      <div className="flex">
+    <nav className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-[480px] border-t border-border bg-surface/95 backdrop-blur">
+      <div className="flex gap-1 p-1 pb-[calc(0.25rem+env(safe-area-inset-bottom))]">
         {TABS.map((tab) => {
           const isActive = tab.id === active
           return (
@@ -361,12 +365,14 @@ function TabBar({ active, onNavigate }: TabBarProps) {
               type="button"
               onClick={() => onNavigate(tab.id)}
               aria-current={isActive ? 'page' : undefined}
-              className={`relative flex min-h-14 min-w-0 flex-1 items-center justify-center px-1 text-[11px] font-semibold leading-tight transition-colors ${
-                isActive ? 'text-slate-950' : 'text-slate-400 hover:text-slate-600'
+              className={`relative flex min-h-14 min-w-0 flex-1 items-center justify-center rounded-2xl px-1 text-[11px] font-semibold leading-tight transition-colors ${
+                isActive
+                  ? 'bg-primary-soft text-primary'
+                  : 'text-text-tertiary hover:bg-surface-muted hover:text-text-secondary'
               }`}
             >
               {isActive && (
-                <span className="absolute top-0 h-0.5 w-7 rounded-full bg-slate-950" />
+                <span className="absolute top-1.5 h-0.5 w-7 rounded-full bg-primary" />
               )}
               <span>{tab.label}</span>
             </button>

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+﻿import { useEffect, useRef, useState } from 'react'
 import type { AiMessage } from '../types/api'
 import { askOpenAI } from '../utils/openaiApi'
 
@@ -87,23 +87,23 @@ function AITutor({ onBack }: AITutorProps) {
 
   return (
     <div className="flex min-h-screen w-full flex-col">
-      <header className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white/95 px-5 py-4 backdrop-blur">
+      <header className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-surface/95 px-5 py-4 backdrop-blur">
         <button
           type="button"
           onClick={onBack}
-          className="text-sm font-medium text-slate-500 hover:text-slate-800"
+          className="text-sm font-medium text-text-secondary hover:text-text-primary"
         >
           ← AI
         </button>
         <div className="text-center">
-          <h1 className="font-bold text-slate-900">AI-репетитор 🤖</h1>
-          <p className="text-xs text-emerald-600">GPT</p>
+          <h1 className="font-bold text-text-primary">AI-репетитор 🤖</h1>
+          <p className="text-xs text-success">GPT</p>
         </div>
         <button
           type="button"
           onClick={clearChat}
           disabled={messages.length === 0 || loading}
-          className="text-xs font-semibold text-slate-400 hover:text-rose-500 disabled:opacity-40"
+          className="text-xs font-semibold text-text-tertiary hover:text-error disabled:opacity-40"
         >
           Очистить
         </button>
@@ -113,8 +113,8 @@ function AITutor({ onBack }: AITutorProps) {
         {messages.length === 0 && (
           <div className="mx-auto mt-16 max-w-xs text-center">
             <span className="text-5xl">👋</span>
-            <h2 className="mt-4 text-xl font-bold text-slate-900">Задай вопрос</h2>
-            <p className="mt-2 text-sm text-slate-500">
+            <h2 className="mt-4 text-xl font-bold text-text-primary">Задай вопрос</h2>
+            <p className="mt-2 text-sm text-text-secondary">
               Я объясню грамматику и помогу разобраться с английским.
             </p>
           </div>
@@ -125,8 +125,8 @@ function AITutor({ onBack }: AITutorProps) {
             key={message.id}
             className={`max-w-[88%] whitespace-pre-wrap rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm ${
               message.role === 'user'
-                ? 'ml-auto rounded-br-md bg-indigo-600 text-white'
-                : 'mr-auto rounded-bl-md border border-slate-100 bg-white text-slate-700'
+                ? 'ml-auto rounded-br-md bg-primary text-white'
+                : 'mr-auto rounded-bl-md border border-border-subtle bg-surface text-text-secondary'
             }`}
           >
             {message.content}
@@ -134,7 +134,7 @@ function AITutor({ onBack }: AITutorProps) {
         ))}
 
         {loading && (
-          <div className="mr-auto flex h-11 items-center gap-1 rounded-2xl rounded-bl-md border border-slate-100 bg-white px-4 shadow-sm">
+          <div className="mr-auto flex h-11 items-center gap-1 rounded-2xl rounded-bl-md border border-border-subtle bg-surface px-4 shadow-sm">
             <span className="ai-thinking-dot" />
             <span className="ai-thinking-dot" />
             <span className="ai-thinking-dot" />
@@ -142,14 +142,14 @@ function AITutor({ onBack }: AITutorProps) {
         )}
 
         {error && (
-          <p className="rounded-2xl border border-rose-100 bg-rose-50 p-3 text-sm text-rose-600">
+          <p className="rounded-2xl border border-error-border bg-error-soft p-3 text-sm text-error">
             {error}
           </p>
         )}
         <div ref={endRef} />
       </div>
 
-      <footer className="sticky bottom-0 border-t border-slate-200 bg-white px-4 py-3">
+      <footer className="sticky bottom-0 border-t border-border bg-surface px-4 py-3">
         <form
           onSubmit={(event) => {
             event.preventDefault()
@@ -168,12 +168,12 @@ function AITutor({ onBack }: AITutorProps) {
             }}
             rows={1}
             placeholder="Спроси про английский..."
-            className="min-h-12 flex-1 resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition-colors focus:border-indigo-400"
+            className="min-h-12 flex-1 resize-none rounded-2xl border border-border bg-surface-muted px-4 py-3 text-sm outline-none transition-colors focus:border-primary"
           />
           <button
             type="submit"
             disabled={!input.trim() || loading}
-            className="h-12 min-w-12 rounded-2xl bg-indigo-600 px-4 font-bold text-white transition-all active:scale-95 disabled:opacity-40"
+            className="h-12 min-w-12 rounded-2xl bg-primary px-4 font-bold text-white transition-all active:scale-95 disabled:opacity-40"
             aria-label="Отправить"
           >
             ↑
@@ -186,7 +186,7 @@ function AITutor({ onBack }: AITutorProps) {
               type="button"
               onClick={() => void sendMessage(question)}
               disabled={loading}
-              className="shrink-0 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-2 text-xs font-medium text-indigo-700 disabled:opacity-40"
+              className="shrink-0 rounded-full border border-primary-border bg-primary-soft px-3 py-2 text-xs font-medium text-primary disabled:opacity-40"
             >
               {question}
             </button>

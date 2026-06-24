@@ -1,4 +1,4 @@
-import { getIdiomsByCategory, idiomCategories, totalIdiomCount } from '../data/idioms'
+﻿import { getIdiomsByCategory, idiomCategories, totalIdiomCount } from '../data/idioms'
 import {
   getPhrasalVerbsByCategory,
   phrasalVerbCategories,
@@ -29,9 +29,9 @@ function dayWord(n: number): string {
 
 function ProgressBar({ value }: { value: number }) {
   return (
-    <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200">
+    <div className="h-2 w-full overflow-hidden rounded-full bg-border">
       <div
-        className="h-full rounded-full bg-indigo-600 transition-all duration-500 ease-out"
+        className="h-full rounded-full bg-primary transition-all duration-entrance ease-out"
         style={{ width: `${value}%` }}
       />
     </div>
@@ -55,32 +55,32 @@ function Stats({ onSettings }: StatsProps) {
   const hard = difficultWords(progress, 5)
 
   return (
-    <div className="flex min-h-screen w-full flex-col px-5 py-8">
+    <div className="flex min-h-screen w-full flex-col px-4 py-8">
       <header className="mb-6 flex items-start justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-2xl font-bold tracking-tight text-text-primary">
             Статистика
           </h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-text-secondary">
             Твой прогресс в изучении английского
           </p>
         </div>
         <button
           type="button"
           onClick={onSettings}
-          className="rounded-2xl border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+          className="rounded-2xl border border-border px-3 py-2 text-xs font-semibold text-text-secondary transition-colors hover:bg-surface-muted"
         >
           Настройки
         </button>
       </header>
 
       {/* Streak */}
-      <div className="mb-6 flex flex-col items-center rounded-3xl border border-orange-100 bg-gradient-to-b from-orange-50 to-white p-8 text-center shadow-sm">
+      <div className="mb-6 flex flex-col items-center rounded-3xl border border-warning-border bg-gradient-to-b from-warning-soft to-surface p-8 text-center shadow-sm">
         <span className="text-6xl">🔥</span>
-        <p className="mt-2 text-4xl font-bold tracking-tight text-orange-600">
+        <p className="mt-2 text-4xl font-bold tracking-tight text-warning">
           {streak}
         </p>
-        <p className="mt-1 text-sm font-medium text-slate-500">
+        <p className="mt-1 text-sm font-medium text-text-secondary">
           {streak > 0
             ? `${dayWord(streak)} подряд`
             : 'Начни заниматься сегодня!'}
@@ -89,51 +89,51 @@ function Stats({ onSettings }: StatsProps) {
 
       {/* Overall progress */}
       <section className="mb-6">
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-400">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-text-tertiary">
           Общий прогресс
         </h2>
         <div className="grid grid-cols-3 gap-3">
-          <div className="flex flex-col items-center rounded-2xl border border-slate-100 bg-white p-4 text-center shadow-sm">
-            <span className="text-2xl font-bold text-indigo-600">{known}</span>
-            <span className="mt-1 text-xs text-slate-400">из {totalWordCount}</span>
-            <span className="mt-1 text-xs font-medium text-slate-500">Слов изучено</span>
+          <div className="flex flex-col items-center rounded-2xl border border-border-subtle bg-surface p-4 text-center shadow-sm">
+            <span className="text-2xl font-bold text-primary">{known}</span>
+            <span className="mt-1 text-xs text-text-tertiary">из {totalWordCount}</span>
+            <span className="mt-1 text-xs font-medium text-text-secondary">Слов изучено</span>
           </div>
-          <div className="flex flex-col items-center rounded-2xl border border-slate-100 bg-white p-4 text-center shadow-sm">
-            <span className="text-2xl font-bold text-indigo-600">
+          <div className="flex flex-col items-center rounded-2xl border border-border-subtle bg-surface p-4 text-center shadow-sm">
+            <span className="text-2xl font-bold text-primary">
               {progress.stats.totalQuizzes}
             </span>
-            <span className="mt-1 text-xs text-slate-400">&nbsp;</span>
-            <span className="mt-1 text-xs font-medium text-slate-500">Квизов пройдено</span>
+            <span className="mt-1 text-xs text-text-tertiary">&nbsp;</span>
+            <span className="mt-1 text-xs font-medium text-text-secondary">Квизов пройдено</span>
           </div>
-          <div className="flex flex-col items-center rounded-2xl border border-slate-100 bg-white p-4 text-center shadow-sm">
-            <span className="text-2xl font-bold text-indigo-600">{average}%</span>
-            <span className="mt-1 text-xs text-slate-400">&nbsp;</span>
-            <span className="mt-1 text-xs font-medium text-slate-500">Средний результат</span>
+          <div className="flex flex-col items-center rounded-2xl border border-border-subtle bg-surface p-4 text-center shadow-sm">
+            <span className="text-2xl font-bold text-primary">{average}%</span>
+            <span className="mt-1 text-xs text-text-tertiary">&nbsp;</span>
+            <span className="mt-1 text-xs font-medium text-text-secondary">Средний результат</span>
           </div>
         </div>
       </section>
 
       <section className="mb-6">
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-400">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-text-tertiary">
           Идиомы
         </h2>
         <div className="grid grid-cols-3 gap-3">
-          <div className="flex flex-col items-center rounded-2xl border border-slate-100 bg-white p-4 text-center shadow-sm">
-            <span className="text-2xl font-bold text-amber-600">{knownIdioms}</span>
-            <span className="mt-1 text-xs text-slate-400">из {totalIdiomCount}</span>
-            <span className="mt-1 text-xs font-medium text-slate-500">Выучено</span>
+          <div className="flex flex-col items-center rounded-2xl border border-border-subtle bg-surface p-4 text-center shadow-sm">
+            <span className="text-2xl font-bold text-warning">{knownIdioms}</span>
+            <span className="mt-1 text-xs text-text-tertiary">из {totalIdiomCount}</span>
+            <span className="mt-1 text-xs font-medium text-text-secondary">Выучено</span>
           </div>
-          <div className="flex flex-col items-center rounded-2xl border border-slate-100 bg-white p-4 text-center shadow-sm">
-            <span className="text-2xl font-bold text-amber-600">
+          <div className="flex flex-col items-center rounded-2xl border border-border-subtle bg-surface p-4 text-center shadow-sm">
+            <span className="text-2xl font-bold text-warning">
               {progress.idiomStats.totalQuizzes}
             </span>
-            <span className="mt-1 text-xs text-slate-400">&nbsp;</span>
-            <span className="mt-1 text-xs font-medium text-slate-500">Квизов</span>
+            <span className="mt-1 text-xs text-text-tertiary">&nbsp;</span>
+            <span className="mt-1 text-xs font-medium text-text-secondary">Квизов</span>
           </div>
-          <div className="flex flex-col items-center rounded-2xl border border-slate-100 bg-white p-4 text-center shadow-sm">
-            <span className="text-2xl font-bold text-amber-600">{idiomAverage}%</span>
-            <span className="mt-1 text-xs text-slate-400">&nbsp;</span>
-            <span className="mt-1 text-xs font-medium text-slate-500">Средний результат</span>
+          <div className="flex flex-col items-center rounded-2xl border border-border-subtle bg-surface p-4 text-center shadow-sm">
+            <span className="text-2xl font-bold text-warning">{idiomAverage}%</span>
+            <span className="mt-1 text-xs text-text-tertiary">&nbsp;</span>
+            <span className="mt-1 text-xs font-medium text-text-secondary">Средний результат</span>
           </div>
         </div>
 
@@ -147,14 +147,14 @@ function Stats({ onSettings }: StatsProps) {
             return (
               <li
                 key={category.id}
-                className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"
+                className="rounded-2xl border border-border-subtle bg-surface p-4 shadow-sm"
               >
                 <div className="mb-2 flex items-center justify-between">
-                  <span className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+                  <span className="flex items-center gap-2 text-sm font-semibold text-text-primary">
                     <span className="text-lg">{category.emoji}</span>
                     {category.label}
                   </span>
-                  <span className="text-xs font-medium text-slate-500">
+                  <span className="text-xs font-medium text-text-secondary">
                     {learned} / {total}
                   </span>
                 </div>
@@ -166,32 +166,32 @@ function Stats({ onSettings }: StatsProps) {
       </section>
 
       <section className="mb-6">
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-400">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-text-tertiary">
           Фразовые глаголы
         </h2>
         <div className="grid grid-cols-3 gap-3">
-          <div className="flex flex-col items-center rounded-2xl border border-slate-100 bg-white p-4 text-center shadow-sm">
-            <span className="text-2xl font-bold text-emerald-600">
+          <div className="flex flex-col items-center rounded-2xl border border-border-subtle bg-surface p-4 text-center shadow-sm">
+            <span className="text-2xl font-bold text-success">
               {knownPhrasalVerbs}
             </span>
-            <span className="mt-1 text-xs text-slate-400">
+            <span className="mt-1 text-xs text-text-tertiary">
               из {totalPhrasalVerbCount}
             </span>
-            <span className="mt-1 text-xs font-medium text-slate-500">Выучено</span>
+            <span className="mt-1 text-xs font-medium text-text-secondary">Выучено</span>
           </div>
-          <div className="flex flex-col items-center rounded-2xl border border-slate-100 bg-white p-4 text-center shadow-sm">
-            <span className="text-2xl font-bold text-emerald-600">
+          <div className="flex flex-col items-center rounded-2xl border border-border-subtle bg-surface p-4 text-center shadow-sm">
+            <span className="text-2xl font-bold text-success">
               {progress.phrasalVerbStats.totalQuizzes}
             </span>
-            <span className="mt-1 text-xs text-slate-400">&nbsp;</span>
-            <span className="mt-1 text-xs font-medium text-slate-500">Квизов</span>
+            <span className="mt-1 text-xs text-text-tertiary">&nbsp;</span>
+            <span className="mt-1 text-xs font-medium text-text-secondary">Квизов</span>
           </div>
-          <div className="flex flex-col items-center rounded-2xl border border-slate-100 bg-white p-4 text-center shadow-sm">
-            <span className="text-2xl font-bold text-emerald-600">
+          <div className="flex flex-col items-center rounded-2xl border border-border-subtle bg-surface p-4 text-center shadow-sm">
+            <span className="text-2xl font-bold text-success">
               {phrasalVerbAverage}%
             </span>
-            <span className="mt-1 text-xs text-slate-400">&nbsp;</span>
-            <span className="mt-1 text-xs font-medium text-slate-500">
+            <span className="mt-1 text-xs text-text-tertiary">&nbsp;</span>
+            <span className="mt-1 text-xs font-medium text-text-secondary">
               Средний результат
             </span>
           </div>
@@ -209,14 +209,14 @@ function Stats({ onSettings }: StatsProps) {
             return (
               <li
                 key={category.id}
-                className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"
+                className="rounded-2xl border border-border-subtle bg-surface p-4 shadow-sm"
               >
                 <div className="mb-2 flex items-center justify-between">
-                  <span className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+                  <span className="flex items-center gap-2 text-sm font-semibold text-text-primary">
                     <span className="text-lg">{category.emoji}</span>
                     {category.label}
                   </span>
-                  <span className="text-xs font-medium text-slate-500">
+                  <span className="text-xs font-medium text-text-secondary">
                     {learned} / {total}
                   </span>
                 </div>
@@ -229,7 +229,7 @@ function Stats({ onSettings }: StatsProps) {
 
       {/* Per-category progress */}
       <section className="mb-6">
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-400">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-text-tertiary">
           Прогресс по категориям
         </h2>
         <ul className="flex flex-col gap-3">
@@ -241,14 +241,14 @@ function Stats({ onSettings }: StatsProps) {
             return (
               <li
                 key={category.id}
-                className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"
+                className="rounded-2xl border border-border-subtle bg-surface p-4 shadow-sm"
               >
                 <div className="mb-2 flex items-center justify-between">
-                  <span className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+                  <span className="flex items-center gap-2 text-sm font-semibold text-text-primary">
                     <span className="text-lg">{category.emoji}</span>
                     {category.title}
                   </span>
-                  <span className="text-xs font-medium text-slate-500">
+                  <span className="text-xs font-medium text-text-secondary">
                     {learned} / {total}
                   </span>
                 </div>
@@ -261,14 +261,20 @@ function Stats({ onSettings }: StatsProps) {
 
       {/* Difficult words */}
       <section>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-400">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-text-tertiary">
           Сложные слова
         </h2>
         {hard.length === 0 ? (
-          <p className="rounded-2xl border border-dashed border-slate-200 bg-white p-5 text-center text-sm text-slate-400">
-            Пройди несколько квизов — здесь появятся слова, которые стоит
-            повторить.
-          </p>
+          <div className="empty-state">
+            <span className="text-5xl">🌱</span>
+            <h3 className="mt-3 text-base font-bold text-text-primary">
+              Сложных слов пока нет
+            </h3>
+            <p className="mt-2 text-sm text-text-secondary">
+              Пройди несколько квизов — здесь появятся слова, которые стоит
+              повторить.
+            </p>
+          </div>
         ) : (
           <ul className="flex flex-col gap-2">
             {hard.map((item) => {
@@ -277,19 +283,19 @@ function Stats({ onSettings }: StatsProps) {
               return (
                 <li
                   key={item.wordId}
-                  className="flex items-center justify-between rounded-2xl border border-slate-100 bg-white px-4 py-3 shadow-sm"
+                  className="flex items-center justify-between rounded-2xl border border-border-subtle bg-surface px-4 py-3 shadow-sm"
                 >
                   <span className="flex flex-col">
-                    <span className="font-semibold text-slate-900">
+                    <span className="font-semibold text-text-primary">
                       {word.english}
                     </span>
-                    <span className="text-sm text-slate-500">{word.russian}</span>
+                    <span className="text-sm text-text-secondary">{word.russian}</span>
                   </span>
                   <span className="flex flex-col items-end">
-                    <span className="text-sm font-bold text-rose-600">
+                    <span className="text-sm font-bold text-error">
                       {item.percent}%
                     </span>
-                    <span className="text-xs text-slate-400">
+                    <span className="text-xs text-text-tertiary">
                       верных
                     </span>
                   </span>

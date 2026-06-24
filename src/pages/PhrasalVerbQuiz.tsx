@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+﻿import { useEffect, useRef, useState } from 'react'
 import {
   getPhrasalVerbsByCategory,
   type PhrasalVerb,
@@ -26,10 +26,10 @@ interface PhrasalVerbMistake {
 }
 
 function getResultMessage(percent: number): { title: string; tone: string } {
-  if (percent >= 90) return { title: 'Отличный результат', tone: 'text-emerald-600' }
-  if (percent >= 70) return { title: 'Очень хорошо', tone: 'text-indigo-600' }
-  if (percent >= 50) return { title: 'Неплохо, но можно лучше', tone: 'text-amber-600' }
-  return { title: 'Стоит повторить ещё раз', tone: 'text-rose-600' }
+  if (percent >= 90) return { title: 'Отличный результат', tone: 'text-success' }
+  if (percent >= 70) return { title: 'Очень хорошо', tone: 'text-primary' }
+  if (percent >= 50) return { title: 'Неплохо, но можно лучше', tone: 'text-warning' }
+  return { title: 'Стоит повторить ещё раз', tone: 'text-error' }
 }
 
 function PhrasalVerbQuiz({
@@ -77,14 +77,20 @@ function PhrasalVerbQuiz({
 
   if (pool.length === 0 || questions.length === 0) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center px-6 text-center">
-        <p className="text-slate-500">
-          Не удалось собрать квиз по фразовым глаголам.
-        </p>
+      <div className="flex min-h-screen flex-col items-center justify-center px-4 text-center">
+        <div className="empty-state w-full">
+          <span className="text-6xl">🔗</span>
+          <h1 className="mt-4 text-xl font-bold text-text-primary">
+            Квиз пока недоступен
+          </h1>
+          <p className="mt-2 text-sm text-text-secondary">
+            Не удалось собрать вопросы по фразовым глаголам.
+          </p>
+        </div>
         <button
           type="button"
           onClick={onBack}
-          className="mt-4 min-h-12 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white"
+          className="mt-4 min-h-12 rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-white"
         >
           ← Назад
         </button>
@@ -98,23 +104,23 @@ function PhrasalVerbQuiz({
     const { title, tone } = getResultMessage(percent)
 
     return (
-      <div className="flex min-h-screen w-full flex-col px-5 py-8">
-        <div className="rounded-3xl border border-slate-100 bg-white p-8 text-center shadow-xl">
+      <div className="flex min-h-screen w-full flex-col px-4 py-8">
+        <div className="rounded-3xl border border-border-subtle bg-surface p-8 text-center shadow-xl">
           <p className={`text-2xl font-bold ${tone}`}>{title}</p>
-          <div className="mx-auto mt-6 flex h-32 w-32 flex-col items-center justify-center rounded-full bg-indigo-50">
-            <span className="text-4xl font-bold tracking-tight text-indigo-600">
+          <div className="mx-auto mt-6 flex h-32 w-32 flex-col items-center justify-center rounded-full bg-primary-soft">
+            <span className="text-4xl font-bold tracking-tight text-primary">
               {score}/{total}
             </span>
-            <span className="mt-1 text-sm font-medium text-indigo-400">{percent}%</span>
+            <span className="mt-1 text-sm font-medium text-primary">{percent}%</span>
           </div>
-          <p className="mt-5 text-sm text-slate-500">
+          <p className="mt-5 text-sm text-text-secondary">
             Правильных ответов: {score} из {total}
           </p>
         </div>
 
         {mistakes.length > 0 && (
           <section className="mt-6">
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-400">
+            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-text-tertiary">
               Разбор ошибок
             </h2>
             <ul className="flex flex-col gap-3">
@@ -124,23 +130,23 @@ function PhrasalVerbQuiz({
                 return (
                   <li
                     key={phrasalVerb.id}
-                    className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"
+                    className="rounded-2xl border border-border-subtle bg-surface p-4 shadow-sm"
                   >
                     <div className="flex items-start justify-between gap-3">
-                      <h3 className="text-lg font-semibold text-slate-950">
+                      <h3 className="text-lg font-semibold text-text-primary">
                         {phrasalVerb.phrase}
                       </h3>
-                      <span className="rounded-full bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-700">
+                      <span className="rounded-full bg-error-soft px-2.5 py-1 text-xs font-semibold text-error">
                         Ошибка
                       </span>
                     </div>
-                    <div className="mt-4 rounded-2xl bg-slate-50 p-4 text-sm leading-relaxed">
-                      <p className="text-slate-500">Ты выбрал: {selectedMeaning}</p>
-                      <p className="mt-2 font-medium text-emerald-700">
+                    <div className="mt-4 rounded-2xl bg-surface-muted p-4 text-sm leading-relaxed">
+                      <p className="text-text-secondary">Ты выбрал: {selectedMeaning}</p>
+                      <p className="mt-2 font-medium text-success">
                         Правильное значение: {primaryMeaning.russian}
                       </p>
-                      <p className="mt-3 text-slate-700">{primaryMeaning.example}</p>
-                      <p className="mt-1 text-slate-500">
+                      <p className="mt-3 text-text-secondary">{primaryMeaning.example}</p>
+                      <p className="mt-1 text-text-secondary">
                         {primaryMeaning.exampleTranslation}
                       </p>
                     </div>
@@ -155,21 +161,21 @@ function PhrasalVerbQuiz({
           <button
             type="button"
             onClick={restart}
-            className="min-h-12 rounded-2xl bg-indigo-600 px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-indigo-700"
+            className="min-h-12 rounded-2xl bg-primary px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-primary-hover"
           >
             Пройти ещё раз
           </button>
           <button
             type="button"
             onClick={onBack}
-            className="min-h-12 rounded-2xl border border-slate-200 bg-white px-6 py-3 text-base font-semibold text-slate-700 transition-colors hover:bg-slate-50"
+            className="min-h-12 rounded-2xl border border-border bg-surface px-6 py-3 text-base font-semibold text-text-secondary transition-colors hover:bg-surface-muted"
           >
             К списку фразовых глаголов
           </button>
           <button
             type="button"
             onClick={onHome}
-            className="min-h-12 px-6 py-3 text-base font-medium text-slate-400 transition-colors hover:text-slate-600"
+            className="min-h-12 px-6 py-3 text-base font-medium text-text-tertiary transition-colors hover:text-text-secondary"
           >
             На главную
           </button>
@@ -219,52 +225,52 @@ function PhrasalVerbQuiz({
 
   function optionClasses(option: string): string {
     const base =
-      'min-h-14 w-full rounded-2xl border px-5 py-3 text-left text-base font-medium transition-all duration-200'
+      'min-h-14 w-full rounded-2xl border px-5 py-3 text-left text-base font-medium transition-all duration-app'
 
     if (!answered) {
-      return `${base} border-slate-200 bg-white text-slate-700 hover:border-indigo-300 hover:bg-indigo-50/50 active:scale-[0.98]`
+      return `${base} border-border bg-surface text-text-secondary hover:border-primary-border hover:bg-primary-soft/50 active:scale-[0.98]`
     }
 
     if (option === question.correct) {
-      return `${base} scale-[1.02] border-emerald-400 bg-emerald-50 text-emerald-700 shadow-sm`
+      return `${base} scale-[1.02] border-success bg-success-soft text-success shadow-sm`
     }
 
     if (option === selected) {
-      return `${base} border-rose-400 bg-rose-50 text-rose-700`
+      return `${base} border-error bg-error-soft text-error`
     }
 
-    return `${base} border-slate-200 bg-white text-slate-400 opacity-60`
+    return `${base} border-border bg-surface text-text-tertiary opacity-60`
   }
 
   return (
-    <div className="flex min-h-screen w-full flex-col px-5 py-6">
+    <div className="flex min-h-screen w-full flex-col px-4 py-6">
       <header className="mb-8">
         <div className="flex items-center justify-between">
           <button
             type="button"
             onClick={onBack}
-            className="inline-flex items-center gap-1 text-sm font-medium text-slate-500 transition-colors hover:text-slate-800"
+            className="inline-flex items-center gap-1 text-sm font-medium text-text-secondary transition-colors hover:text-text-primary"
           >
             ← К фразовым глаголам
           </button>
-          <span className="text-sm font-medium text-slate-500">
+          <span className="text-sm font-medium text-text-secondary">
             Вопрос {index + 1} из {total}
           </span>
         </div>
-        <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-200">
+        <div className="mt-3 h-2 overflow-hidden rounded-full bg-border">
           <div
-            className="h-full rounded-full bg-indigo-600 transition-all duration-300 ease-out"
+            className="h-full rounded-full bg-primary transition-all duration-entrance ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
       </header>
 
       <div className="flex flex-col items-center py-6 text-center">
-        <span className="mb-3 rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-600">
+        <span className="mb-3 rounded-full bg-primary-soft px-3 py-1 text-xs font-medium text-primary">
           Что это значит?
         </span>
         <div className="flex items-center justify-center gap-3">
-          <h2 className="text-4xl font-bold tracking-tight text-slate-900">
+          <h2 className="text-4xl font-bold tracking-tight text-text-primary">
             {question.phrasalVerb.phrase}
           </h2>
           {isSupported && (
@@ -272,7 +278,7 @@ function PhrasalVerbQuiz({
               type="button"
               onClick={() => speak(question.phrasalVerb.phrase)}
               aria-label={`Произнести ${question.phrasalVerb.phrase}`}
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-indigo-50 text-xl transition-transform hover:scale-105 active:scale-95"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary-soft text-xl transition-transform hover:scale-105 active:scale-95"
             >
               🔊
             </button>

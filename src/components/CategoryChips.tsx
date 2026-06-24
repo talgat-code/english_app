@@ -1,4 +1,4 @@
-interface CategoryChip<Option extends string> {
+﻿interface CategoryChip<Option extends string> {
   id: Option
   label: string
 }
@@ -13,8 +13,8 @@ interface CategoryChipsProps<Option extends string> {
 function chipClasses(active: boolean): string {
   return `rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
     active
-      ? 'bg-slate-950 text-white'
-      : 'bg-white text-slate-600 shadow-sm ring-1 ring-slate-200 hover:bg-slate-50'
+      ? 'bg-primary text-white'
+      : 'bg-surface text-text-secondary shadow-sm ring-1 ring-border hover:bg-surface-muted'
   }`
 }
 

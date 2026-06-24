@@ -1,4 +1,120 @@
 @import "tailwindcss";
+@config "../tailwind.config.js";
+
+@theme {
+  --font-sans: "Manrope", "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --color-primary: #4f46e5;
+  --color-primary-hover: #4338ca;
+  --color-primary-active: #3730a3;
+  --color-primary-soft: #eef2ff;
+  --color-primary-border: #c7d2fe;
+
+  --color-secondary: #0891b2;
+  --color-secondary-hover: #0e7490;
+  --color-secondary-soft: #ecfeff;
+  --color-secondary-border: #a5f3fc;
+
+  --color-success: #059669;
+  --color-success-hover: #047857;
+  --color-success-soft: #ecfdf5;
+  --color-success-border: #a7f3d0;
+
+  --color-error: #e11d48;
+  --color-error-hover: #be123c;
+  --color-error-soft: #fff1f2;
+  --color-error-border: #fecdd3;
+
+  --color-warning: #d97706;
+  --color-warning-hover: #b45309;
+  --color-warning-soft: #fffbeb;
+  --color-warning-border: #fde68a;
+
+  --color-background: #f8fafc;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f1f5f9;
+  --color-border: #e2e8f0;
+  --color-border-subtle: #f1f5f9;
+  --color-border-strong: #cbd5e1;
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #64748b;
+  --color-text-tertiary: #94a3b8;
+
+  --radius-lg: 0.875rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1rem;
+
+  --shadow-sm: 0 10px 28px rgb(15 23 42 / 0.06);
+  --shadow-md: 0 10px 28px rgb(15 23 42 / 0.06);
+  --shadow-xl: 0 10px 28px rgb(15 23 42 / 0.06);
+
+  --ease-app: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@layer base {
+  html {
+    background: var(--color-background);
+    font-family: var(--font-sans);
+  }
+
+  body {
+    min-width: 320px;
+    background: var(--color-background);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  button,
+  a,
+  [role='button'] {
+    transition-duration: 200ms;
+    transition-timing-function: var(--ease-app);
+  }
+
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+
+  button:not(:disabled):active {
+    transform: scale(0.98);
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+}
+
+@layer utilities {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .pb-tab-safe {
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom));
+  }
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 @keyframes game-confetti-fall {
   0% {
@@ -70,7 +186,7 @@
   width: 7px;
   height: 7px;
   border-radius: 9999px;
-  background: #6366f1;
+  background: var(--color-primary);
   animation: ai-thinking 1.2s infinite ease-in-out;
 }
 
@@ -82,11 +198,25 @@
   animation-delay: 300ms;
 }
 
+.page-transition {
+  animation: page-enter 300ms var(--ease-app);
+}
+
+.empty-state {
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-2xl);
+  background: var(--color-surface);
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .game-confetti,
   .game-success-pop,
   .game-shake,
-  .ai-thinking-dot {
+  .ai-thinking-dot,
+  .page-transition {
     animation: none;
   }
 }

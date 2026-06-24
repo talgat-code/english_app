@@ -1,4 +1,4 @@
-import { categories } from '../data/words'
+﻿import { categories } from '../data/words'
 import type { GameType } from '../utils/games'
 
 interface GamesProps {
@@ -19,14 +19,14 @@ const GAME_CARDS: {
     title: 'Виселица',
     emoji: '🎯',
     description: 'Угадай английское слово по буквам. У тебя есть 6 ошибок.',
-    accent: 'from-indigo-500 to-violet-600',
+    accent: 'from-primary to-primary',
   },
   {
     id: 'word-builder',
     title: 'Составь слово',
     emoji: '🔤',
     description: 'Собери правильное слово из перемешанных букв.',
-    accent: 'from-cyan-500 to-blue-600',
+    accent: 'from-secondary to-primary',
   },
 ]
 
@@ -37,19 +37,19 @@ function Games({ initialGame, onStart, onGamesMenu }: GamesProps) {
     const game = GAME_CARDS.find((item) => item.id === selectedGame)!
 
     return (
-      <div className="flex min-h-screen w-full flex-col px-5 py-8">
+      <div className="flex min-h-screen w-full flex-col px-4 py-8">
         <header className="mb-6">
           <button
             type="button"
             onClick={onGamesMenu}
-            className="mb-4 text-sm font-medium text-slate-500 transition-colors hover:text-slate-800"
+            className="mb-4 text-sm font-medium text-text-secondary transition-colors hover:text-text-primary"
           >
             ← Все игры
           </button>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-2xl font-bold tracking-tight text-text-primary">
             {game.emoji} {game.title}
           </h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-text-secondary">
             Выбери категорию. В игру попадут слова из 4 и более букв.
           </p>
         </header>
@@ -66,13 +66,13 @@ function Games({ initialGame, onStart, onGamesMenu }: GamesProps) {
                   type="button"
                   onClick={() => onStart(selectedGame, category.id)}
                   disabled={count === 0}
-                  className="flex min-h-32 w-full flex-col items-start rounded-2xl border border-slate-100 bg-white p-4 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md active:scale-[0.98] disabled:opacity-40"
+                  className="flex min-h-32 w-full flex-col items-start rounded-2xl border border-border-subtle bg-surface p-4 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary-border hover:shadow-md active:scale-[0.98] disabled:opacity-40"
                 >
                   <span className="text-3xl">{category.emoji}</span>
-                  <span className="mt-3 font-semibold text-slate-900">
+                  <span className="mt-3 font-semibold text-text-primary">
                     {category.title}
                   </span>
-                  <span className="mt-1 text-xs text-slate-400">{count} слов</span>
+                  <span className="mt-1 text-xs text-text-tertiary">{count} слов</span>
                 </button>
               </li>
             )
@@ -83,13 +83,13 @@ function Games({ initialGame, onStart, onGamesMenu }: GamesProps) {
   }
 
   return (
-    <div className="flex min-h-screen w-full flex-col px-5 py-8">
+    <div className="flex min-h-screen w-full flex-col px-4 py-8">
       <header className="mb-6">
         <span className="text-4xl">🎮</span>
-        <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
+        <h1 className="mt-3 text-3xl font-bold tracking-tight text-text-primary">
           Мини-игры
         </h1>
-        <p className="mt-2 text-sm text-slate-500">
+        <p className="mt-2 text-sm text-text-secondary">
           Тренируй слова играючи и закрепляй знания.
         </p>
       </header>
@@ -98,7 +98,7 @@ function Games({ initialGame, onStart, onGamesMenu }: GamesProps) {
         {GAME_CARDS.map((game) => (
           <article
             key={game.id}
-            className="overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm"
+            className="overflow-hidden rounded-3xl border border-border-subtle bg-surface shadow-sm"
           >
             <div className={`bg-gradient-to-br ${game.accent} p-6 text-white`}>
               <span className="text-5xl">{game.emoji}</span>
@@ -109,7 +109,7 @@ function Games({ initialGame, onStart, onGamesMenu }: GamesProps) {
               <button
                 type="button"
                 onClick={() => onStart(game.id, '')}
-                className="min-h-12 w-full rounded-2xl bg-slate-900 px-5 py-3 font-semibold text-white transition-all hover:bg-slate-800 active:scale-[0.98]"
+                className="min-h-12 w-full rounded-2xl bg-primary px-5 py-3 font-semibold text-white transition-all hover:bg-primary-hover active:scale-[0.98]"
               >
                 Играть
               </button>

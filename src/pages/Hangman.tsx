@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { getCategoryById } from '../data/words'
 import { playableWords } from '../utils/games'
 
@@ -104,7 +104,7 @@ function Hangman({ categoryId, onOtherCategory, onGamesMenu }: HangmanProps) {
   }
 
   return (
-    <div className="relative flex min-h-screen w-full flex-col overflow-hidden px-5 py-6">
+    <div className="relative flex min-h-screen w-full flex-col overflow-hidden px-4 py-6">
       {status === 'won' && <Confetti />}
 
       <header className="mb-5">
@@ -112,23 +112,23 @@ function Hangman({ categoryId, onOtherCategory, onGamesMenu }: HangmanProps) {
           <button
             type="button"
             onClick={onGamesMenu}
-            className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-800"
+            className="text-sm font-medium text-text-secondary transition-colors hover:text-text-primary"
           >
             ← Игры
           </button>
-          <div className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 shadow-sm">
-            <span className="text-emerald-600">Победы {wins}</span>
-            <span className="mx-2 text-slate-300">|</span>
-            <span className="text-rose-600">Поражения {losses}</span>
+          <div className="rounded-full bg-surface px-3 py-1.5 text-xs font-semibold text-text-secondary shadow-sm">
+            <span className="text-success">Победы {wins}</span>
+            <span className="mx-2 text-text-tertiary">|</span>
+            <span className="text-error">Поражения {losses}</span>
           </div>
         </div>
         <div className="mt-4 flex items-center gap-3">
-          <span className="text-sm font-medium text-slate-400">
+          <span className="text-sm font-medium text-text-tertiary">
             {index + 1} / {words.length}
           </span>
-          <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-200">
+          <div className="h-2 flex-1 overflow-hidden rounded-full bg-border">
             <div
-              className="h-full rounded-full bg-indigo-600 transition-all duration-300"
+              className="h-full rounded-full bg-primary transition-all duration-entrance"
               style={{ width: `${((index + 1) / words.length) * 100}%` }}
             />
           </div>
@@ -140,13 +140,13 @@ function Hangman({ categoryId, onOtherCategory, onGamesMenu }: HangmanProps) {
         <div className="game-success-pop text-7xl" key={`${index}-${errors}`}>
           {FACES[errors]}
         </div>
-        <p className="mt-3 text-sm font-semibold uppercase tracking-wide text-slate-400">
+        <p className="mt-3 text-sm font-semibold uppercase tracking-wide text-text-tertiary">
           Ошибки: {errors} / {MAX_ERRORS}
         </p>
 
-        <div className="mt-6 w-full rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
-          <p className="text-sm text-slate-400">Подсказка</p>
-          <p className="mt-1 text-lg font-semibold text-slate-800">{word.russian}</p>
+        <div className="mt-6 w-full rounded-3xl border border-border-subtle bg-surface p-5 shadow-sm">
+          <p className="text-sm text-text-tertiary">Подсказка</p>
+          <p className="mt-1 text-lg font-semibold text-text-primary">{word.russian}</p>
 
           <div className="mt-7 flex flex-wrap justify-center gap-2">
             {[...answer].map((letter, letterIndex) => (
@@ -154,8 +154,8 @@ function Hangman({ categoryId, onOtherCategory, onGamesMenu }: HangmanProps) {
                 key={`${letter}-${letterIndex}`}
                 className={`flex h-12 min-w-9 items-center justify-center border-b-2 text-2xl font-bold transition-all ${
                   guesses.has(letter) || status !== 'playing'
-                    ? 'border-indigo-400 text-slate-900'
-                    : 'border-slate-300 text-transparent'
+                    ? 'border-primary text-text-primary'
+                    : 'border-border-strong text-transparent'
                 }`}
               >
                 {letter}
@@ -167,13 +167,13 @@ function Hangman({ categoryId, onOtherCategory, onGamesMenu }: HangmanProps) {
             <div className="game-success-pop mt-6">
               <p
                 className={`text-xl font-bold ${
-                  status === 'won' ? 'text-emerald-600' : 'text-rose-600'
+                  status === 'won' ? 'text-success' : 'text-error'
                 }`}
               >
                 {status === 'won' ? 'Молодец! 🎉' : 'Раунд проигран 💀'}
               </p>
-              <p className="mt-1 text-sm text-slate-500">
-                Правильное слово: <strong className="text-slate-900">{answer}</strong>
+              <p className="mt-1 text-sm text-text-secondary">
+                Правильное слово: <strong className="text-text-primary">{answer}</strong>
               </p>
             </div>
           )}
@@ -192,9 +192,9 @@ function Hangman({ categoryId, onOtherCategory, onGamesMenu }: HangmanProps) {
                 className={`min-h-11 rounded-xl border text-sm font-bold transition-all active:scale-95 ${
                   guessed
                     ? isCorrect
-                      ? 'border-emerald-400 bg-emerald-100 text-emerald-700'
-                      : 'border-rose-400 bg-rose-100 text-rose-700'
-                    : 'border-slate-200 bg-white text-slate-700 hover:border-indigo-300 hover:bg-indigo-50 disabled:opacity-50'
+                      ? 'border-success bg-success-soft text-success'
+                      : 'border-error bg-error-soft text-error'
+                    : 'border-border bg-surface text-text-secondary hover:border-primary-border hover:bg-primary-soft disabled:opacity-50'
                 }`}
               >
                 {letter}
@@ -209,7 +209,7 @@ function Hangman({ categoryId, onOtherCategory, onGamesMenu }: HangmanProps) {
               <button
                 type="button"
                 onClick={retryWord}
-                className="min-h-12 rounded-2xl border border-slate-200 bg-white px-5 font-semibold text-slate-700 transition-all active:scale-[0.98]"
+                className="min-h-12 rounded-2xl border border-border bg-surface px-5 font-semibold text-text-secondary transition-all active:scale-[0.98]"
               >
                 Попробовать снова
               </button>
@@ -217,7 +217,7 @@ function Hangman({ categoryId, onOtherCategory, onGamesMenu }: HangmanProps) {
             <button
               type="button"
               onClick={nextWord}
-              className="min-h-12 rounded-2xl bg-indigo-600 px-5 font-semibold text-white transition-all hover:bg-indigo-700 active:scale-[0.98]"
+              className="min-h-12 rounded-2xl bg-primary px-5 font-semibold text-white transition-all hover:bg-primary-hover active:scale-[0.98]"
             >
               {index === words.length - 1 ? 'Показать результат' : 'Следующее слово'}
             </button>
@@ -238,7 +238,12 @@ function Confetti() {
           style={{
             left: `${(index * 37) % 100}%`,
             animationDelay: `${(index % 6) * 0.08}s`,
-            backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#f43f5e'][index % 4],
+            backgroundColor: [
+              'var(--color-primary)',
+              'var(--color-success)',
+              'var(--color-warning)',
+              'var(--color-error)',
+            ][index % 4],
           }}
         />
       ))}
@@ -266,32 +271,32 @@ export function GameResult({
   onGamesMenu,
 }: GameResultProps) {
   return (
-    <div className="flex min-h-screen flex-col justify-center px-5 py-8 text-center">
-      <div className="game-success-pop rounded-3xl border border-slate-100 bg-white p-8 shadow-xl">
+    <div className="flex min-h-screen flex-col justify-center px-4 py-8 text-center">
+      <div className="game-success-pop rounded-3xl border border-border-subtle bg-surface p-8 shadow-xl">
         <span className="text-6xl">{emoji}</span>
-        <h1 className="mt-5 text-2xl font-bold text-slate-900">{title}</h1>
-        <p className="mt-4 text-3xl font-bold text-indigo-600">{result}</p>
-        <p className="mt-2 text-sm text-slate-500">{detail}</p>
+        <h1 className="mt-5 text-2xl font-bold text-text-primary">{title}</h1>
+        <p className="mt-4 text-3xl font-bold text-primary">{result}</p>
+        <p className="mt-2 text-sm text-text-secondary">{detail}</p>
       </div>
       <div className="mt-6 flex flex-col gap-3">
         <button
           type="button"
           onClick={onRestart}
-          className="min-h-12 rounded-2xl bg-indigo-600 px-5 font-semibold text-white transition-all active:scale-[0.98]"
+          className="min-h-12 rounded-2xl bg-primary px-5 font-semibold text-white transition-all active:scale-[0.98]"
         >
           Играть снова
         </button>
         <button
           type="button"
           onClick={onOtherCategory}
-          className="min-h-12 rounded-2xl border border-slate-200 bg-white px-5 font-semibold text-slate-700 transition-all active:scale-[0.98]"
+          className="min-h-12 rounded-2xl border border-border bg-surface px-5 font-semibold text-text-secondary transition-all active:scale-[0.98]"
         >
           Другая категория
         </button>
         <button
           type="button"
           onClick={onGamesMenu}
-          className="min-h-12 px-5 font-medium text-slate-400 transition-colors hover:text-slate-600"
+          className="min-h-12 px-5 font-medium text-text-tertiary transition-colors hover:text-text-secondary"
         >
           В меню игр
         </button>
@@ -308,20 +313,25 @@ interface EmptyGameProps {
 
 export function EmptyGame({ message, onOtherCategory, onGamesMenu }: EmptyGameProps) {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center px-6 text-center">
-      <span className="text-5xl">🤔</span>
-      <p className="mt-4 text-slate-500">{message}</p>
+    <div className="flex min-h-screen flex-col items-center justify-center px-4 text-center">
+      <div className="empty-state w-full">
+        <span className="text-6xl">🎮</span>
+        <h1 className="mt-4 text-xl font-bold text-text-primary">
+          Игра пока недоступна
+        </h1>
+        <p className="mt-2 text-sm text-text-secondary">{message}</p>
+      </div>
       <button
         type="button"
         onClick={onOtherCategory}
-        className="mt-5 min-h-12 w-full rounded-2xl bg-indigo-600 px-5 font-semibold text-white"
+        className="mt-5 min-h-12 w-full rounded-2xl bg-primary px-5 font-semibold text-white"
       >
         Другая категория
       </button>
       <button
         type="button"
         onClick={onGamesMenu}
-        className="mt-2 min-h-12 w-full px-5 font-medium text-slate-400"
+        className="mt-2 min-h-12 w-full px-5 font-medium text-text-tertiary"
       >
         В меню игр
       </button>

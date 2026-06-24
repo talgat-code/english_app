@@ -1,4 +1,4 @@
-import VocabularyTabs from '../components/VocabularyTabs'
+﻿import VocabularyTabs from '../components/VocabularyTabs'
 import { categories } from '../data/words'
 import { knownInCategory, useProgress } from '../hooks/useProgress'
 
@@ -20,19 +20,19 @@ function Categories({
   const progress = useProgress()
 
   return (
-    <div className="flex min-h-screen w-full flex-col px-5 py-8">
+    <div className="flex min-h-screen w-full flex-col px-4 py-8">
       <header className="mb-6">
         <button
           type="button"
           onClick={onBack}
-          className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-slate-500 transition-colors hover:text-slate-800"
+          className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-text-secondary transition-colors hover:text-text-primary"
         >
           ← На главную
         </button>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+        <h1 className="text-2xl font-bold tracking-tight text-text-primary">
           Выбери категорию
         </h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-text-secondary">
           Учи слова карточками или проверяй себя квизом
         </p>
       </header>
@@ -55,17 +55,17 @@ function Categories({
           return (
           <li
             key={category.id}
-            className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"
+            className="rounded-2xl border border-border-subtle bg-surface p-4 shadow-sm"
           >
             <div className="flex items-center gap-4">
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-2xl">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-2xl">
                 {category.emoji}
               </span>
               <span className="flex flex-col">
-                <span className="text-base font-semibold text-slate-900">
+                <span className="text-base font-semibold text-text-primary">
                   {category.title}
                 </span>
-                <span className="text-sm text-slate-500">
+                <span className="text-sm text-text-secondary">
                   {category.words.length} слов
                 </span>
               </span>
@@ -73,13 +73,13 @@ function Categories({
 
             {/* Mini progress: known words in this category */}
             <div className="mt-3 flex items-center gap-2">
-              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-200">
+              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-border">
                 <div
-                  className="h-full rounded-full bg-emerald-500 transition-all duration-500 ease-out"
+                  className="h-full rounded-full bg-primary transition-all duration-entrance ease-out"
                   style={{ width: `${percent}%` }}
                 />
               </div>
-              <span className="shrink-0 text-xs font-medium text-slate-400">
+              <span className="shrink-0 text-xs font-medium text-text-tertiary">
                 {learned} / {total}
               </span>
             </div>
@@ -88,14 +88,14 @@ function Categories({
               <button
                 type="button"
                 onClick={() => onSelectCategory(category.id, 'flashcards')}
-                className="min-h-12 flex-1 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-700 transition-all hover:border-indigo-300 hover:bg-indigo-50/50 active:scale-[0.98]"
+                className="min-h-12 flex-1 rounded-xl border border-border bg-surface text-sm font-semibold text-text-secondary transition-all hover:border-primary-border hover:bg-primary-soft/50 active:scale-[0.98]"
               >
                 🃏 Карточки
               </button>
               <button
                 type="button"
                 onClick={() => onSelectCategory(category.id, 'quiz')}
-                className="min-h-12 flex-1 rounded-xl bg-indigo-600 text-sm font-semibold text-white transition-all hover:bg-indigo-700 active:scale-[0.98]"
+                className="min-h-12 flex-1 rounded-xl bg-primary text-sm font-semibold text-white transition-all hover:bg-primary-hover active:scale-[0.98]"
               >
                 🎯 Квиз
               </button>

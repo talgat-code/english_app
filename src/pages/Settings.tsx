@@ -1,4 +1,4 @@
-import {
+﻿import {
   getReminderStatus,
   requestPermission,
   scheduleReminder,
@@ -30,44 +30,44 @@ function Settings({ onBack }: SettingsProps) {
   }
 
   return (
-    <div className="flex min-h-screen w-full flex-col px-5 py-8">
+    <div className="flex min-h-screen w-full flex-col px-4 py-8">
       <header className="mb-6 flex items-center justify-between gap-3">
         <div>
           <button
             type="button"
             onClick={onBack}
-            className="text-sm font-semibold text-slate-500"
+            className="text-sm font-semibold text-text-secondary"
           >
             ← Назад
           </button>
-          <h1 className="mt-3 text-2xl font-bold tracking-tight text-slate-900">
+          <h1 className="mt-3 text-2xl font-bold tracking-tight text-text-primary">
             Настройки
           </h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-text-secondary">
             Локальные уведомления и ежедневное время напоминания.
           </p>
         </div>
       </header>
 
-      <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 className="text-base font-semibold text-slate-900">Напоминания</h2>
-        <p className="mt-1 text-sm text-slate-500">
+      <section className="rounded-3xl border border-border bg-surface p-5 shadow-sm">
+        <h2 className="text-base font-semibold text-text-primary">Напоминания</h2>
+        <p className="mt-1 text-sm text-text-secondary">
           Статус браузерных уведомлений: {permissionLabel(permission)}
         </p>
 
         {denied ? (
-          <p className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          <p className="mt-4 rounded-2xl border border-warning-border bg-warning-soft px-4 py-3 text-sm text-warning">
             Уведомления заблокированы, можно включить в настройках браузера
           </p>
         ) : (
-          <label className="mt-4 flex items-center justify-between rounded-2xl border border-slate-200 px-4 py-3">
+          <label className="mt-4 flex items-center justify-between rounded-2xl border border-border px-4 py-3">
             <span>
-              <span className="block text-sm font-semibold text-slate-900">Напоминания</span>
-              <span className="mt-1 block text-xs text-slate-500">Ежедневная проверка и локальное уведомление</span>
+              <span className="block text-sm font-semibold text-text-primary">Напоминания</span>
+              <span className="mt-1 block text-xs text-text-secondary">Ежедневная проверка и локальное уведомление</span>
             </span>
             <input
               type="checkbox"
-              className="h-5 w-5 accent-indigo-600"
+              className="h-5 w-5 accent-primary"
               checked={settings.remindersEnabled}
               onChange={(event) => {
                 if (!event.target.checked) {
@@ -81,14 +81,14 @@ function Settings({ onBack }: SettingsProps) {
         )}
 
         <label className="mt-4 block">
-          <span className="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-400">
+          <span className="mb-2 block text-xs font-semibold uppercase tracking-wide text-text-tertiary">
             Время напоминания
           </span>
           <input
             type="time"
             value={settings.reminderTime}
             onChange={(event) => scheduleReminder(event.target.value)}
-            className="min-h-11 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none focus:border-indigo-400"
+            className="min-h-11 w-full rounded-2xl border border-border bg-surface-muted px-4 text-sm outline-none focus:border-primary"
           />
         </label>
       </section>
