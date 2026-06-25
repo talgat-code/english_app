@@ -2,6 +2,7 @@
 import CategoryChips from '../components/CategoryChips'
 import VocabularyTabs from '../components/VocabularyTabs'
 import {
+  getPhrasalVerbById,
   getPhrasalVerbsByCategory,
   phrasalVerbCategories,
   type PhrasalVerb,
@@ -18,7 +19,9 @@ import { useSpeech } from '../hooks/useSpeech'
 
 interface PhrasalVerbsProps {
   initialCategory?: PhrasalVerbFilter
+  initialExpandedPhrasalVerbId?: string
   onBack: () => void
+  onSearch: () => void
   onWords: () => void
   onIdioms: () => void
   onStartQuiz: (category: PhrasalVerbFilter) => void
@@ -26,23 +29,39 @@ interface PhrasalVerbsProps {
 
 function PhrasalVerbs({
   initialCategory = 'all',
+  initialExpandedPhrasalVerbId,
   onBack,
+  onSearch,
   onWords,
   onIdioms,
   onStartQuiz,
 }: PhrasalVerbsProps) {
+  const initialExpandedPhrasalVerb = initialExpandedPhrasalVerbId
+    ? getPhrasalVerbById(initialExpandedPhrasalVerbId)
+    : undefined
   const progress = useProgress()
   const { speak, isSupported } = useSpeech()
 
-  const [activeCategory, setActiveCategory] =
-    useState<PhrasalVerbFilter>(initialCategory)
+  const [activeCategory, setActiveCategory] = useState<PhrasalVerbFilter>(
+    initialExpandedPhrasalVerb?.category ?? initialCategory,
+  )
   const [expandedPhrasalVerbId, setExpandedPhrasalVerbId] = useState<
     string | null
-  >(null)
+  >(initialExpandedPhrasalVerb?.id ?? null)
 
   useEffect(() => {
     recordCardsViewed()
   }, [])
+
+  useEffect(() => {
+    if (!initialExpandedPhrasalVerb) return
+
+    requestAnimationFrame(() => {
+      document
+        .getElementById(`phrasal-verb-card-${initialExpandedPhrasalVerb.id}`)
+        ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    })
+  }, [initialExpandedPhrasalVerb])
 
   const visiblePhrasalVerbs = getPhrasalVerbsByCategory(activeCategory)
   const visibleKnown = knownInPhrasalVerbCategory(
@@ -114,13 +133,23 @@ function PhrasalVerbs({
               Частые сочетания с несколькими живыми значениями
             </p>
           </div>
-          <button
-            type="button"
-            onClick={() => onStartQuiz(activeCategory)}
-            className="shrink-0 rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
-          >
-            🎯 Квиз
-          </button>
+          <div className="flex shrink-0 items-center gap-2">
+            <button
+              type="button"
+              onClick={onSearch}
+              aria-label="Открыть поиск"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-surface text-lg shadow-sm transition-colors hover:bg-surface-muted"
+            >
+              🔍
+            </button>
+            <button
+              type="button"
+              onClick={() => onStartQuiz(activeCategory)}
+              className="rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
+            >
+              🎯 Квиз
+            </button>
+          </div>
         </div>
       </header>
 
@@ -198,6 +227,7 @@ function PhrasalVerbs({
           return (
             <li
               key={phrasalVerb.id}
+              id={`phrasal-verb-card-${phrasalVerb.id}`}
               className={`rounded-2xl border bg-surface p-4 shadow-sm transition-colors ${
                 isExpanded
                   ? 'border-primary-border shadow-md'

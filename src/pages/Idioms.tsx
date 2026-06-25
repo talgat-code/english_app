@@ -20,6 +20,7 @@ interface IdiomsProps {
   initialCategory?: IdiomFilter
   initialExpandedIdiomId?: string
   onBack: () => void
+  onSearch: () => void
   onWords: () => void
   onPhrasalVerbs: () => void
   onStartQuiz: (category: IdiomFilter) => void
@@ -29,6 +30,7 @@ function Idioms({
   initialCategory = 'all',
   initialExpandedIdiomId,
   onBack,
+  onSearch,
   onWords,
   onPhrasalVerbs,
   onStartQuiz,
@@ -95,13 +97,23 @@ function Idioms({
               Частые фразы, которые реально звучат в живой речи
             </p>
           </div>
-          <button
-            type="button"
-            onClick={() => onStartQuiz(activeCategory)}
-            className="shrink-0 rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
-          >
-            🎯 Квиз
-          </button>
+          <div className="flex shrink-0 items-center gap-2">
+            <button
+              type="button"
+              onClick={onSearch}
+              aria-label="Открыть поиск"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-surface text-lg shadow-sm transition-colors hover:bg-surface-muted"
+            >
+              🔍
+            </button>
+            <button
+              type="button"
+              onClick={() => onStartQuiz(activeCategory)}
+              className="rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
+            >
+              🎯 Квиз
+            </button>
+          </div>
         </div>
       </header>
 

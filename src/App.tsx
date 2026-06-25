@@ -30,6 +30,7 @@ import PhrasalVerbQuiz from './pages/PhrasalVerbQuiz'
 import PhrasalVerbs from './pages/PhrasalVerbs'
 import Quiz from './pages/Quiz'
 import Review from './pages/Review'
+import Search from './pages/Search'
 import Settings from './pages/Settings'
 import Stats from './pages/Stats'
 import WordBuilder from './pages/WordBuilder'
@@ -54,12 +55,17 @@ type Screen =
   | { name: 'review' }
   | { name: 'stats' }
   | { name: 'settings' }
+  | { name: 'search'; from?: 'categories' | 'idioms' | 'phrasal-verbs' }
   | { name: 'irregular-verbs' }
   | { name: 'idioms'; category?: IdiomFilter; idiomId?: string }
   | { name: 'idiom-quiz'; category?: IdiomFilter }
-  | { name: 'phrasal-verbs'; category?: PhrasalVerbFilter }
+  | {
+      name: 'phrasal-verbs'
+      category?: PhrasalVerbFilter
+      phrasalVerbId?: string
+    }
   | { name: 'phrasal-verb-quiz'; category?: PhrasalVerbFilter }
-  | { name: 'flashcards'; categoryId: string }
+  | { name: 'flashcards'; categoryId: string; wordId?: string }
   | { name: 'quiz'; categoryId: string }
   | { name: 'hangman'; categoryId: string }
   | { name: 'word-builder'; categoryId: string }
@@ -105,6 +111,13 @@ function App() {
     else if (tab === 'games') setScreen({ name: 'games' })
     else if (tab === 'ai') setScreen({ name: 'ai' })
     else if (tab === 'stats') setScreen({ name: 'stats' })
+    else setScreen({ name: 'home' })
+  }
+
+  function backFromSearch(from: Screen & { name: 'search' }) {
+    if (from.from === 'idioms') setScreen({ name: 'idioms' })
+    else if (from.from === 'phrasal-verbs') setScreen({ name: 'phrasal-verbs' })
+    else if (from.from === 'categories') setScreen({ name: 'categories' })
     else setScreen({ name: 'home' })
   }
 
@@ -179,6 +192,7 @@ function App() {
               )
             }
             onBack={() => setScreen({ name: 'home' })}
+            onSearch={() => setScreen({ name: 'search', from: 'categories' })}
             onIdioms={() => setScreen({ name: 'idioms' })}
             onPhrasalVerbs={() => setScreen({ name: 'phrasal-verbs' })}
           />
@@ -208,6 +222,7 @@ function App() {
             initialCategory={screen.category}
             initialExpandedIdiomId={screen.idiomId}
             onBack={() => setScreen({ name: 'home' })}
+            onSearch={() => setScreen({ name: 'search', from: 'idioms' })}
             onWords={() => setScreen({ name: 'categories' })}
             onPhrasalVerbs={() => setScreen({ name: 'phrasal-verbs' })}
             onStartQuiz={(category) => setScreen({ name: 'idiom-quiz', category })}
@@ -224,13 +239,30 @@ function App() {
 
         {appReady && screen.name === 'phrasal-verbs' && (
           <PhrasalVerbs
-            key={screen.category ?? 'all'}
+            key={`${screen.category ?? 'all'}:${screen.phrasalVerbId ?? 'list'}`}
             initialCategory={screen.category}
+            initialExpandedPhrasalVerbId={screen.phrasalVerbId}
             onBack={() => setScreen({ name: 'home' })}
+            onSearch={() => setScreen({ name: 'search', from: 'phrasal-verbs' })}
             onWords={() => setScreen({ name: 'categories' })}
             onIdioms={() => setScreen({ name: 'idioms' })}
             onStartQuiz={(category) =>
               setScreen({ name: 'phrasal-verb-quiz', category })
+            }
+          />
+        )}
+
+        {appReady && screen.name === 'search' && (
+          <Search
+            onBack={() => backFromSearch(screen)}
+            onSelectWord={(categoryId, wordId) =>
+              setScreen({ name: 'flashcards', categoryId, wordId })
+            }
+            onSelectIdiom={(category, idiomId) =>
+              setScreen({ name: 'idioms', category, idiomId })
+            }
+            onSelectPhrasalVerb={(category, phrasalVerbId) =>
+              setScreen({ name: 'phrasal-verbs', category, phrasalVerbId })
             }
           />
         )}
@@ -293,6 +325,7 @@ function App() {
         {appReady && screen.name === 'flashcards' && (
           <Flashcards
             categoryId={screen.categoryId}
+            initialWordId={screen.wordId}
             onBack={() => setScreen({ name: 'categories' })}
           />
         )}

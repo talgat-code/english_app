@@ -23,6 +23,7 @@ function loadAutoSpeech(): boolean {
 interface FlashcardsProps {
   categoryId?: string
   customWords?: Word[]
+  initialWordId?: string
   categoryTitle?: string
   categoryEmoji?: string
   onBack: () => void
@@ -31,6 +32,7 @@ interface FlashcardsProps {
 function Flashcards({
   categoryId,
   customWords,
+  initialWordId,
   categoryTitle,
   categoryEmoji,
   onBack,
@@ -42,7 +44,11 @@ function Flashcards({
   const saved = useProgress()
   const { speak, isSupported } = useSpeech()
 
-  const [index, setIndex] = useState(0)
+  const [index, setIndex] = useState(() => {
+    if (!initialWordId) return 0
+    const initialIndex = words.findIndex((word) => word.id === initialWordId)
+    return initialIndex >= 0 ? initialIndex : 0
+  })
   const [flipped, setFlipped] = useState(false)
   const [autoSpeech, setAutoSpeech] = useState(loadAutoSpeech)
 

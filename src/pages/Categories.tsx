@@ -7,6 +7,7 @@ export type StudyMode = 'flashcards' | 'quiz'
 interface CategoriesProps {
   onSelectCategory: (categoryId: string, mode: StudyMode) => void
   onBack: () => void
+  onSearch: () => void
   onIdioms: () => void
   onPhrasalVerbs: () => void
 }
@@ -14,6 +15,7 @@ interface CategoriesProps {
 function Categories({
   onSelectCategory,
   onBack,
+  onSearch,
   onIdioms,
   onPhrasalVerbs,
 }: CategoriesProps) {
@@ -22,13 +24,23 @@ function Categories({
   return (
     <div className="flex min-h-screen w-full flex-col px-4 py-8">
       <header className="mb-6">
-        <button
-          type="button"
-          onClick={onBack}
-          className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-text-secondary transition-colors hover:text-text-primary"
-        >
-          ← На главную
-        </button>
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <button
+            type="button"
+            onClick={onBack}
+            className="inline-flex items-center gap-1 text-sm font-medium text-text-secondary transition-colors hover:text-text-primary"
+          >
+            ← На главную
+          </button>
+          <button
+            type="button"
+            onClick={onSearch}
+            aria-label="Открыть поиск"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-surface text-lg shadow-sm transition-colors hover:bg-surface-muted"
+          >
+            🔍
+          </button>
+        </div>
         <h1 className="text-2xl font-bold tracking-tight text-text-primary">
           Выбери категорию
         </h1>
