@@ -1,20 +1,27 @@
 ﻿import { useEffect, useRef, useState } from 'react'
-import { getIdiomsByCategory, type Idiom, type IdiomFilter } from '../data/idioms'
 import {
-  recordIdiomQuizResult,
-  type IdiomQuizAnswer,
+  getPhrasalVerbsByCategory,
+  type PhrasalVerb,
+  type PhrasalVerbFilter,
+} from '../data/phrasalVerbs'
+import {
+  recordPhrasalVerbQuizResult,
+  type PhrasalVerbQuizAnswer,
 } from '../hooks/useProgress'
 import { useSpeech } from '../hooks/useSpeech'
-import { buildIdiomQuiz, type IdiomQuizQuestion } from '../utils/idiomQuiz'
+import {
+  buildPhrasalVerbQuiz,
+  type PhrasalVerbQuizQuestion,
+} from '../utils/phrasalVerbQuiz'
 
-interface IdiomQuizProps {
-  category?: IdiomFilter
+interface PhrasalVerbQuizProps {
+  category?: PhrasalVerbFilter
   onBack: () => void
   onHome: () => void
 }
 
-interface IdiomMistake {
-  idiom: Idiom
+interface PhrasalVerbMistake {
+  phrasalVerb: PhrasalVerb
   selectedMeaning: string
 }
 
@@ -25,21 +32,25 @@ function getResultMessage(percent: number): { title: string; tone: string } {
   return { title: 'Стоит повторить ещё раз', tone: 'text-error' }
 }
 
-function IdiomQuiz({ category = 'all', onBack, onHome }: IdiomQuizProps) {
+function PhrasalVerbQuiz({
+  category = 'all',
+  onBack,
+  onHome,
+}: PhrasalVerbQuizProps) {
   const { speak, isSupported } = useSpeech()
-  const pool = getIdiomsByCategory(category)
+  const pool = getPhrasalVerbsByCategory(category)
 
-  const [questions, setQuestions] = useState<IdiomQuizQuestion[]>(() =>
-    buildIdiomQuiz(category),
+  const [questions, setQuestions] = useState<PhrasalVerbQuizQuestion[]>(() =>
+    buildPhrasalVerbQuiz(category),
   )
   const [index, setIndex] = useState(0)
   const [selected, setSelected] = useState<string | null>(null)
   const [score, setScore] = useState(0)
-  const [mistakes, setMistakes] = useState<IdiomMistake[]>([])
+  const [mistakes, setMistakes] = useState<PhrasalVerbMistake[]>([])
   const [finished, setFinished] = useState(false)
 
   const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const answers = useRef<IdiomQuizAnswer[]>([])
+  const answers = useRef<PhrasalVerbQuizAnswer[]>([])
 
   useEffect(
     () => () => {
@@ -56,7 +67,7 @@ function IdiomQuiz({ category = 'all', onBack, onHome }: IdiomQuizProps) {
     }
 
     answers.current = []
-    setQuestions(buildIdiomQuiz(category))
+    setQuestions(buildPhrasalVerbQuiz(category))
     setIndex(0)
     setSelected(null)
     setScore(0)
@@ -68,12 +79,12 @@ function IdiomQuiz({ category = 'all', onBack, onHome }: IdiomQuizProps) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center px-4 text-center">
         <div className="empty-state w-full">
-          <span className="text-6xl">💬</span>
+          <span className="text-6xl">🔗</span>
           <h1 className="mt-4 text-xl font-bold text-text-primary">
             Квиз пока недоступен
           </h1>
           <p className="mt-2 text-sm text-text-secondary">
-            Не удалось собрать вопросы по идиомам.
+            Не удалось собрать вопросы по фразовым глаголам.
           </p>
         </div>
         <button
@@ -113,32 +124,35 @@ function IdiomQuiz({ category = 'all', onBack, onHome }: IdiomQuizProps) {
               Разбор ошибок
             </h2>
             <ul className="flex flex-col gap-3">
-              {mistakes.map(({ idiom, selectedMeaning }) => (
-                <li
-                  key={idiom.id}
-                  className="rounded-2xl border border-border-subtle bg-surface p-4 shadow-sm"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <h3 className="text-lg font-semibold text-text-primary">{idiom.phrase}</h3>
-                      <p className="mt-1 text-sm italic text-text-tertiary">
-                        "{idiom.literal}"
+              {mistakes.map(({ phrasalVerb, selectedMeaning }) => {
+                const primaryMeaning = phrasalVerb.meanings[0]
+
+                return (
+                  <li
+                    key={phrasalVerb.id}
+                    className="rounded-2xl border border-border-subtle bg-surface p-4 shadow-sm"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <h3 className="text-lg font-semibold text-text-primary">
+                        {phrasalVerb.phrase}
+                      </h3>
+                      <span className="rounded-full bg-error-soft px-2.5 py-1 text-xs font-semibold text-error">
+                        Ошибка
+                      </span>
+                    </div>
+                    <div className="mt-4 rounded-2xl bg-surface-muted p-4 text-sm leading-relaxed">
+                      <p className="text-text-secondary">Ты выбрал: {selectedMeaning}</p>
+                      <p className="mt-2 font-medium text-success">
+                        Правильное значение: {primaryMeaning.russian}
+                      </p>
+                      <p className="mt-3 text-text-secondary">{primaryMeaning.example}</p>
+                      <p className="mt-1 text-text-secondary">
+                        {primaryMeaning.exampleTranslation}
                       </p>
                     </div>
-                    <span className="rounded-full bg-error-soft px-2.5 py-1 text-xs font-semibold text-error">
-                      Ошибка
-                    </span>
-                  </div>
-                  <div className="mt-4 rounded-2xl bg-surface-muted p-4 text-sm leading-relaxed">
-                    <p className="text-text-secondary">Ты выбрал: {selectedMeaning}</p>
-                    <p className="mt-2 font-medium text-success">
-                      Правильный смысл: {idiom.meaning}
-                    </p>
-                    <p className="mt-3 text-text-secondary">{idiom.example}</p>
-                    <p className="mt-1 text-text-secondary">{idiom.exampleTranslation}</p>
-                  </div>
-                </li>
-              ))}
+                  </li>
+                )
+              })}
             </ul>
           </section>
         )}
@@ -156,7 +170,7 @@ function IdiomQuiz({ category = 'all', onBack, onHome }: IdiomQuizProps) {
             onClick={onBack}
             className="min-h-12 rounded-2xl border border-border bg-surface px-6 py-3 text-base font-semibold text-text-secondary transition-colors hover:bg-surface-muted"
           >
-            К списку идиом
+            К списку фразовых глаголов
           </button>
           <button
             type="button"
@@ -182,7 +196,7 @@ function IdiomQuiz({ category = 'all', onBack, onHome }: IdiomQuizProps) {
       return
     }
 
-    recordIdiomQuizResult(answers.current)
+    recordPhrasalVerbQuizResult(answers.current)
     setFinished(true)
   }
 
@@ -192,14 +206,17 @@ function IdiomQuiz({ category = 'all', onBack, onHome }: IdiomQuizProps) {
     const isCorrect = option === question.correct
 
     setSelected(option)
-    answers.current.push({ idiomId: question.idiom.id, correct: isCorrect })
+    answers.current.push({
+      phrasalVerbId: question.phrasalVerb.id,
+      correct: isCorrect,
+    })
 
     if (isCorrect) {
       setScore((current) => current + 1)
     } else {
       setMistakes((current) => [
         ...current,
-        { idiom: question.idiom, selectedMeaning: option },
+        { phrasalVerb: question.phrasalVerb, selectedMeaning: option },
       ])
     }
 
@@ -234,7 +251,7 @@ function IdiomQuiz({ category = 'all', onBack, onHome }: IdiomQuizProps) {
             onClick={onBack}
             className="inline-flex items-center gap-1 text-sm font-medium text-text-secondary transition-colors hover:text-text-primary"
           >
-            ← К идиомам
+            ← К фразовым глаголам
           </button>
           <span className="text-sm font-medium text-text-secondary">
             Вопрос {index + 1} из {total}
@@ -254,22 +271,19 @@ function IdiomQuiz({ category = 'all', onBack, onHome }: IdiomQuizProps) {
         </span>
         <div className="flex items-center justify-center gap-3">
           <h2 className="text-4xl font-bold tracking-tight text-text-primary">
-            {question.idiom.phrase}
+            {question.phrasalVerb.phrase}
           </h2>
           {isSupported && (
             <button
               type="button"
-              onClick={() => speak(question.idiom.phrase)}
-              aria-label={`Произнести ${question.idiom.phrase}`}
+              onClick={() => speak(question.phrasalVerb.phrase)}
+              aria-label={`Произнести ${question.phrasalVerb.phrase}`}
               className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary-soft text-xl transition-transform hover:scale-105 active:scale-95"
             >
               🔊
             </button>
           )}
         </div>
-        <p className="mt-3 text-sm italic text-text-tertiary">
-          Буквально: "{question.idiom.literal}"
-        </p>
       </div>
 
       <div className="mt-2 flex flex-1 flex-col justify-center gap-3 pb-6">
@@ -289,4 +303,4 @@ function IdiomQuiz({ category = 'all', onBack, onHome }: IdiomQuizProps) {
   )
 }
 
-export default IdiomQuiz
+export default PhrasalVerbQuiz

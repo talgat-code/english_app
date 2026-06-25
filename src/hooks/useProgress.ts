@@ -26,8 +26,10 @@ export interface OverallStats extends QuizStats {
 export interface ProgressState {
   words: Record<string, WordProgress>
   idiomProgress: Record<string, WordProgress>
+  phrasalVerbProgress: Record<string, WordProgress>
   stats: OverallStats
   idiomStats: QuizStats
+  phrasalVerbStats: QuizStats
   completedLessons: string[]
   lessonScores: Record<string, number>
 }
@@ -39,6 +41,11 @@ export interface QuizAnswer {
 
 export interface IdiomQuizAnswer {
   idiomId: string
+  correct: boolean
+}
+
+export interface PhrasalVerbQuizAnswer {
+  phrasalVerbId: string
   correct: boolean
 }
 
@@ -56,6 +63,13 @@ export interface DifficultIdiom {
   percent: number
 }
 
+export interface DifficultPhrasalVerb {
+  phrasalVerbId: string
+  correct: number
+  incorrect: number
+  percent: number
+}
+
 function createEmptyQuizStats(): QuizStats {
   return {
     totalQuizzes: 0,
@@ -67,11 +81,13 @@ function createEmptyState(): ProgressState {
   return {
     words: {},
     idiomProgress: {},
+    phrasalVerbProgress: {},
     stats: {
       ...createEmptyQuizStats(),
       streak: 0,
     },
     idiomStats: createEmptyQuizStats(),
+    phrasalVerbStats: createEmptyQuizStats(),
     completedLessons: [],
     lessonScores: {},
   }
@@ -177,6 +193,19 @@ function normalizeState(value: unknown): ProgressState {
     idiomProgress[id] = normalizeWordProgress(rawProgress)
   }
 
+  const phrasalVerbProgress: Record<string, WordProgress> = {}
+  const rawPhrasalVerbProgress = isRecord(value.phrasalVerbProgress)
+    ? value.phrasalVerbProgress
+    : {}
+
+  for (const [rawId, rawProgress] of Object.entries(rawPhrasalVerbProgress)) {
+    const id = rawId.trim()
+
+    if (!id || !isRecord(rawProgress)) continue
+
+    phrasalVerbProgress[id] = normalizeWordProgress(rawProgress)
+  }
+
   const rawStats = isRecord(value.stats) ? value.stats : {}
 
   const stats: OverallStats = {
@@ -191,6 +220,11 @@ function normalizeState(value: unknown): ProgressState {
 
   const rawIdiomStats = isRecord(value.idiomStats) ? value.idiomStats : {}
   const idiomStats = normalizeQuizStats(rawIdiomStats)
+
+  const rawPhrasalVerbStats = isRecord(value.phrasalVerbStats)
+    ? value.phrasalVerbStats
+    : {}
+  const phrasalVerbStats = normalizeQuizStats(rawPhrasalVerbStats)
 
   const completedLessons = Array.isArray(value.completedLessons)
     ? Array.from(
@@ -219,8 +253,10 @@ function normalizeState(value: unknown): ProgressState {
   return {
     words,
     idiomProgress,
+    phrasalVerbProgress,
     stats,
     idiomStats,
+    phrasalVerbStats,
     completedLessons,
     lessonScores,
   }
@@ -364,7 +400,7 @@ function getTrackedProgress(
 }
 
 function markTrackedItem(
-  collectionKey: 'words' | 'idiomProgress',
+  collectionKey: 'words' | 'idiomProgress' | 'phrasalVerbProgress',
   itemId: string,
   status: WordStatus,
 ) {
@@ -488,6 +524,10 @@ export function markIdiom(idiomId: string, status: WordStatus) {
   markTrackedItem('idiomProgress', idiomId, status)
 }
 
+export function markPhrasalVerb(phrasalVerbId: string, status: WordStatus) {
+  markTrackedItem('phrasalVerbProgress', phrasalVerbId, status)
+}
+
 export function recordCardsViewed() {
   const stats = applyActivity(state.stats)
 
@@ -552,6 +592,30 @@ export function recordIdiomQuizResult(answers: IdiomQuizAnswer[]) {
   })
 }
 
+export function recordPhrasalVerbQuizResult(answers: PhrasalVerbQuizAnswer[]) {
+  const { nextCollection, correctCount, answeredCount } = applyQuizAnswers(
+    state.phrasalVerbProgress,
+    answers.map((answer) => ({
+      id: answer.phrasalVerbId,
+      correct: answer.correct,
+    })),
+  )
+
+  if (answeredCount === 0) return
+
+  const percent = Math.round((correctCount / answeredCount) * 100)
+
+  commit({
+    ...state,
+    phrasalVerbProgress: nextCollection,
+    phrasalVerbStats: {
+      totalQuizzes: state.phrasalVerbStats.totalQuizzes + 1,
+      quizPercentSum: state.phrasalVerbStats.quizPercentSum + percent,
+    },
+    stats: applyActivity(state.stats),
+  })
+}
+
 export function completeLesson(
   lessonId: string,
   score: number,
@@ -605,12 +669,20 @@ export function averageIdiomScore(progress: ProgressState): number {
   return averageFromStats(progress.idiomStats)
 }
 
+export function averagePhrasalVerbScore(progress: ProgressState): number {
+  return averageFromStats(progress.phrasalVerbStats)
+}
+
 export function knownWordsCount(progress: ProgressState): number {
   return countKnown(progress.words)
 }
 
 export function knownIdiomsCount(progress: ProgressState): number {
   return countKnown(progress.idiomProgress)
+}
+
+export function knownPhrasalVerbsCount(progress: ProgressState): number {
+  return countKnown(progress.phrasalVerbProgress)
 }
 
 export function knownInCategory(
@@ -625,6 +697,13 @@ export function knownInIdiomCategory(
   idiomIds: string[],
 ): number {
   return countKnownIds(progress.idiomProgress, idiomIds)
+}
+
+export function knownInPhrasalVerbCategory(
+  progress: ProgressState,
+  phrasalVerbIds: string[],
+): number {
+  return countKnownIds(progress.phrasalVerbProgress, phrasalVerbIds)
 }
 
 export function difficultWords(
@@ -651,6 +730,20 @@ export function difficultIdioms(
       correct: idiom.correct,
       incorrect: idiom.incorrect,
       percent: idiom.percent,
+    }),
+  )
+}
+
+export function difficultPhrasalVerbs(
+  progress: ProgressState,
+  limit = 5,
+): DifficultPhrasalVerb[] {
+  return buildDifficultEntries(progress.phrasalVerbProgress, limit).map(
+    (phrasalVerb) => ({
+      phrasalVerbId: phrasalVerb.id,
+      correct: phrasalVerb.correct,
+      incorrect: phrasalVerb.incorrect,
+      percent: phrasalVerb.percent,
     }),
   )
 }

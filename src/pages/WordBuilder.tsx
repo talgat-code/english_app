@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { getCategoryById } from '../data/words'
 import { buildLetterTiles, playableWords, type LetterTile } from '../utils/games'
 import { EmptyGame, GameResult } from './Hangman'
@@ -170,27 +170,27 @@ function WordBuilder({ categoryId, onOtherCategory, onGamesMenu }: WordBuilderPr
   }
 
   return (
-    <div className="flex min-h-screen w-full flex-col px-5 py-6">
+    <div className="flex min-h-screen w-full flex-col px-4 py-6">
       <header className="mb-5">
         <div className="flex items-center justify-between">
           <button
             type="button"
             onClick={onGamesMenu}
-            className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-800"
+            className="text-sm font-medium text-text-secondary transition-colors hover:text-text-primary"
           >
             ← Игры
           </button>
-          <div className="rounded-full bg-indigo-600 px-4 py-2 text-sm font-bold text-white shadow-sm">
+          <div className="rounded-full bg-primary px-4 py-2 text-sm font-bold text-white shadow-sm">
             {score} очков
           </div>
         </div>
         <div className="mt-4 flex items-center gap-3">
-          <span className="text-sm font-medium text-slate-400">
+          <span className="text-sm font-medium text-text-tertiary">
             {index + 1} / {words.length}
           </span>
-          <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-200">
+          <div className="h-2 flex-1 overflow-hidden rounded-full bg-border">
             <div
-              className="h-full rounded-full bg-cyan-500 transition-all duration-300"
+              className="h-full rounded-full bg-primary transition-all duration-entrance"
               style={{ width: `${((index + 1) / words.length) * 100}%` }}
             />
           </div>
@@ -198,10 +198,10 @@ function WordBuilder({ categoryId, onOtherCategory, onGamesMenu }: WordBuilderPr
         </div>
       </header>
 
-      <section className="rounded-3xl border border-slate-100 bg-white p-5 text-center shadow-sm">
-        <p className="text-sm text-slate-400">Составь слово</p>
-        <p className="mt-2 text-xl font-bold text-slate-900">{word.russian}</p>
-        <p className="mt-1 text-sm text-slate-400">[{word.transcription}]</p>
+      <section className="rounded-3xl border border-border-subtle bg-surface p-5 text-center shadow-sm">
+        <p className="text-sm text-text-tertiary">Составь слово</p>
+        <p className="mt-2 text-xl font-bold text-text-primary">{word.russian}</p>
+        <p className="mt-1 text-sm text-text-tertiary">[{word.transcription}]</p>
       </section>
 
       <section className="mt-5">
@@ -209,14 +209,14 @@ function WordBuilder({ categoryId, onOtherCategory, onGamesMenu }: WordBuilderPr
           key={shake}
           className={`flex min-h-20 flex-wrap items-center justify-center gap-2 rounded-3xl border-2 border-dashed p-3 ${
             solved
-              ? 'game-success-pop border-emerald-300 bg-emerald-50'
+              ? 'game-success-pop border-success-border bg-success-soft'
               : shake > 0
-                ? 'game-shake border-rose-300 bg-rose-50'
-                : 'border-slate-200 bg-white/60'
+                ? 'game-shake border-error-border bg-error-soft'
+                : 'border-border bg-surface/70'
           }`}
         >
           {answerTiles.length === 0 && (
-            <span className="text-sm text-slate-400">Нажимай буквы по порядку</span>
+            <span className="text-sm text-text-tertiary">Нажимай буквы по порядку</span>
           )}
           {answerTiles.map((tile) => (
             <button
@@ -226,10 +226,10 @@ function WordBuilder({ categoryId, onOtherCategory, onGamesMenu }: WordBuilderPr
               disabled={solved || lockedIds.has(tile.id)}
               className={`flex h-12 min-w-11 items-center justify-center rounded-xl border px-3 text-lg font-bold shadow-sm transition-all ${
                 solved
-                  ? 'border-emerald-400 bg-emerald-500 text-white'
+                  ? 'border-success bg-success text-white dark:bg-success-button-dark'
                   : lockedIds.has(tile.id)
-                    ? 'border-amber-300 bg-amber-100 text-amber-700'
-                    : 'border-indigo-200 bg-indigo-600 text-white active:scale-95'
+                    ? 'border-warning-border bg-warning-soft text-warning'
+                    : 'border-primary-border bg-primary text-white active:scale-95'
               }`}
             >
               {tile.letter}
@@ -238,7 +238,7 @@ function WordBuilder({ categoryId, onOtherCategory, onGamesMenu }: WordBuilderPr
         </div>
 
         {solved && (
-          <p className="game-success-pop mt-4 text-center text-xl font-bold text-emerald-600">
+          <p className="game-success-pop mt-4 text-center text-xl font-bold text-success">
             Отлично! +{10 - hints} очков 🎉
           </p>
         )}
@@ -251,7 +251,7 @@ function WordBuilder({ categoryId, onOtherCategory, onGamesMenu }: WordBuilderPr
             type="button"
             onClick={() => selectTile(tile.id)}
             disabled={solved}
-            className="flex h-12 min-w-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-3 text-lg font-bold text-slate-700 shadow-sm transition-all hover:-translate-y-0.5 hover:border-indigo-300 active:scale-95 disabled:opacity-40"
+            className="flex h-12 min-w-11 items-center justify-center rounded-xl border border-border bg-surface px-3 text-lg font-bold text-text-secondary shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary-border active:scale-95 disabled:opacity-40"
           >
             {tile.letter}
           </button>
@@ -265,7 +265,7 @@ function WordBuilder({ categoryId, onOtherCategory, onGamesMenu }: WordBuilderPr
               type="button"
               onClick={clearAnswer}
               disabled={answerIds.length === lockedIds.size}
-              className="min-h-12 rounded-2xl border border-slate-200 bg-white px-4 font-semibold text-slate-600 transition-all active:scale-[0.98] disabled:opacity-40"
+              className="min-h-12 rounded-2xl border border-border bg-surface px-4 font-semibold text-text-secondary transition-all active:scale-[0.98] disabled:opacity-40"
             >
               Очистить
             </button>
@@ -273,7 +273,7 @@ function WordBuilder({ categoryId, onOtherCategory, onGamesMenu }: WordBuilderPr
               type="button"
               onClick={useHint}
               disabled={hints >= 2}
-              className="min-h-12 rounded-2xl border border-amber-200 bg-amber-50 px-4 font-semibold text-amber-700 transition-all active:scale-[0.98] disabled:opacity-40"
+              className="min-h-12 rounded-2xl border border-warning-border bg-warning-soft px-4 font-semibold text-warning transition-all active:scale-[0.98] disabled:opacity-40"
             >
               Подсказка 💡 {2 - hints}
             </button>
@@ -283,7 +283,7 @@ function WordBuilder({ categoryId, onOtherCategory, onGamesMenu }: WordBuilderPr
           <button
             type="button"
             onClick={nextWord}
-            className="min-h-12 rounded-2xl bg-indigo-600 px-5 font-semibold text-white transition-all hover:bg-indigo-700 active:scale-[0.98]"
+            className="min-h-12 rounded-2xl bg-primary px-5 font-semibold text-white transition-all hover:bg-primary-hover active:scale-[0.98]"
           >
             {index === words.length - 1 ? 'Показать результат' : 'Следующее слово'}
           </button>

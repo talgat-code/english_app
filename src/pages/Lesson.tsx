@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+﻿import { useMemo, useState } from 'react'
 import { getLessonById } from '../data/lessons'
 import { completeLesson, useProgress } from '../hooks/useProgress'
 import { useSpeech } from '../hooks/useSpeech'
@@ -60,12 +60,12 @@ function Lesson({ lessonId, onBack, onComplete }: LessonProps) {
 
   if (!lesson) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center px-6 text-center">
-        <p className="text-slate-500">Урок не найден.</p>
+      <div className="flex min-h-screen flex-col items-center justify-center px-4 text-center">
+        <p className="text-text-secondary">Урок не найден.</p>
         <button
           type="button"
           onClick={() => onBack()}
-          className="mt-4 min-h-11 rounded-lg bg-slate-950 px-5 text-sm font-semibold text-white"
+          className="mt-4 min-h-11 rounded-lg bg-primary px-5 text-sm font-semibold text-white"
         >
           ← Назад
         </button>
@@ -78,17 +78,17 @@ function Lesson({ lessonId, onBack, onComplete }: LessonProps) {
 
   if (!unlocked) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center px-6 text-center">
-        <h1 className="mt-4 text-2xl font-bold text-slate-900">
+      <div className="flex min-h-screen flex-col items-center justify-center px-4 text-center">
+        <h1 className="mt-4 text-2xl font-bold text-text-primary">
           Урок пока заблокирован
         </h1>
-        <p className="mt-2 text-sm text-slate-500">
+        <p className="mt-2 text-sm text-text-secondary">
           Сначала пройди предыдущий урок или уровень.
         </p>
         <button
           type="button"
           onClick={() => onBack(lessonData.level)}
-          className="mt-5 min-h-11 rounded-lg bg-slate-950 px-5 text-sm font-semibold text-white"
+          className="mt-5 min-h-11 rounded-lg bg-primary px-5 text-sm font-semibold text-white"
         >
           ← К списку уроков
         </button>
@@ -190,39 +190,39 @@ function Lesson({ lessonId, onBack, onComplete }: LessonProps) {
 
   function optionClasses(optionIndex: number): string {
     const base =
-      'min-h-14 w-full rounded-lg border px-5 py-3 text-left text-base font-medium transition-colors duration-200'
+      'min-h-14 w-full rounded-lg border px-5 py-3 text-left text-base font-medium transition-colors duration-app'
 
     if (currentExercise.type !== 'choose_correct' || exerciseResult === null) {
-      return `${base} border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50`
+      return `${base} border-border bg-surface text-text-secondary hover:border-border-strong hover:bg-surface-muted`
     }
 
     if (optionIndex === currentExercise.correctIndex) {
-      return `${base} border-emerald-400 bg-emerald-50 text-emerald-700`
+      return `${base} border-success bg-success-soft text-success`
     }
     if (optionIndex === selectedOption) {
-      return `${base} border-rose-400 bg-rose-50 text-rose-700`
+      return `${base} border-error bg-error-soft text-error`
     }
-    return `${base} border-slate-200 bg-white text-slate-400 opacity-60`
+    return `${base} border-border bg-surface text-text-tertiary opacity-60`
   }
 
   return (
-    <div className="flex min-h-screen w-full flex-col px-5 py-6">
+    <div className="flex min-h-screen w-full flex-col px-4 py-6">
       <header className="mb-5">
         <div className="flex items-center justify-between gap-3">
           <button
             type="button"
             onClick={() => onBack(lesson.level)}
-            className="text-sm font-medium text-slate-500 hover:text-slate-800"
+            className="text-sm font-medium text-text-secondary hover:text-text-primary"
           >
             ← Уроки {lesson.level}
           </button>
-          <span className="text-xs font-semibold text-slate-400">
+          <span className="text-xs font-semibold text-text-tertiary">
             Этап {stageNumber} из {totalStages}
           </span>
         </div>
-        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-200">
+        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-border">
           <div
-            className="h-full rounded-full bg-slate-950 transition-all duration-500 ease-out"
+            className="h-full rounded-full bg-primary transition-all duration-entrance ease-out"
             style={{ width: `${stageProgress}%` }}
           />
         </div>
@@ -230,32 +230,32 @@ function Lesson({ lessonId, onBack, onComplete }: LessonProps) {
 
       {stage === 'theory' && (
         <section className="flex flex-1 flex-col">
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+          <p className="text-xs font-semibold uppercase tracking-wide text-text-tertiary">
             {lesson.level} · урок {lesson.order}
           </p>
-          <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
+          <h1 className="mt-2 text-3xl font-bold tracking-tight text-text-primary">
             {lesson.title}
           </h1>
-          <p className="mt-3 text-base leading-relaxed text-slate-600">
+          <p className="mt-3 text-base leading-relaxed text-text-secondary">
             {lesson.theory.explanation}
           </p>
 
-          <div className="mt-6 rounded-lg border border-slate-200 bg-white p-4">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-400">
+          <div className="mt-6 rounded-lg border border-border bg-surface p-4">
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-text-tertiary">
               Правила
             </h2>
-            <ol className="mt-3 list-decimal space-y-3 pl-5 text-sm leading-relaxed text-slate-700">
+            <ol className="mt-3 list-decimal space-y-3 pl-5 text-sm leading-relaxed text-text-secondary">
               {lesson.theory.rules.map((rule) => (
                 <li key={rule}>{rule}</li>
               ))}
             </ol>
           </div>
 
-          <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-amber-700">
+          <div className="mt-4 rounded-lg border border-warning-border bg-warning-soft p-4">
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-warning">
               Советы
             </h2>
-            <ul className="mt-3 space-y-2 text-sm leading-relaxed text-amber-900">
+            <ul className="mt-3 space-y-2 text-sm leading-relaxed text-warning">
               {lesson.theory.tips.map((tip) => (
                 <li key={tip}>• {tip}</li>
               ))}
@@ -266,10 +266,10 @@ function Lesson({ lessonId, onBack, onComplete }: LessonProps) {
             {lesson.examples.map((example) => (
               <div
                 key={example.english}
-                className="rounded-lg border border-slate-200 bg-white p-4"
+                className="rounded-lg border border-border bg-surface p-4"
               >
-                <p className="font-semibold text-slate-900">{example.english}</p>
-                <p className="mt-1 text-sm text-slate-500">{example.russian}</p>
+                <p className="font-semibold text-text-primary">{example.english}</p>
+                <p className="mt-1 text-sm text-text-secondary">{example.russian}</p>
               </div>
             ))}
           </div>
@@ -277,7 +277,7 @@ function Lesson({ lessonId, onBack, onComplete }: LessonProps) {
           <button
             type="button"
             onClick={() => setStage('vocabulary')}
-            className="mt-6 min-h-11 w-full rounded-lg bg-slate-950 px-5 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
+            className="mt-6 min-h-11 w-full rounded-lg bg-primary px-5 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
           >
             Понял, дальше →
           </button>
@@ -288,21 +288,21 @@ function Lesson({ lessonId, onBack, onComplete }: LessonProps) {
         <section className="flex flex-1 flex-col">
           <div className="mb-5 flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+              <p className="text-xs font-semibold uppercase tracking-wide text-text-tertiary">
                 Новые слова
               </p>
-              <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900">
+              <h1 className="mt-1 text-2xl font-bold tracking-tight text-text-primary">
                 {cardIndex + 1} из {lesson.vocabulary.length}
               </h1>
             </div>
-            <span className="text-sm font-semibold text-slate-400">
+            <span className="text-sm font-semibold text-text-tertiary">
               {seenWordIds.size}/{lesson.vocabulary.length}
             </span>
           </div>
 
-          <div className="h-1.5 overflow-hidden rounded-full bg-slate-200">
+          <div className="h-1.5 overflow-hidden rounded-full bg-border">
             <div
-              className="h-full rounded-full bg-slate-950 transition-all duration-500 ease-out"
+              className="h-full rounded-full bg-primary transition-all duration-entrance ease-out"
               style={{
                 width: `${(seenWordIds.size / lesson.vocabulary.length) * 100}%`,
               }}
@@ -316,7 +316,7 @@ function Lesson({ lessonId, onBack, onComplete }: LessonProps) {
                   type="button"
                   onClick={() => speak(currentWord.english)}
                   aria-label={`Произнести ${currentWord.english}`}
-                  className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 bg-white text-base shadow-sm transition-colors hover:bg-slate-50"
+                  className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-md border border-border bg-surface text-base shadow-sm transition-colors hover:bg-surface-muted"
                 >
                   🔊
                 </button>
@@ -325,37 +325,37 @@ function Lesson({ lessonId, onBack, onComplete }: LessonProps) {
                 type="button"
                 onClick={() => setFlipped((value) => !value)}
                 aria-label="Перевернуть карточку"
-                className="relative block h-80 w-full cursor-pointer transition-transform duration-500 [transform-style:preserve-3d]"
+                className="relative block h-80 w-full cursor-pointer transition-transform duration-entrance [transform-style:preserve-3d]"
                 style={{
                   transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
                 }}
               >
-                <div className="absolute inset-0 flex flex-col items-center justify-center rounded-lg border border-slate-200 bg-white p-6 text-center shadow-sm [backface-visibility:hidden]">
-                  <span className="mb-3 rounded-md bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
+                <div className="absolute inset-0 flex flex-col items-center justify-center rounded-lg border border-border bg-surface p-6 text-center shadow-sm [backface-visibility:hidden]">
+                  <span className="mb-3 rounded-md bg-surface-muted px-3 py-1 text-xs font-medium text-text-secondary">
                     {lesson.title}
                   </span>
-                  <h2 className="text-3xl font-bold tracking-tight text-slate-900">
+                  <h2 className="text-3xl font-bold tracking-tight text-text-primary">
                     {currentWord.english}
                   </h2>
-                  <p className="mt-2 text-lg text-slate-400">
+                  <p className="mt-2 text-lg text-text-tertiary">
                     [{currentWord.transcription}]
                   </p>
-                  <p className="mt-6 text-xs text-slate-400">
+                  <p className="mt-6 text-xs text-text-tertiary">
                     Нажми, чтобы перевернуть
                   </p>
                 </div>
                 <div
-                  className="absolute inset-0 flex flex-col items-center justify-center rounded-lg border border-slate-900 bg-slate-950 p-6 text-center text-white shadow-sm [backface-visibility:hidden]"
+                  className="absolute inset-0 flex flex-col items-center justify-center rounded-lg border border-primary bg-primary p-6 text-center text-white shadow-sm [backface-visibility:hidden]"
                   style={{ transform: 'rotateY(180deg)' }}
                 >
                   <h2 className="text-2xl font-bold tracking-tight">
                     {currentWord.russian}
                   </h2>
                   <div className="mt-5 w-full rounded-lg bg-white/10 p-4">
-                    <p className="text-sm font-medium text-slate-50">
+                    <p className="text-sm font-medium text-white">
                       {currentWord.example}
                     </p>
-                    <p className="mt-1.5 text-sm text-slate-300">
+                    <p className="mt-1.5 text-sm text-white/70">
                       {currentWord.exampleRu}
                     </p>
                   </div>
@@ -369,7 +369,7 @@ function Lesson({ lessonId, onBack, onComplete }: LessonProps) {
               type="button"
               onClick={() => goToCard(cardIndex - 1)}
               disabled={cardIndex === 0}
-              className="flex h-11 w-11 items-center justify-center rounded-md border border-slate-200 bg-white text-lg text-slate-600 disabled:opacity-40"
+              className="flex h-11 w-11 items-center justify-center rounded-md border border-border bg-surface text-lg text-text-secondary disabled:opacity-40"
             >
               ‹
             </button>
@@ -379,7 +379,7 @@ function Lesson({ lessonId, onBack, onComplete }: LessonProps) {
                 allWordsSeen ? setStage('exercises') : goToCard(cardIndex + 1)
               }
               disabled={!allWordsSeen && cardIndex === lesson.vocabulary.length - 1}
-              className="min-h-11 rounded-lg bg-slate-950 px-5 text-sm font-semibold text-white transition-colors hover:bg-slate-800 disabled:bg-slate-300"
+              className="min-h-11 rounded-lg bg-primary px-5 text-sm font-semibold text-white transition-colors hover:bg-primary-hover disabled:bg-border-strong"
             >
               {allWordsSeen ? 'К упражнениям →' : 'Следующее слово'}
             </button>
@@ -387,7 +387,7 @@ function Lesson({ lessonId, onBack, onComplete }: LessonProps) {
               type="button"
               onClick={() => goToCard(cardIndex + 1)}
               disabled={cardIndex === lesson.vocabulary.length - 1}
-              className="flex h-11 w-11 items-center justify-center rounded-md border border-slate-200 bg-white text-lg text-slate-600 disabled:opacity-40"
+              className="flex h-11 w-11 items-center justify-center rounded-md border border-border bg-surface text-lg text-text-secondary disabled:opacity-40"
             >
               ›
             </button>
@@ -399,31 +399,31 @@ function Lesson({ lessonId, onBack, onComplete }: LessonProps) {
         <section className="flex flex-1 flex-col">
           <div className="mb-5">
             <div className="flex items-center justify-between">
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+              <p className="text-xs font-semibold uppercase tracking-wide text-text-tertiary">
                 Упражнения
               </p>
-              <span className="text-sm font-semibold text-slate-400">
+              <span className="text-sm font-semibold text-text-tertiary">
                 {exerciseIndex + 1} из {lesson.exercises.length}
               </span>
             </div>
-            <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-200">
+            <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-border">
               <div
-                className="h-full rounded-full bg-slate-950 transition-all duration-500 ease-out"
+                className="h-full rounded-full bg-primary transition-all duration-entrance ease-out"
                 style={{ width: `${exerciseProgress}%` }}
               />
             </div>
           </div>
 
-          <div className="rounded-lg border border-slate-200 bg-white p-4">
+          <div className="rounded-lg border border-border bg-surface p-4">
             {currentExercise.type === 'fill_blank' && (
               <>
-                <span className="rounded-md bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                <span className="rounded-md bg-surface-muted px-3 py-1 text-xs font-semibold text-text-secondary">
                   Вставь слово
                 </span>
-                <p className="mt-5 text-2xl font-bold leading-snug text-slate-900">
+                <p className="mt-5 text-2xl font-bold leading-snug text-text-primary">
                   {currentExercise.sentence}
                 </p>
-                <p className="mt-2 text-sm text-slate-500">
+                <p className="mt-2 text-sm text-text-secondary">
                   Подсказка: {currentExercise.hint}
                 </p>
                 <input
@@ -432,10 +432,10 @@ function Lesson({ lessonId, onBack, onComplete }: LessonProps) {
                   disabled={exerciseResult !== null}
                   className={`mt-5 min-h-11 w-full rounded-lg border px-4 text-base outline-none transition-colors ${
                     exerciseResult === null
-                      ? 'border-slate-200 focus:border-slate-400'
+                      ? 'border-border focus:border-border-strong'
                       : exerciseResult
-                        ? 'border-emerald-400 bg-emerald-50 text-emerald-700'
-                        : 'border-rose-400 bg-rose-50 text-rose-700'
+                        ? 'border-success bg-success-soft text-success'
+                        : 'border-error bg-error-soft text-error'
                   }`}
                   placeholder="Ответ"
                 />
@@ -444,10 +444,10 @@ function Lesson({ lessonId, onBack, onComplete }: LessonProps) {
 
             {currentExercise.type === 'translate' && (
               <>
-                <span className="rounded-md bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                <span className="rounded-md bg-surface-muted px-3 py-1 text-xs font-semibold text-text-secondary">
                   Переведи
                 </span>
-                <p className="mt-5 text-xl font-bold leading-snug text-slate-900">
+                <p className="mt-5 text-xl font-bold leading-snug text-text-primary">
                   {currentExercise.russian}
                 </p>
                 <textarea
@@ -456,10 +456,10 @@ function Lesson({ lessonId, onBack, onComplete }: LessonProps) {
                   disabled={exerciseResult !== null}
                   className={`mt-5 min-h-28 w-full resize-none rounded-lg border p-4 text-base outline-none transition-colors ${
                     exerciseResult === null
-                      ? 'border-slate-200 focus:border-slate-400'
+                      ? 'border-border focus:border-border-strong'
                       : exerciseResult
-                        ? 'border-emerald-400 bg-emerald-50 text-emerald-700'
-                        : 'border-rose-400 bg-rose-50 text-rose-700'
+                        ? 'border-success bg-success-soft text-success'
+                        : 'border-error bg-error-soft text-error'
                   }`}
                   placeholder="Напиши по-английски"
                 />
@@ -468,10 +468,10 @@ function Lesson({ lessonId, onBack, onComplete }: LessonProps) {
 
             {currentExercise.type === 'choose_correct' && (
               <>
-                <span className="rounded-md bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                <span className="rounded-md bg-surface-muted px-3 py-1 text-xs font-semibold text-text-secondary">
                   Выбери вариант
                 </span>
-                <p className="mt-5 text-xl font-bold leading-snug text-slate-900">
+                <p className="mt-5 text-xl font-bold leading-snug text-text-primary">
                   {currentExercise.question}
                 </p>
                 <div className="mt-5 flex flex-col gap-3">
@@ -495,7 +495,7 @@ function Lesson({ lessonId, onBack, onComplete }: LessonProps) {
                 type="button"
                 onClick={checkTextAnswer}
                 disabled={!textAnswer.trim() || exerciseResult !== null}
-                className="mt-4 min-h-11 w-full rounded-lg bg-slate-950 px-5 text-sm font-semibold text-white transition-colors hover:bg-slate-800 disabled:bg-slate-300"
+                className="mt-4 min-h-11 w-full rounded-lg bg-primary px-5 text-sm font-semibold text-white transition-colors hover:bg-primary-hover disabled:bg-border-strong"
               >
                 Проверить
               </button>
@@ -505,8 +505,8 @@ function Lesson({ lessonId, onBack, onComplete }: LessonProps) {
               <div
                 className={`mt-4 rounded-lg border p-4 ${
                   exerciseResult
-                    ? 'border-emerald-100 bg-emerald-50 text-emerald-800'
-                    : 'border-rose-100 bg-rose-50 text-rose-800'
+                    ? 'border-success-border bg-success-soft text-success'
+                    : 'border-error-border bg-error-soft text-error'
                 }`}
               >
                 <p className="font-semibold">
@@ -518,7 +518,7 @@ function Lesson({ lessonId, onBack, onComplete }: LessonProps) {
                 <button
                   type="button"
                   onClick={nextExercise}
-                  className="mt-4 min-h-10 w-full rounded-md bg-white px-4 text-sm font-semibold text-slate-800"
+                  className="mt-4 min-h-10 w-full rounded-md bg-surface px-4 text-sm font-semibold text-text-primary"
                 >
                   {exerciseIndex === lesson.exercises.length - 1
                     ? 'К результатам →'
@@ -535,32 +535,32 @@ function Lesson({ lessonId, onBack, onComplete }: LessonProps) {
           {correctCount === lesson.exercises.length && (
             <span className="animate-bounce text-3xl">🎉</span>
           )}
-          <h1 className="mt-4 text-3xl font-bold tracking-tight text-slate-900">
+          <h1 className="mt-4 text-3xl font-bold tracking-tight text-text-primary">
             Результат урока
           </h1>
-          <p className="mt-3 text-lg font-semibold text-slate-950">
+          <p className="mt-3 text-lg font-semibold text-text-primary">
             Правильных {correctCount} из {lesson.exercises.length}
           </p>
-          <p className="mt-1 text-sm text-slate-500">Лучший результат сохранится: {scorePercent}%</p>
+          <p className="mt-1 text-sm text-text-secondary">Лучший результат сохранится: {scorePercent}%</p>
 
           {mistakes.length > 0 && (
             <div className="mt-6 w-full text-left">
-              <h2 className="text-sm font-bold uppercase tracking-wide text-slate-400">
+              <h2 className="text-sm font-bold uppercase tracking-wide text-text-tertiary">
                 Ошибки
               </h2>
               <ul className="mt-3 flex flex-col gap-3">
                 {mistakes.map((mistake) => (
                   <li
                     key={`${mistake.question}-${mistake.correctAnswer}`}
-                    className="rounded-lg border border-rose-100 bg-rose-50 p-4"
+                    className="rounded-lg border border-error-border bg-error-soft p-4"
                   >
-                    <p className="text-sm font-semibold text-rose-950">
+                    <p className="text-sm font-semibold text-error">
                       {mistake.question}
                     </p>
-                    <p className="mt-2 text-xs text-rose-700">
+                    <p className="mt-2 text-xs text-error">
                       Твой ответ: {mistake.userAnswer}
                     </p>
-                    <p className="mt-1 text-xs font-semibold text-rose-900">
+                    <p className="mt-1 text-xs font-semibold text-error">
                       Верно: {mistake.correctAnswer}
                     </p>
                   </li>
@@ -574,7 +574,7 @@ function Lesson({ lessonId, onBack, onComplete }: LessonProps) {
               <button
                 type="button"
                 onClick={retryExercises}
-                className="min-h-11 w-full rounded-lg bg-slate-900 px-5 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
+                className="min-h-11 w-full rounded-lg bg-primary px-5 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
               >
                 Пройти упражнения снова
               </button>
@@ -582,7 +582,7 @@ function Lesson({ lessonId, onBack, onComplete }: LessonProps) {
             <button
               type="button"
               onClick={finishLesson}
-              className="min-h-11 w-full rounded-lg bg-slate-950 px-5 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
+              className="min-h-11 w-full rounded-lg bg-primary px-5 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
             >
               Завершить урок
             </button>

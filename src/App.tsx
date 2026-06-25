@@ -1,6 +1,7 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { getIdiomOfDay, type IdiomFilter } from './data/idioms'
 import { getLevelInfo } from './data/lessons'
+import type { PhrasalVerbFilter } from './data/phrasalVerbs'
 import {
   isStreakInterrupted,
   reviewWords,
@@ -8,6 +9,7 @@ import {
 } from './hooks/useProgress'
 import { useNotificationSettings } from './hooks/useNotifications'
 import { useReminderCheck } from './hooks/useReminderCheck'
+import { useTheme } from './hooks/useTheme'
 import AIHome from './pages/AIHome'
 import AITutor from './pages/AITutor'
 import AIWords from './pages/AIWords'
@@ -24,8 +26,11 @@ import LessonList from './pages/LessonList'
 import Levels from './pages/Levels'
 import MyWords from './pages/MyWords'
 import Onboarding from './pages/Onboarding'
+import PhrasalVerbQuiz from './pages/PhrasalVerbQuiz'
+import PhrasalVerbs from './pages/PhrasalVerbs'
 import Quiz from './pages/Quiz'
 import Review from './pages/Review'
+import Search from './pages/Search'
 import Settings from './pages/Settings'
 import Stats from './pages/Stats'
 import WordBuilder from './pages/WordBuilder'
@@ -50,10 +55,17 @@ type Screen =
   | { name: 'review' }
   | { name: 'stats' }
   | { name: 'settings' }
+  | { name: 'search'; from?: 'categories' | 'idioms' | 'phrasal-verbs' }
   | { name: 'irregular-verbs' }
   | { name: 'idioms'; category?: IdiomFilter; idiomId?: string }
   | { name: 'idiom-quiz'; category?: IdiomFilter }
-  | { name: 'flashcards'; categoryId: string }
+  | {
+      name: 'phrasal-verbs'
+      category?: PhrasalVerbFilter
+      phrasalVerbId?: string
+    }
+  | { name: 'phrasal-verb-quiz'; category?: PhrasalVerbFilter }
+  | { name: 'flashcards'; categoryId: string; wordId?: string }
   | { name: 'quiz'; categoryId: string }
   | { name: 'hangman'; categoryId: string }
   | { name: 'word-builder'; categoryId: string }
@@ -64,6 +76,7 @@ function App() {
   const [screen, setScreen] = useState<Screen>({ name: 'home' })
   const progress = useProgress()
   const notificationSettings = useNotificationSettings()
+  const { theme, toggleTheme } = useTheme()
   const hardWordCount = reviewWords(progress).length
   const streakInterrupted = isStreakInterrupted(progress)
   const nextLesson = nextAvailableLesson(progress)
@@ -101,9 +114,19 @@ function App() {
     else setScreen({ name: 'home' })
   }
 
+  function backFromSearch(from: Screen & { name: 'search' }) {
+    if (from.from === 'idioms') setScreen({ name: 'idioms' })
+    else if (from.from === 'phrasal-verbs') setScreen({ name: 'phrasal-verbs' })
+    else if (from.from === 'categories') setScreen({ name: 'categories' })
+    else setScreen({ name: 'home' })
+  }
+
+  const screenKey = Object.values(screen).join(':')
+
   return (
-    <div className="min-h-screen bg-zinc-50 text-slate-900">
-      <main className={`mx-auto w-full max-w-[480px] ${showTabBar ? 'pb-20' : ''}`}>
+    <div className="min-h-screen bg-background text-text-primary">
+      <main className={`mx-auto w-full max-w-[480px] ${showTabBar ? 'pb-tab-safe' : 'pb-safe'}`}>
+        <div key={screenKey} className="page-transition">
         {!appReady && <Onboarding onDone={() => setScreen({ name: 'home' })} />}
 
         {appReady && screen.name === 'home' && (
@@ -119,6 +142,7 @@ function App() {
             onLessons={() => setScreen({ name: 'levels' })}
             onVocabulary={() => setScreen({ name: 'categories' })}
             onIdioms={() => setScreen({ name: 'idioms' })}
+            onPhrasalVerbs={() => setScreen({ name: 'phrasal-verbs' })}
             onOpenIdiomOfDay={() =>
               setScreen({
                 name: 'idioms',
@@ -168,6 +192,9 @@ function App() {
               )
             }
             onBack={() => setScreen({ name: 'home' })}
+            onSearch={() => setScreen({ name: 'search', from: 'categories' })}
+            onIdioms={() => setScreen({ name: 'idioms' })}
+            onPhrasalVerbs={() => setScreen({ name: 'phrasal-verbs' })}
           />
         )}
 
@@ -176,7 +203,11 @@ function App() {
         )}
 
         {appReady && screen.name === 'settings' && (
-          <Settings onBack={() => setScreen({ name: 'stats' })} />
+          <Settings
+            theme={theme}
+            onToggleTheme={toggleTheme}
+            onBack={() => setScreen({ name: 'stats' })}
+          />
         )}
 
         {appReady && screen.name === 'review' && <Review />}
@@ -191,6 +222,9 @@ function App() {
             initialCategory={screen.category}
             initialExpandedIdiomId={screen.idiomId}
             onBack={() => setScreen({ name: 'home' })}
+            onSearch={() => setScreen({ name: 'search', from: 'idioms' })}
+            onWords={() => setScreen({ name: 'categories' })}
+            onPhrasalVerbs={() => setScreen({ name: 'phrasal-verbs' })}
             onStartQuiz={(category) => setScreen({ name: 'idiom-quiz', category })}
           />
         )}
@@ -199,6 +233,46 @@ function App() {
           <IdiomQuiz
             category={screen.category}
             onBack={() => setScreen({ name: 'idioms', category: screen.category })}
+            onHome={() => setScreen({ name: 'home' })}
+          />
+        )}
+
+        {appReady && screen.name === 'phrasal-verbs' && (
+          <PhrasalVerbs
+            key={`${screen.category ?? 'all'}:${screen.phrasalVerbId ?? 'list'}`}
+            initialCategory={screen.category}
+            initialExpandedPhrasalVerbId={screen.phrasalVerbId}
+            onBack={() => setScreen({ name: 'home' })}
+            onSearch={() => setScreen({ name: 'search', from: 'phrasal-verbs' })}
+            onWords={() => setScreen({ name: 'categories' })}
+            onIdioms={() => setScreen({ name: 'idioms' })}
+            onStartQuiz={(category) =>
+              setScreen({ name: 'phrasal-verb-quiz', category })
+            }
+          />
+        )}
+
+        {appReady && screen.name === 'search' && (
+          <Search
+            onBack={() => backFromSearch(screen)}
+            onSelectWord={(categoryId, wordId) =>
+              setScreen({ name: 'flashcards', categoryId, wordId })
+            }
+            onSelectIdiom={(category, idiomId) =>
+              setScreen({ name: 'idioms', category, idiomId })
+            }
+            onSelectPhrasalVerb={(category, phrasalVerbId) =>
+              setScreen({ name: 'phrasal-verbs', category, phrasalVerbId })
+            }
+          />
+        )}
+
+        {appReady && screen.name === 'phrasal-verb-quiz' && (
+          <PhrasalVerbQuiz
+            category={screen.category}
+            onBack={() =>
+              setScreen({ name: 'phrasal-verbs', category: screen.category })
+            }
             onHome={() => setScreen({ name: 'home' })}
           />
         )}
@@ -251,6 +325,7 @@ function App() {
         {appReady && screen.name === 'flashcards' && (
           <Flashcards
             categoryId={screen.categoryId}
+            initialWordId={screen.wordId}
             onBack={() => setScreen({ name: 'categories' })}
           />
         )}
@@ -296,6 +371,7 @@ function App() {
             onExitToHome={() => setScreen({ name: 'ai' })}
           />
         )}
+        </div>
       </main>
 
       {showTabBar && <TabBar active={activeTab} onNavigate={goToTab} />}
@@ -318,8 +394,8 @@ const TABS: { id: Tab; label: string }[] = [
 
 function TabBar({ active, onNavigate }: TabBarProps) {
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-[480px] border-t border-slate-200 bg-white/95 backdrop-blur">
-      <div className="flex">
+    <nav className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-[480px] border-t border-border bg-surface/95 backdrop-blur">
+      <div className="flex gap-1 p-1 pb-[calc(0.25rem+env(safe-area-inset-bottom))]">
         {TABS.map((tab) => {
           const isActive = tab.id === active
           return (
@@ -328,12 +404,14 @@ function TabBar({ active, onNavigate }: TabBarProps) {
               type="button"
               onClick={() => onNavigate(tab.id)}
               aria-current={isActive ? 'page' : undefined}
-              className={`relative flex min-h-14 min-w-0 flex-1 items-center justify-center px-1 text-[11px] font-semibold leading-tight transition-colors ${
-                isActive ? 'text-slate-950' : 'text-slate-400 hover:text-slate-600'
+              className={`relative flex min-h-14 min-w-0 flex-1 items-center justify-center rounded-2xl px-1 text-[11px] font-semibold leading-tight transition-colors ${
+                isActive
+                  ? 'bg-primary-soft text-primary dark:text-text-primary'
+                  : 'text-text-tertiary hover:bg-surface-muted hover:text-text-secondary'
               }`}
             >
               {isActive && (
-                <span className="absolute top-0 h-0.5 w-7 rounded-full bg-slate-950" />
+                <span className="absolute top-1.5 h-0.5 w-7 rounded-full bg-primary" />
               )}
               <span>{tab.label}</span>
             </button>

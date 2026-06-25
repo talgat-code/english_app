@@ -1,4 +1,208 @@
 @import "tailwindcss";
+@config "../tailwind.config.js";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Manrope", "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --color-primary: #4f46e5;
+  --color-primary-hover: #4338ca;
+  --color-primary-active: #3730a3;
+  --color-primary-soft: #eef2ff;
+  --color-primary-border: #c7d2fe;
+  --color-primary-dark: #5f63e8;
+  --color-primary-hover-dark: #5357d9;
+  --color-primary-active-dark: #474ac4;
+  --color-primary-soft-dark: #23233a;
+  --color-primary-border-dark: #4c4f8f;
+
+  --color-secondary: #0891b2;
+  --color-secondary-hover: #0e7490;
+  --color-secondary-soft: #ecfeff;
+  --color-secondary-border: #a5f3fc;
+  --color-secondary-dark: #22a9c9;
+  --color-secondary-hover-dark: #2bb9dc;
+  --color-secondary-soft-dark: #16333b;
+  --color-secondary-border-dark: #245967;
+  --color-secondary-button-dark: #0e7490;
+  --color-secondary-button-hover-dark: #155e75;
+
+  --color-success: #059669;
+  --color-success-hover: #047857;
+  --color-success-soft: #ecfdf5;
+  --color-success-border: #a7f3d0;
+  --color-success-dark: #10b981;
+  --color-success-hover-dark: #34d399;
+  --color-success-soft-dark: #123528;
+  --color-success-border-dark: #1f6f55;
+  --color-success-button-dark: #047857;
+  --color-success-button-hover-dark: #065f46;
+
+  --color-error: #e11d48;
+  --color-error-hover: #be123c;
+  --color-error-soft: #fff1f2;
+  --color-error-border: #fecdd3;
+  --color-error-dark: #ff5d7d;
+  --color-error-hover-dark: #ff7a94;
+  --color-error-soft-dark: #3f1722;
+  --color-error-border-dark: #893244;
+
+  --color-warning: #d97706;
+  --color-warning-hover: #b45309;
+  --color-warning-soft: #fffbeb;
+  --color-warning-border: #fde68a;
+  --color-warning-dark: #f59e0b;
+  --color-warning-hover-dark: #fbbf24;
+  --color-warning-soft-dark: #3b2a11;
+  --color-warning-border-dark: #7c5a1a;
+
+  --color-background: #f8fafc;
+  --color-background-dark: #121212;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f1f5f9;
+  --color-surface-dark: #242424;
+  --color-surface-muted-dark: #2f2f2f;
+  --color-border: #e2e8f0;
+  --color-border-subtle: #f1f5f9;
+  --color-border-strong: #cbd5e1;
+  --color-border-dark: #3a3a3a;
+  --color-border-subtle-dark: #2d2d2d;
+  --color-border-strong-dark: #525252;
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #64748b;
+  --color-text-tertiary: #94a3b8;
+  --color-text-primary-dark: #e8e8e8;
+  --color-text-secondary-dark: #a3a3a3;
+  --color-text-tertiary-dark: #737373;
+
+  --radius-lg: 0.875rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1rem;
+
+  --shadow-sm: 0 10px 28px rgb(15 23 42 / 0.06);
+  --shadow-md: 0 10px 28px rgb(15 23 42 / 0.06);
+  --shadow-xl: 0 10px 28px rgb(15 23 42 / 0.06);
+
+  --ease-app: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  .dark {
+    color-scheme: dark;
+
+    --color-primary: var(--color-primary-dark);
+    --color-primary-hover: var(--color-primary-hover-dark);
+    --color-primary-active: var(--color-primary-active-dark);
+    --color-primary-soft: var(--color-primary-soft-dark);
+    --color-primary-border: var(--color-primary-border-dark);
+
+    --color-secondary: var(--color-secondary-dark);
+    --color-secondary-hover: var(--color-secondary-hover-dark);
+    --color-secondary-soft: var(--color-secondary-soft-dark);
+    --color-secondary-border: var(--color-secondary-border-dark);
+
+    --color-success: var(--color-success-dark);
+    --color-success-hover: var(--color-success-hover-dark);
+    --color-success-soft: var(--color-success-soft-dark);
+    --color-success-border: var(--color-success-border-dark);
+
+    --color-error: var(--color-error-dark);
+    --color-error-hover: var(--color-error-hover-dark);
+    --color-error-soft: var(--color-error-soft-dark);
+    --color-error-border: var(--color-error-border-dark);
+
+    --color-warning: var(--color-warning-dark);
+    --color-warning-hover: var(--color-warning-hover-dark);
+    --color-warning-soft: var(--color-warning-soft-dark);
+    --color-warning-border: var(--color-warning-border-dark);
+
+    --color-background: var(--color-background-dark);
+    --color-surface: var(--color-surface-dark);
+    --color-surface-muted: var(--color-surface-muted-dark);
+    --color-border: var(--color-border-dark);
+    --color-border-subtle: var(--color-border-subtle-dark);
+    --color-border-strong: var(--color-border-strong-dark);
+    --color-text-primary: var(--color-text-primary-dark);
+    --color-text-secondary: var(--color-text-secondary-dark);
+    --color-text-tertiary: var(--color-text-tertiary-dark);
+
+    --shadow-sm: 0 14px 34px rgb(0 0 0 / 0.26);
+    --shadow-md: 0 14px 34px rgb(0 0 0 / 0.26);
+    --shadow-xl: 0 16px 40px rgb(0 0 0 / 0.34);
+  }
+
+  html {
+    background: var(--color-background);
+    font-family: var(--font-sans);
+  }
+
+  body {
+    min-width: 320px;
+    background: var(--color-background);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  ::placeholder {
+    color: var(--color-text-tertiary);
+  }
+
+  button,
+  a,
+  [role='button'] {
+    transition-duration: 200ms;
+    transition-timing-function: var(--ease-app);
+  }
+
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+
+  button:not(:disabled):active {
+    transform: scale(0.98);
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+}
+
+@layer utilities {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .pb-tab-safe {
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom));
+  }
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 @keyframes game-confetti-fall {
   0% {
@@ -70,7 +274,7 @@
   width: 7px;
   height: 7px;
   border-radius: 9999px;
-  background: #6366f1;
+  background: var(--color-primary);
   animation: ai-thinking 1.2s infinite ease-in-out;
 }
 
@@ -82,11 +286,25 @@
   animation-delay: 300ms;
 }
 
+.page-transition {
+  animation: page-enter 300ms var(--ease-app);
+}
+
+.empty-state {
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-2xl);
+  background: var(--color-surface);
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .game-confetti,
   .game-success-pop,
   .game-shake,
-  .ai-thinking-dot {
+  .ai-thinking-dot,
+  .page-transition {
     animation: none;
   }
 }
