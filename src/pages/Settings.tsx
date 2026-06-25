@@ -5,8 +5,11 @@
   setRemindersEnabled,
   useNotificationSettings,
 } from '../hooks/useNotifications'
+import type { Theme } from '../hooks/useTheme'
 
 interface SettingsProps {
+  theme: Theme
+  onToggleTheme: () => void
   onBack: () => void
 }
 
@@ -17,10 +20,11 @@ function permissionLabel(permission: ReturnType<typeof getReminderStatus>): stri
   return 'Не запрошено'
 }
 
-function Settings({ onBack }: SettingsProps) {
+function Settings({ theme, onToggleTheme, onBack }: SettingsProps) {
   const settings = useNotificationSettings()
   const permission = getReminderStatus()
   const denied = permission === 'denied'
+  const isDark = theme === 'dark'
 
   async function handleEnableReminders() {
     const nextPermission = await requestPermission()
@@ -44,10 +48,38 @@ function Settings({ onBack }: SettingsProps) {
             Настройки
           </h1>
           <p className="mt-1 text-sm text-text-secondary">
-            Локальные уведомления и ежедневное время напоминания.
+            Тема, локальные уведомления и ежедневное время напоминания.
           </p>
         </div>
       </header>
+
+      <section className="mb-4 rounded-3xl border border-border bg-surface p-5 shadow-sm">
+        <h2 className="text-base font-semibold text-text-primary">Внешний вид</h2>
+        <div className="mt-4 flex items-center justify-between gap-4 rounded-2xl border border-border bg-surface-muted px-4 py-3">
+          <span>
+            <span className="block text-sm font-semibold text-text-primary">Тёмная тема</span>
+            <span className="mt-1 block text-xs text-text-secondary">
+              Переключение сохраняется на этом устройстве
+            </span>
+          </span>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={isDark}
+            aria-label="Тёмная тема"
+            onClick={onToggleTheme}
+            className={`relative h-7 w-12 shrink-0 rounded-full transition-colors ${
+              isDark ? 'bg-primary' : 'bg-border-strong'
+            }`}
+          >
+            <span
+              className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow-sm transition-transform dark:bg-text-primary ${
+                isDark ? 'translate-x-6' : 'translate-x-1'
+              }`}
+            />
+          </button>
+        </div>
+      </section>
 
       <section className="rounded-3xl border border-border bg-surface p-5 shadow-sm">
         <h2 className="text-base font-semibold text-text-primary">Напоминания</h2>

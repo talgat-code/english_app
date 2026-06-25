@@ -19,14 +19,14 @@ const GAME_CARDS: {
     title: 'Виселица',
     emoji: '🎯',
     description: 'Угадай английское слово по буквам. У тебя есть 6 ошибок.',
-    accent: 'from-primary to-primary',
+    accent: 'from-primary to-primary dark:from-primary-active-dark dark:to-primary-active-dark',
   },
   {
     id: 'word-builder',
     title: 'Составь слово',
     emoji: '🔤',
     description: 'Собери правильное слово из перемешанных букв.',
-    accent: 'from-secondary to-primary',
+    accent: 'from-secondary to-primary dark:from-secondary-button-dark dark:to-primary-active-dark',
   },
 ]
 

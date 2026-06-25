@@ -226,7 +226,7 @@ function WordBuilder({ categoryId, onOtherCategory, onGamesMenu }: WordBuilderPr
               disabled={solved || lockedIds.has(tile.id)}
               className={`flex h-12 min-w-11 items-center justify-center rounded-xl border px-3 text-lg font-bold shadow-sm transition-all ${
                 solved
-                  ? 'border-success bg-success text-white'
+                  ? 'border-success bg-success text-white dark:bg-success-button-dark'
                   : lockedIds.has(tile.id)
                     ? 'border-warning-border bg-warning-soft text-warning'
                     : 'border-primary-border bg-primary text-white active:scale-95'

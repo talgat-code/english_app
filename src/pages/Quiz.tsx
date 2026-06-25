@@ -212,7 +212,7 @@ function Quiz({
 
       {/* Question */}
       <div className="flex flex-col items-center py-6 text-center">
-        <span className="mb-3 rounded-full bg-primary-soft px-3 py-1 text-xs font-medium text-primary">
+        <span className="mb-3 rounded-full bg-primary-soft px-3 py-1 text-xs font-medium text-primary dark:text-text-primary">
           Как переводится?
         </span>
         <div className="flex items-center justify-center gap-3">
@@ -254,7 +254,7 @@ function Quiz({
                 type="button"
                 onClick={() => void explainAnswer()}
                 disabled={explanationLoading}
-                className="min-h-11 w-full rounded-xl bg-secondary px-4 text-sm font-semibold text-white disabled:opacity-60"
+                className="min-h-11 w-full rounded-xl bg-secondary px-4 text-sm font-semibold text-white disabled:opacity-60 dark:bg-secondary-button-dark"
               >
                 {explanationLoading
                   ? 'GPT думает...'

@@ -186,7 +186,7 @@ function AITutor({ onBack }: AITutorProps) {
               type="button"
               onClick={() => void sendMessage(question)}
               disabled={loading}
-              className="shrink-0 rounded-full border border-primary-border bg-primary-soft px-3 py-2 text-xs font-medium text-primary disabled:opacity-40"
+              className="shrink-0 rounded-full border border-primary-border bg-primary-soft px-3 py-2 text-xs font-medium text-primary disabled:opacity-40 dark:text-text-primary"
             >
               {question}
             </button>

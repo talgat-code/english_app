@@ -351,11 +351,11 @@ function Lesson({ lessonId, onBack, onComplete }: LessonProps) {
                   <h2 className="text-2xl font-bold tracking-tight">
                     {currentWord.russian}
                   </h2>
-                  <div className="mt-5 w-full rounded-lg bg-surface/10 p-4">
+                  <div className="mt-5 w-full rounded-lg bg-white/10 p-4">
                     <p className="text-sm font-medium text-white">
                       {currentWord.example}
                     </p>
-                    <p className="mt-1.5 text-sm text-text-tertiary">
+                    <p className="mt-1.5 text-sm text-white/70">
                       {currentWord.exampleRu}
                     </p>
                   </div>

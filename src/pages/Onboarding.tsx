@@ -43,7 +43,7 @@ function Onboarding({ onDone }: OnboardingProps) {
       <div className="mx-auto flex w-full max-w-[480px] flex-1 flex-col justify-between">
         <div>
           <div className="mb-6 flex items-center gap-2">
-            <span className="rounded-full bg-primary-soft px-3 py-1 text-xs font-semibold text-primary">
+            <span className="rounded-full bg-primary-soft px-3 py-1 text-xs font-semibold text-primary dark:text-text-primary">
               Шаг {step + 1} из 2
             </span>
           </div>

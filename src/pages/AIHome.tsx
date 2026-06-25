@@ -17,21 +17,21 @@ const AI_TOOLS = [
     emoji: '💬',
     title: 'AI-репетитор',
     description: 'Спроси о грамматике, словах или английских выражениях.',
-    color: 'from-secondary to-primary',
+    color: 'from-secondary to-primary dark:from-secondary-button-dark dark:to-primary-active-dark',
   },
   {
     id: 'words',
     emoji: '✨',
     title: 'Новые слова',
     description: 'Создай персональную подборку слов по любой теме.',
-    color: 'from-secondary to-primary',
+    color: 'from-secondary to-primary dark:from-secondary-button-dark dark:to-primary-active-dark',
   },
   {
     id: 'my-words',
     emoji: '💾',
     title: 'Мои слова',
     description: 'Повторяй сохранённые слова карточками или квизом.',
-    color: 'from-success to-secondary-hover',
+    color: 'from-success to-secondary-hover dark:from-success-button-dark dark:to-secondary-button-dark',
   },
 ] as const
 

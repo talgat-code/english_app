@@ -206,7 +206,7 @@ function AIWords({ onBack, onMyWords }: AIWordsProps) {
                       <h2 className="text-2xl font-bold text-text-primary">{word.english}</h2>
                       <p className="mt-1 text-sm text-text-tertiary">{word.transcription}</p>
                     </div>
-                    <span className="rounded-xl bg-primary-soft px-3 py-2 text-sm font-semibold text-primary">
+                    <span className="rounded-xl bg-primary-soft px-3 py-2 text-sm font-semibold text-primary dark:text-text-primary">
                       {word.russian}
                     </span>
                   </div>
@@ -218,7 +218,7 @@ function AIWords({ onBack, onMyWords }: AIWordsProps) {
                     type="button"
                     onClick={() => saveWord(word)}
                     disabled={isSaved}
-                    className="mt-4 min-h-11 w-full rounded-xl bg-success px-4 text-sm font-semibold text-white transition-all active:scale-[0.98] disabled:bg-success-soft disabled:text-success"
+                    className="mt-4 min-h-11 w-full rounded-xl bg-success px-4 text-sm font-semibold text-white transition-all active:scale-[0.98] disabled:bg-success-soft disabled:text-success dark:bg-success-button-dark"
                   >
                     {isSaved ? 'Сохранено ✓' : 'Добавить в избранное 💾'}
                   </button>
@@ -229,7 +229,7 @@ function AIWords({ onBack, onMyWords }: AIWordsProps) {
           <button
             type="button"
             onClick={() => void generate(lastTopic)}
-            className="mt-5 min-h-12 rounded-2xl border border-primary-border bg-primary-soft px-5 font-semibold text-primary"
+            className="mt-5 min-h-12 rounded-2xl border border-primary-border bg-primary-soft px-5 font-semibold text-primary dark:text-text-primary"
           >
             Сгенерировать ещё
           </button>

@@ -144,7 +144,7 @@ function Review() {
       </header>
 
       <div className="flex flex-col items-center py-6 text-center">
-        <span className="mb-3 rounded-full bg-primary-soft px-3 py-1 text-xs font-medium text-primary">
+        <span className="mb-3 rounded-full bg-primary-soft px-3 py-1 text-xs font-medium text-primary dark:text-text-primary">
           Как переводится?
         </span>
         <div className="flex items-center justify-center gap-3">

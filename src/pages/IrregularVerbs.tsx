@@ -236,15 +236,15 @@ function IrregularVerbs({ onBack }: IrregularVerbsProps) {
         <button
           type="button"
           onClick={onBack}
-          className="text-sm font-semibold text-text-tertiary transition-colors hover:text-white"
+          className="text-sm font-semibold text-white/70 transition-colors hover:text-white"
         >
           ← Главная
         </button>
-        <p className="mt-5 text-xs font-semibold uppercase tracking-wide text-success-soft">
+        <p className="mt-5 text-xs font-semibold uppercase tracking-wide text-white/70">
           Быстрое изучение
         </p>
         <h1 className="mt-2 text-3xl font-bold tracking-tight">Неправильные глаголы</h1>
-        <p className="mt-3 text-sm leading-relaxed text-text-tertiary">
+        <p className="mt-3 text-sm leading-relaxed text-white/75">
           V1, V2, V3 и перевод собраны в быстрые карточки для ежедневной практики.
         </p>
       </header>
@@ -316,24 +316,24 @@ function IrregularVerbs({ onBack }: IrregularVerbsProps) {
 
         {mode === 'cards' && (
           <article className="mt-5 overflow-hidden rounded-3xl border border-border-subtle bg-primary text-white">
-            <div className="bg-gradient-to-br from-primary-active via-primary-active to-secondary-hover p-5">
+            <div className="bg-gradient-to-br from-primary-active via-primary-active to-secondary-hover p-5 dark:from-primary-active-dark dark:via-primary-active-dark dark:to-secondary-button-dark">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-success-soft">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-white/70">
                     V1
                   </p>
                   <h2 className="mt-2 text-5xl font-bold tracking-tight">{currentVerb.base}</h2>
-                  <p className="mt-3 text-base font-semibold text-primary-soft">
+                  <p className="mt-3 text-base font-semibold text-white/85">
                     {currentVerb.russian}
                   </p>
                 </div>
                 <span
                   className={`rounded-full px-3 py-1 text-xs font-bold ${
                     learnedIds.has(currentVerb.id)
-                      ? 'bg-success text-success'
+                      ? 'bg-success-soft text-success'
                       : hardIds.has(currentVerb.id)
-                        ? 'bg-warning-border text-warning'
-                        : 'bg-surface/10 text-primary-soft'
+                        ? 'bg-warning-soft text-warning'
+                        : 'bg-white/10 text-white/85'
                   }`}
                 >
                   {learnedIds.has(currentVerb.id)
@@ -344,28 +344,28 @@ function IrregularVerbs({ onBack }: IrregularVerbsProps) {
                 </span>
               </div>
 
-              <div className="mt-5 rounded-2xl bg-surface/10 p-4">
+              <div className="mt-5 rounded-2xl bg-white/10 p-4">
                 {showForms ? (
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <p className="text-xs font-semibold uppercase tracking-wide text-text-tertiary">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-white/60">
                         V2
                       </p>
                       <p className="mt-1 text-xl font-bold">{currentVerb.pastSimple}</p>
                     </div>
                     <div>
-                      <p className="text-xs font-semibold uppercase tracking-wide text-text-tertiary">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-white/60">
                         V3
                       </p>
                       <p className="mt-1 text-xl font-bold">{currentVerb.pastParticiple}</p>
                     </div>
-                    <p className="col-span-2 mt-2 text-sm leading-relaxed text-text-tertiary">
+                    <p className="col-span-2 mt-2 text-sm leading-relaxed text-white/70">
                       {currentVerb.example}
                     </p>
                   </div>
                 ) : (
                   <div className="flex min-h-24 items-center justify-center text-center">
-                    <p className="text-sm font-semibold text-text-tertiary">
+                    <p className="text-sm font-semibold text-white/70">
                       Формы закрыты
                     </p>
                   </div>
@@ -391,7 +391,7 @@ function IrregularVerbs({ onBack }: IrregularVerbsProps) {
               <button
                 type="button"
                 onClick={markKnown}
-                className="min-h-11 rounded-2xl bg-success px-3 text-xs font-bold text-white transition-colors hover:bg-success-hover"
+                className="min-h-11 rounded-2xl bg-success px-3 text-xs font-bold text-white transition-colors hover:bg-success-hover dark:bg-success-button-dark dark:hover:bg-success-button-hover-dark"
               >
                 Знаю
               </button>
@@ -404,20 +404,20 @@ function IrregularVerbs({ onBack }: IrregularVerbsProps) {
             onSubmit={checkWriting}
             className="mt-5 rounded-3xl border border-border-subtle bg-primary p-5 text-white"
           >
-            <p className="text-xs font-semibold uppercase tracking-wide text-success-soft">
+            <p className="text-xs font-semibold uppercase tracking-wide text-white/70">
               Напиши формы
             </p>
             <div className="mt-3 flex items-end justify-between gap-4">
               <div>
                 <h2 className="text-5xl font-bold tracking-tight">{currentVerb.base}</h2>
-                <p className="mt-2 text-base font-semibold text-text-tertiary">
+                <p className="mt-2 text-base font-semibold text-white/75">
                   {currentVerb.russian}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={moveNext}
-                className="rounded-full bg-surface/10 px-3 py-2 text-xs font-bold text-primary-soft"
+                className="rounded-full bg-white/10 px-3 py-2 text-xs font-bold text-white/85"
               >
                 Дальше
               </button>
@@ -425,7 +425,7 @@ function IrregularVerbs({ onBack }: IrregularVerbsProps) {
 
             <div className="mt-5 grid gap-3">
               <label className="block">
-                <span className="mb-2 block text-xs font-semibold uppercase tracking-wide text-text-tertiary">
+                <span className="mb-2 block text-xs font-semibold uppercase tracking-wide text-white/70">
                   V2 Past Simple
                 </span>
                 <input
@@ -436,7 +436,7 @@ function IrregularVerbs({ onBack }: IrregularVerbsProps) {
                 />
               </label>
               <label className="block">
-                <span className="mb-2 block text-xs font-semibold uppercase tracking-wide text-text-tertiary">
+                <span className="mb-2 block text-xs font-semibold uppercase tracking-wide text-white/70">
                   V3 Past Participle
                 </span>
                 <input
@@ -452,7 +452,7 @@ function IrregularVerbs({ onBack }: IrregularVerbsProps) {
               <div
                 className={`mt-4 rounded-2xl p-4 text-sm font-semibold ${
                   writingResult.pastSimple && writingResult.pastParticiple
-                    ? 'bg-success text-success'
+                    ? 'bg-success-soft text-success'
                     : 'bg-error-soft text-error'
                 }`}
               >
@@ -466,14 +466,14 @@ function IrregularVerbs({ onBack }: IrregularVerbsProps) {
               <button
                 type="submit"
                 disabled={!pastSimpleInput.trim() && !pastParticipleInput.trim()}
-                className="min-h-12 rounded-2xl bg-primary px-4 text-sm font-bold text-success transition-colors hover:bg-success disabled:opacity-40"
+                className="min-h-12 rounded-2xl bg-white px-4 text-sm font-bold text-primary transition-colors hover:bg-primary-soft disabled:opacity-40 dark:bg-text-primary dark:text-background dark:hover:bg-white"
               >
                 Проверить
               </button>
               <button
                 type="button"
                 onClick={markForReview}
-                className="min-h-12 rounded-2xl bg-surface/10 px-4 text-sm font-bold text-primary-soft transition-colors hover:bg-surface/15"
+                className="min-h-12 rounded-2xl bg-white/10 px-4 text-sm font-bold text-white/85 transition-colors hover:bg-white/15"
               >
                 Повторить
               </button>
@@ -488,7 +488,7 @@ function IrregularVerbs({ onBack }: IrregularVerbsProps) {
             </p>
             <div className="mt-3 rounded-3xl bg-gradient-to-br from-primary to-primary-hover p-5 text-white">
               <h2 className="text-5xl font-bold tracking-tight">{currentVerb.base}</h2>
-              <p className="mt-2 text-base font-semibold text-primary-soft">
+              <p className="mt-2 text-base font-semibold text-white/85">
                 {currentVerb.russian}
               </p>
             </div>

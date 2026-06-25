@@ -182,7 +182,7 @@ function PhrasalVerbs({
                   </span>
                 )}
                 {hasMultipleMeanings && (
-                  <span className="rounded-full bg-primary-soft px-2.5 py-1 text-xs font-semibold text-primary">
+                  <span className="rounded-full bg-primary-soft px-2.5 py-1 text-xs font-semibold text-primary dark:text-text-primary">
                     {phrasalVerb.meanings.length} значения
                   </span>
                 )}

@@ -157,7 +157,7 @@ function Flashcards({
                 aria-pressed={autoSpeech}
                 className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
                   autoSpeech
-                    ? 'bg-primary-soft text-primary'
+                    ? 'bg-primary-soft text-primary dark:text-text-primary'
                     : 'bg-border text-text-secondary'
                 }`}
               >
@@ -208,7 +208,7 @@ function Flashcards({
           >
             {/* Front */}
             <div className="absolute inset-0 flex flex-col items-center justify-center rounded-3xl border border-border-subtle bg-surface p-6 text-center shadow-xl [backface-visibility:hidden]">
-              <span className="mb-3 rounded-full bg-primary-soft px-3 py-1 text-xs font-medium text-primary">
+              <span className="mb-3 rounded-full bg-primary-soft px-3 py-1 text-xs font-medium text-primary dark:text-text-primary">
                 {title}
               </span>
               <h2 className="text-3xl font-bold tracking-tight text-text-primary">
@@ -226,11 +226,11 @@ function Flashcards({
               <h2 className="text-2xl font-bold tracking-tight">
                 {word.russian}
               </h2>
-              <div className="mt-5 w-full rounded-2xl bg-surface/10 p-4">
-                <p className="text-sm font-medium text-primary-soft">
+              <div className="mt-5 w-full rounded-2xl bg-white/10 p-4">
+                <p className="text-sm font-medium text-white/90">
                   {word.example}
                 </p>
-                <p className="mt-1.5 text-sm text-primary-border">
+                <p className="mt-1.5 text-sm text-white/70">
                   {word.exampleRu}
                 </p>
               </div>

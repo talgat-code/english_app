@@ -9,6 +9,7 @@ import {
 } from './hooks/useProgress'
 import { useNotificationSettings } from './hooks/useNotifications'
 import { useReminderCheck } from './hooks/useReminderCheck'
+import { useTheme } from './hooks/useTheme'
 import AIHome from './pages/AIHome'
 import AITutor from './pages/AITutor'
 import AIWords from './pages/AIWords'
@@ -69,6 +70,7 @@ function App() {
   const [screen, setScreen] = useState<Screen>({ name: 'home' })
   const progress = useProgress()
   const notificationSettings = useNotificationSettings()
+  const { theme, toggleTheme } = useTheme()
   const hardWordCount = reviewWords(progress).length
   const streakInterrupted = isStreakInterrupted(progress)
   const nextLesson = nextAvailableLesson(progress)
@@ -187,7 +189,11 @@ function App() {
         )}
 
         {appReady && screen.name === 'settings' && (
-          <Settings onBack={() => setScreen({ name: 'stats' })} />
+          <Settings
+            theme={theme}
+            onToggleTheme={toggleTheme}
+            onBack={() => setScreen({ name: 'stats' })}
+          />
         )}
 
         {appReady && screen.name === 'review' && <Review />}
@@ -367,7 +373,7 @@ function TabBar({ active, onNavigate }: TabBarProps) {
               aria-current={isActive ? 'page' : undefined}
               className={`relative flex min-h-14 min-w-0 flex-1 items-center justify-center rounded-2xl px-1 text-[11px] font-semibold leading-tight transition-colors ${
                 isActive
-                  ? 'bg-primary-soft text-primary'
+                  ? 'bg-primary-soft text-primary dark:text-text-primary'
                   : 'text-text-tertiary hover:bg-surface-muted hover:text-text-secondary'
               }`}
             >
