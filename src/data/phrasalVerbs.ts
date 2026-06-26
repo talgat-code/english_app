@@ -1,24 +1,15 @@
-export type PhrasalVerbCategory =
-  | 'повседневные'
-  | 'работа'
-  | 'движение'
-  | 'отношения'
-  | 'разное'
+import type {
+  PhrasalVerb,
+  PhrasalVerbCategory,
+  PhrasalVerbFilter,
+} from '../types'
 
-export type PhrasalVerbFilter = PhrasalVerbCategory | 'all'
-
-export interface PhrasalVerbMeaning {
-  russian: string
-  example: string
-  exampleTranslation: string
-}
-
-export interface PhrasalVerb {
-  id: string
-  phrase: string
-  meanings: PhrasalVerbMeaning[]
-  category: PhrasalVerbCategory
-}
+export type {
+  PhrasalVerb,
+  PhrasalVerbCategory,
+  PhrasalVerbFilter,
+  PhrasalVerbMeaning,
+} from '../types'
 
 export const phrasalVerbCategories: {
   id: PhrasalVerbCategory

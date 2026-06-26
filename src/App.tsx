@@ -1,7 +1,6 @@
 ﻿import { useState } from 'react'
-import { getIdiomOfDay, type IdiomFilter } from './data/idioms'
+import { getIdiomOfDay } from './data/idioms'
 import { getLevelInfo } from './data/lessons'
-import type { PhrasalVerbFilter } from './data/phrasalVerbs'
 import {
   isStreakInterrupted,
   reviewWords,
@@ -34,7 +33,7 @@ import Search from './pages/Search'
 import Settings from './pages/Settings'
 import Stats from './pages/Stats'
 import WordBuilder from './pages/WordBuilder'
-import type { LessonLevel } from './types/lesson'
+import type { IdiomFilter, LessonLevel, PhrasalVerbFilter } from './types'
 import type { GameType } from './utils/games'
 import { nextAvailableLesson } from './utils/lessonProgress'
 import { getMyWords } from './utils/myWords'

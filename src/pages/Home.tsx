@@ -1,6 +1,6 @@
 ﻿import { useEffect, useState } from 'react'
-import type { Idiom } from '../data/idioms'
 import type { LessonLevelInfo } from '../data/lessons'
+import type { Idiom } from '../types'
 import type { Lesson } from '../types/lesson'
 
 interface HomeProps {

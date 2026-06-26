@@ -1,21 +1,6 @@
-export type IdiomCategory =
-  | 'повседневные'
-  | 'эмоции'
-  | 'работа'
-  | 'отношения'
-  | 'разговорные'
+import type { Idiom, IdiomCategory, IdiomFilter } from '../types'
 
-export type IdiomFilter = IdiomCategory | 'all'
-
-export interface Idiom {
-  id: string
-  phrase: string
-  literal: string
-  meaning: string
-  example: string
-  exampleTranslation: string
-  category: IdiomCategory
-}
+export type { Idiom, IdiomCategory, IdiomFilter } from '../types'
 
 type IdiomEntry = [
   phrase: string,

@@ -1,4 +1,4 @@
-import type { Word } from '../data/words'
+import type { Word } from './vocabulary'
 
 export type LessonLevel = 'A1' | 'A2' | 'B1'
 
@@ -50,4 +50,3 @@ export interface Lesson {
   examples: LessonExample[]
   exercises: Exercise[]
 }
-

@@ -1,5 +1,5 @@
 ﻿import { useState } from 'react'
-import type { GeneratedWord, OpenAITextFormat } from '../types/api'
+import type { GeneratedWord, OpenAITextFormat } from '../types'
 import { askOpenAI } from '../utils/openaiApi'
 import { addMyWord, getMyWords } from '../utils/myWords'
 

@@ -1,4 +1,5 @@
-import { getCategoryById, type Word } from '../data/words'
+import { getCategoryById } from '../data/words'
+import type { Word } from '../types'
 
 export type GameType = 'hangman' | 'word-builder'
 

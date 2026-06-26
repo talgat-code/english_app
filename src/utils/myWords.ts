@@ -1,5 +1,4 @@
-import type { Word } from '../data/words'
-import type { GeneratedWord } from '../types/api'
+import type { GeneratedWord, Word } from '../types'
 
 const MY_WORDS_KEY = 'english-app:my-words:v1'
 

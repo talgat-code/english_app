@@ -1,13 +1,6 @@
-export interface IrregularVerb {
-  id: string
-  base: string
-  pastSimple: string
-  pastParticiple: string
-  russian: string
-  example: string
-  exampleTranslation?: string
-  note?: string
-}
+import type { IrregularVerb } from '../types/vocabulary'
+
+export type { IrregularVerb } from '../types/vocabulary'
 
 export const irregularVerbs: IrregularVerb[] = [
   {

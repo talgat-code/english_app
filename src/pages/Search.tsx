@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import type { IdiomFilter } from '../data/idioms'
-import type { PhrasalVerbFilter } from '../data/phrasalVerbs'
+import type { IdiomFilter, PhrasalVerbFilter } from '../types'
 import {
   getWordCategory,
   searchAll,

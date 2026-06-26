@@ -1,12 +1,7 @@
-import { allWords, getCategoryById, type Word } from '../data/words'
+import { allWords, getCategoryById } from '../data/words'
+import type { QuizQuestion, Word } from '../types'
 
-export interface QuizQuestion {
-  word: Word
-  /** Four russian-translation options, already shuffled. */
-  options: string[]
-  /** The correct option (equals word.russian). */
-  correct: string
-}
+export type { QuizQuestion } from '../types'
 
 export const QUESTIONS_PER_ROUND = 10
 

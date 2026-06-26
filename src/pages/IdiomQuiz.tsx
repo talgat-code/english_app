@@ -1,9 +1,9 @@
 import QuizEngine from '../components/QuizEngine'
-import { type Idiom, type IdiomFilter } from '../data/idioms'
 import {
   recordIdiomQuizResult,
   type IdiomQuizAnswer,
 } from '../hooks/useProgress'
+import type { Idiom, IdiomFilter } from '../types'
 import { buildIdiomQuiz, type IdiomQuizQuestion } from '../utils/idiomQuiz'
 
 interface IdiomQuizProps {

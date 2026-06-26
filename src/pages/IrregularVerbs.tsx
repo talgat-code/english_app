@@ -1,5 +1,6 @@
 ﻿import { type FormEvent, useMemo, useState } from 'react'
-import { irregularVerbs, type IrregularVerb } from '../data/irregularVerbs'
+import { irregularVerbs } from '../data/irregularVerbs'
+import type { IrregularVerb } from '../types'
 
 const LEARNED_KEY = 'english-app:irregular-verbs-learned:v1'
 const HARD_KEY = 'english-app:irregular-verbs-hard:v1'

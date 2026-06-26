@@ -1,11 +1,11 @@
 ﻿import { useEffect, useState } from 'react'
 import CategoryChips from '../components/CategoryChips'
+import ExpressionCard from '../components/ExpressionCard'
 import VocabularyTabs from '../components/VocabularyTabs'
 import {
   getIdiomById,
   getIdiomsByCategory,
   idiomCategories,
-  type IdiomFilter,
 } from '../data/idioms'
 import {
   knownIdiomsCount,
@@ -15,6 +15,7 @@ import {
   useProgress,
 } from '../hooks/useProgress'
 import { useSpeech } from '../hooks/useSpeech'
+import type { IdiomFilter } from '../types'
 
 interface IdiomsProps {
   initialCategory?: IdiomFilter
@@ -155,58 +156,28 @@ function Idioms({
           const status = progress.idiomProgress[idiom.id]?.status
 
           return (
-            <li
+            <ExpressionCard
               key={idiom.id}
-              id={`idiom-card-${idiom.id}`}
-              className={`rounded-2xl border bg-surface p-4 shadow-sm transition-colors ${
-                isExpanded
-                  ? 'border-primary-border shadow-md'
-                  : 'border-border-subtle hover:border-border'
-              }`}
+              cardId={`idiom-card-${idiom.id}`}
+              title={idiom.phrase}
+              status={status}
+              isHighlighted={isExpanded}
+              onToggle={() => toggleExpanded(idiom.id)}
+              onSpeak={isSupported ? () => speak(idiom.phrase) : undefined}
+              speakLabel={`Произнести ${idiom.phrase}`}
+              subtitle={
+                <p className="mt-1 text-sm italic text-text-tertiary">
+                  "{idiom.literal}" 💬
+                </p>
+              }
+              summary={
+                <p className="mt-3 text-sm leading-relaxed text-text-secondary">
+                  {idiom.meaning}
+                </p>
+              }
             >
-              <div className="flex items-start gap-3">
-                <button
-                  type="button"
-                  onClick={() => toggleExpanded(idiom.id)}
-                  className="flex-1 text-left"
-                >
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="text-xl font-semibold tracking-tight text-text-primary">
-                      {idiom.phrase}
-                    </h2>
-                    {status === 'known' && (
-                      <span className="rounded-full bg-success-soft px-2.5 py-1 text-xs font-semibold text-success">
-                        Знаю
-                      </span>
-                    )}
-                    {status === 'learning' && (
-                      <span className="rounded-full bg-warning-soft px-2.5 py-1 text-xs font-semibold text-warning">
-                        Учу
-                      </span>
-                    )}
-                  </div>
-                  <p className="mt-1 text-sm italic text-text-tertiary">
-                    "{idiom.literal}" 💬
-                  </p>
-                  <p className="mt-3 text-sm leading-relaxed text-text-secondary">
-                    {idiom.meaning}
-                  </p>
-                </button>
-
-                {isSupported && (
-                  <button
-                    type="button"
-                    onClick={() => speak(idiom.phrase)}
-                    aria-label={`Произнести ${idiom.phrase}`}
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary-soft text-xl transition-transform hover:scale-105 active:scale-95"
-                  >
-                    🔊
-                  </button>
-                )}
-              </div>
-
               {isExpanded && (
-                <div className="mt-4 border-t border-border-subtle pt-4">
+                <>
                   <div className="rounded-2xl bg-surface-muted p-4">
                     <p className="text-sm font-medium text-text-primary">{idiom.example}</p>
                     <p className="mt-2 text-sm leading-relaxed text-text-secondary">
@@ -238,9 +209,9 @@ function Idioms({
                       ✓ Знаю
                     </button>
                   </div>
-                </div>
+                </>
               )}
-            </li>
+            </ExpressionCard>
           )
         })}
       </ul>

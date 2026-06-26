@@ -1,5 +1,5 @@
 ﻿import { useEffect, useRef, useState } from 'react'
-import { getCategoryById, type Word } from '../data/words'
+import { getCategoryById } from '../data/words'
 import {
   markWord,
   recordCardsViewed,
@@ -7,6 +7,7 @@ import {
   type WordStatus,
 } from '../hooks/useProgress'
 import { useSpeech } from '../hooks/useSpeech'
+import type { Word } from '../types'
 
 const AUTO_SPEECH_KEY = 'english-app:auto-speech'
 const EMPTY_WORDS: Word[] = []

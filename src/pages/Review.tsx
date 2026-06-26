@@ -1,5 +1,5 @@
 ﻿import { useEffect, useRef, useState } from 'react'
-import { getWordById, type Word } from '../data/words'
+import { getWordById } from '../data/words'
 import {
   recordQuizResult,
   reviewWords,
@@ -7,6 +7,7 @@ import {
   type QuizAnswer,
 } from '../hooks/useProgress'
 import { useSpeech } from '../hooks/useSpeech'
+import type { Word } from '../types'
 import { buildQuizForWords, type QuizQuestion } from '../utils/quiz'
 
 function Review() {

@@ -3,7 +3,7 @@ import type {
   OpenAIRequest,
   OpenAIResponse,
   OpenAITextFormat,
-} from '../types/api'
+} from '../types'
 import { getOpenAIApiKey } from './openaiSettings'
 
 const OPENAI_API_URL = 'https://api.openai.com/v1/responses'

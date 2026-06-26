@@ -1,5 +1,5 @@
 ﻿import { useEffect, useRef, useState } from 'react'
-import type { AiMessage } from '../types/api'
+import type { AiMessage } from '../types'
 import { askOpenAI } from '../utils/openaiApi'
 
 const CHAT_KEY = 'english-app:ai-tutor-chat:v1'

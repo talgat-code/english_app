@@ -1,9 +1,9 @@
 import QuizEngine from '../components/QuizEngine'
-import { type PhrasalVerb, type PhrasalVerbFilter } from '../data/phrasalVerbs'
 import {
   recordPhrasalVerbQuizResult,
   type PhrasalVerbQuizAnswer,
 } from '../hooks/useProgress'
+import type { PhrasalVerb, PhrasalVerbFilter } from '../types'
 import {
   buildPhrasalVerbQuiz,
   type PhrasalVerbQuizQuestion,
