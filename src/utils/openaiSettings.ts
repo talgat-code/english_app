@@ -1,3 +1,9 @@
+import {
+  readStorageItem,
+  removeStorageItem,
+  writeStorageItem,
+} from './storage'
+
 const OPENAI_API_KEY_STORAGE_KEY = 'english-app:openai-api-key:v1'
 const PLACEHOLDER_KEY = 'your_openai_api_key_here'
 
@@ -14,11 +20,7 @@ export function getOpenAIApiKey(): string {
   const envKey = readEnvKey()
   if (envKey) return envKey
 
-  try {
-    return localStorage.getItem(OPENAI_API_KEY_STORAGE_KEY)?.trim() ?? ''
-  } catch {
-    return ''
-  }
+  return readStorageItem(OPENAI_API_KEY_STORAGE_KEY)?.trim() ?? ''
 }
 
 export function hasStoredOpenAIApiKey(): boolean {
@@ -26,11 +28,7 @@ export function hasStoredOpenAIApiKey(): boolean {
 }
 
 export function saveOpenAIApiKey(apiKey: string): void {
-  try {
-    const trimmed = apiKey.trim()
-    if (trimmed) localStorage.setItem(OPENAI_API_KEY_STORAGE_KEY, trimmed)
-    else localStorage.removeItem(OPENAI_API_KEY_STORAGE_KEY)
-  } catch {
-    // Ignore storage errors; API calls will surface a clear missing-key message.
-  }
+  const trimmed = apiKey.trim()
+  if (trimmed) writeStorageItem(OPENAI_API_KEY_STORAGE_KEY, trimmed)
+  else removeStorageItem(OPENAI_API_KEY_STORAGE_KEY)
 }

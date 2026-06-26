@@ -1,4 +1,5 @@
-﻿import { getIdiomsByCategory, idiomCategories, totalIdiomCount } from '../data/idioms'
+import { useMemo } from 'react'
+import { getIdiomsByCategory, idiomCategories, totalIdiomCount } from '../data/idioms'
 import {
   getPhrasalVerbsByCategory,
   phrasalVerbCategories,
@@ -44,15 +45,28 @@ interface StatsProps {
 
 function Stats({ onSettings }: StatsProps) {
   const progress = useProgress()
-
-  const known = knownWordsCount(progress)
-  const knownIdioms = knownIdiomsCount(progress)
-  const knownPhrasalVerbs = knownPhrasalVerbsCount(progress)
-  const average = averageScore(progress)
-  const idiomAverage = averageIdiomScore(progress)
-  const phrasalVerbAverage = averagePhrasalVerbScore(progress)
-  const streak = progress.stats.streak
-  const hard = difficultWords(progress, 5)
+  const {
+    average,
+    hard,
+    idiomAverage,
+    known,
+    knownIdioms,
+    knownPhrasalVerbs,
+    phrasalVerbAverage,
+    streak,
+  } = useMemo(
+    () => ({
+      average: averageScore(progress),
+      hard: difficultWords(progress, 5),
+      idiomAverage: averageIdiomScore(progress),
+      known: knownWordsCount(progress),
+      knownIdioms: knownIdiomsCount(progress),
+      knownPhrasalVerbs: knownPhrasalVerbsCount(progress),
+      phrasalVerbAverage: averagePhrasalVerbScore(progress),
+      streak: progress.stats.streak,
+    }),
+    [progress],
+  )
 
   return (
     <div className="flex min-h-screen w-full flex-col px-4 py-8">

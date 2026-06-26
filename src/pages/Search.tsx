@@ -6,6 +6,11 @@ import {
   type SearchMatchedField,
   type SearchResult,
 } from '../utils/search'
+import {
+  readJsonStorage,
+  removeStorageItem,
+  writeJsonStorage,
+} from '../utils/storage'
 
 const SEARCH_HISTORY_KEY = 'english-app:search-history:v1'
 const HISTORY_LIMIT = 5
@@ -26,14 +31,11 @@ function normalizeQuery(query: string): string {
 }
 
 function loadSearchHistory(): string[] {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(SEARCH_HISTORY_KEY) ?? '[]')
-    return Array.isArray(parsed)
-      ? parsed.filter((item): item is string => typeof item === 'string').slice(0, HISTORY_LIMIT)
-      : []
-  } catch {
-    return []
-  }
+  return readJsonStorage(SEARCH_HISTORY_KEY, [], (value) =>
+    Array.isArray(value)
+      ? value.filter((item): item is string => typeof item === 'string').slice(0, HISTORY_LIMIT)
+      : [],
+  )
 }
 
 function saveSearchHistory(query: string): string[] {
@@ -46,22 +48,13 @@ function saveSearchHistory(query: string): string[] {
     ...loadSearchHistory().filter((item) => item.toLowerCase() !== lower),
   ].slice(0, HISTORY_LIMIT)
 
-  try {
-    localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(next))
-  } catch {
-    // History is a convenience only; search still works without storage.
-  }
+  writeJsonStorage(SEARCH_HISTORY_KEY, next)
 
   return next
 }
 
 function clearSearchHistory(): string[] {
-  try {
-    localStorage.removeItem(SEARCH_HISTORY_KEY)
-  } catch {
-    // Keep the current view usable when storage is restricted.
-  }
-
+  removeStorageItem(SEARCH_HISTORY_KEY)
   return []
 }
 

@@ -1,6 +1,7 @@
 ﻿import { useEffect, useRef, useState } from 'react'
 import type { AiMessage } from '../types'
 import { askOpenAI } from '../utils/openaiApi'
+import { readJsonStorage, writeJsonStorage } from '../utils/storage'
 
 const CHAT_KEY = 'english-app:ai-tutor-chat:v1'
 const SYSTEM_PROMPT =
@@ -21,13 +22,21 @@ interface AITutorProps {
   onBack: () => void
 }
 
+function isChatItem(value: unknown): value is ChatItem {
+  if (!value || typeof value !== 'object') return false
+
+  const item = value as Record<string, unknown>
+  return (
+    typeof item.id === 'string' &&
+    (item.role === 'user' || item.role === 'assistant') &&
+    typeof item.content === 'string'
+  )
+}
+
 function loadChat(): ChatItem[] {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(CHAT_KEY) ?? '[]')
-    return Array.isArray(parsed) ? (parsed as ChatItem[]).slice(-20) : []
-  } catch {
-    return []
-  }
+  return readJsonStorage(CHAT_KEY, [], (value) =>
+    Array.isArray(value) ? value.filter(isChatItem).slice(-20) : [],
+  )
 }
 
 function makeChatItem(role: AiMessage['role'], content: string): ChatItem {
@@ -46,11 +55,7 @@ function AITutor({ onBack }: AITutorProps) {
   const endRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
-    try {
-      localStorage.setItem(CHAT_KEY, JSON.stringify(messages.slice(-20)))
-    } catch {
-      // Chat remains available for the current session.
-    }
+    writeJsonStorage(CHAT_KEY, messages.slice(-20))
     endRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, loading])
 

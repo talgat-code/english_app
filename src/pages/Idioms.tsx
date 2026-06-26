@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import CategoryChips from '../components/CategoryChips'
 import ExpressionCard from '../components/ExpressionCard'
 import VocabularyTabs from '../components/VocabularyTabs'
@@ -63,10 +63,17 @@ function Idioms({
     })
   }, [initialExpandedIdiom])
 
-  const visibleIdioms = getIdiomsByCategory(activeCategory)
+  const visibleIdioms = useMemo(
+    () => getIdiomsByCategory(activeCategory),
+    [activeCategory],
+  )
+  const visibleIdiomIds = useMemo(
+    () => visibleIdioms.map((idiom) => idiom.id),
+    [visibleIdioms],
+  )
   const visibleKnown = knownInIdiomCategory(
     progress,
-    visibleIdioms.map((idiom) => idiom.id),
+    visibleIdiomIds,
   )
   const totalKnown = knownIdiomsCount(progress)
 

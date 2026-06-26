@@ -67,6 +67,17 @@ function parseWords(text: string): GeneratedWord[] {
   return words.slice(0, 10)
 }
 
+function generatedWordKey(word: GeneratedWord): string {
+  return [
+    word.english,
+    word.russian,
+    word.transcription,
+    word.example,
+  ]
+    .map((part) => part.trim().toLowerCase())
+    .join(':')
+}
+
 function AIWords({ onBack, onMyWords }: AIWordsProps) {
   const [topic, setTopic] = useState('')
   const [lastTopic, setLastTopic] = useState('')
@@ -194,11 +205,11 @@ function AIWords({ onBack, onMyWords }: AIWordsProps) {
       {!loading && words.length > 0 && (
         <>
           <div className="mt-6 flex flex-col gap-4">
-            {words.map((word, index) => {
+            {words.map((word) => {
               const isSaved = saved.has(word.english.trim().toLowerCase())
               return (
                 <article
-                  key={`${word.english}-${index}`}
+                  key={generatedWordKey(word)}
                   className="rounded-3xl border border-border-subtle bg-surface p-5 shadow-sm"
                 >
                   <div className="flex items-start justify-between gap-3">

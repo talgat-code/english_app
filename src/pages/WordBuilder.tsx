@@ -2,6 +2,7 @@
 import { getCategoryById } from '../data/words'
 import { buildLetterTiles, playableWords, type LetterTile } from '../utils/games'
 import { EmptyGame, GameResult } from './Hangman'
+import { readStorageItem, writeStorageItem } from '../utils/storage'
 
 const BEST_SCORE_PREFIX = 'english-app:word-builder-best:'
 
@@ -12,19 +13,11 @@ interface WordBuilderProps {
 }
 
 function loadBestScore(categoryId: string): number {
-  try {
-    return Number(localStorage.getItem(`${BEST_SCORE_PREFIX}${categoryId}`)) || 0
-  } catch {
-    return 0
-  }
+  return Number(readStorageItem(`${BEST_SCORE_PREFIX}${categoryId}`)) || 0
 }
 
 function saveBestScore(categoryId: string, score: number) {
-  try {
-    localStorage.setItem(`${BEST_SCORE_PREFIX}${categoryId}`, String(score))
-  } catch {
-    // The game still works when storage is unavailable.
-  }
+  writeStorageItem(`${BEST_SCORE_PREFIX}${categoryId}`, String(score))
 }
 
 function WordBuilder({ categoryId, onOtherCategory, onGamesMenu }: WordBuilderProps) {

@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { getWordById } from '../data/words'
 import {
   recordQuizResult,
@@ -13,9 +13,13 @@ import { buildQuizForWords, type QuizQuestion } from '../utils/quiz'
 function Review() {
   const progressState = useProgress()
   const { speak, isSupported } = useSpeech()
-  const hardWords = reviewWords(progressState)
-    .map((item) => getWordById(item.wordId))
-    .filter((word): word is Word => Boolean(word))
+  const hardWords = useMemo(
+    () =>
+      reviewWords(progressState)
+        .map((item) => getWordById(item.wordId))
+        .filter((word): word is Word => Boolean(word)),
+    [progressState],
+  )
 
   const [questions, setQuestions] = useState<QuizQuestion[]>(() =>
     buildQuizForWords(hardWords),

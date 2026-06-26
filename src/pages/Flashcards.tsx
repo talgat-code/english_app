@@ -8,17 +8,14 @@ import {
 } from '../hooks/useProgress'
 import { useSpeech } from '../hooks/useSpeech'
 import type { Word } from '../types'
+import { readStorageItem, writeStorageItem } from '../utils/storage'
 
 const AUTO_SPEECH_KEY = 'english-app:auto-speech'
 const EMPTY_WORDS: Word[] = []
 
 function loadAutoSpeech(): boolean {
-  try {
-    const saved = localStorage.getItem(AUTO_SPEECH_KEY)
-    return saved === null ? true : saved === 'true'
-  } catch {
-    return true
-  }
+  const saved = readStorageItem(AUTO_SPEECH_KEY)
+  return saved === null ? true : saved === 'true'
 }
 
 interface FlashcardsProps {
@@ -114,11 +111,7 @@ function Flashcards({
   function toggleAutoSpeech() {
     const next = !autoSpeech
     setAutoSpeech(next)
-    try {
-      localStorage.setItem(AUTO_SPEECH_KEY, String(next))
-    } catch {
-      // The setting still works for the current session.
-    }
+    writeStorageItem(AUTO_SPEECH_KEY, String(next))
   }
 
   function setStatus(status: WordStatus) {

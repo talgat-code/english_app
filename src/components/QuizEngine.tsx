@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSpeech } from '../hooks/useSpeech'
 
 export interface QuizEngineQuestion {
@@ -117,35 +117,35 @@ function QuizEngine<
   const [score, setScore] = useState(0)
   const [mistakes, setMistakes] = useState<TMistake[]>([])
   const [finished, setFinished] = useState(false)
-
-  const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const answers = useRef<TAnswer[]>([])
+  const [answers, setAnswers] = useState<TAnswer[]>([])
+  const [advanceTimer, setAdvanceTimer] =
+    useState<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(
     () => () => {
-      if (advanceTimer.current) {
-        clearTimeout(advanceTimer.current)
+      if (advanceTimer) {
+        clearTimeout(advanceTimer)
       }
     },
-    [],
+    [advanceTimer],
   )
 
   function clearAdvanceTimer() {
-    if (advanceTimer.current) {
-      clearTimeout(advanceTimer.current)
-      advanceTimer.current = null
+    if (advanceTimer) {
+      clearTimeout(advanceTimer)
+      setAdvanceTimer(null)
     }
   }
 
   function restart() {
     clearAdvanceTimer()
-    answers.current = []
     onRestart?.()
     setQuestions(createQuestions())
     setIndex(0)
     setSelected(null)
     setScore(0)
     setMistakes([])
+    setAnswers([])
     setFinished(false)
   }
 
@@ -169,8 +169,9 @@ function QuizEngine<
   const title = getQuestionTitle(question)
   const speechText = getSpeechText?.(question) ?? title
 
-  function advance() {
+  function advance(nextAnswers = answers) {
     onBeforeAdvance?.()
+    setAdvanceTimer(null)
 
     if (index < total - 1) {
       setIndex((current) => current + 1)
@@ -178,7 +179,7 @@ function QuizEngine<
       return
     }
 
-    onComplete(answers.current)
+    onComplete(nextAnswers)
     setFinished(true)
   }
 
@@ -188,8 +189,10 @@ function QuizEngine<
     const isCorrect = option === question.correct
     const context = { question, option, isCorrect }
 
+    const nextAnswers = [...answers, buildAnswer(context)]
+
     setSelected(option)
-    answers.current.push(buildAnswer(context))
+    setAnswers(nextAnswers)
 
     if (isCorrect) {
       setScore((current) => current + 1)
@@ -204,7 +207,7 @@ function QuizEngine<
     const delay = resolveAutoAdvanceDelay(autoAdvanceDelay, context)
 
     if (delay !== null) {
-      advanceTimer.current = setTimeout(advance, delay)
+      setAdvanceTimer(setTimeout(() => advance(nextAnswers), delay))
     }
   }
 

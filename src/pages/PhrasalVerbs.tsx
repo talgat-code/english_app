@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import CategoryChips from '../components/CategoryChips'
 import ExpressionCard from '../components/ExpressionCard'
 import VocabularyTabs from '../components/VocabularyTabs'
@@ -63,10 +63,17 @@ function PhrasalVerbs({
     })
   }, [initialExpandedPhrasalVerb])
 
-  const visiblePhrasalVerbs = getPhrasalVerbsByCategory(activeCategory)
+  const visiblePhrasalVerbs = useMemo(
+    () => getPhrasalVerbsByCategory(activeCategory),
+    [activeCategory],
+  )
+  const visiblePhrasalVerbIds = useMemo(
+    () => visiblePhrasalVerbs.map((phrasalVerb) => phrasalVerb.id),
+    [visiblePhrasalVerbs],
+  )
   const visibleKnown = knownInPhrasalVerbCategory(
     progress,
-    visiblePhrasalVerbs.map((phrasalVerb) => phrasalVerb.id),
+    visiblePhrasalVerbIds,
   )
   const totalKnown = knownPhrasalVerbsCount(progress)
 
