@@ -1,6 +1,7 @@
 ﻿import { useEffect, useState } from 'react'
-import type { Idiom } from '../data/idioms'
+import type { Achievement } from '../data/achievements'
 import type { LessonLevelInfo } from '../data/lessons'
+import type { Idiom } from '../types'
 import type { Lesson } from '../types/lesson'
 
 interface HomeProps {
@@ -18,6 +19,10 @@ interface HomeProps {
   onAITutor: () => void
   onAIWords: () => void
   onIrregularVerbs: () => void
+  onAchievements: () => void
+  achievementTotal: number
+  achievementUnlocked: number
+  lastAchievement?: Achievement
   idiomOfDay: Idiom
 }
 
@@ -36,6 +41,10 @@ function Home({
   onAITutor,
   onAIWords,
   onIrregularVerbs,
+  onAchievements,
+  achievementTotal,
+  achievementUnlocked,
+  lastAchievement,
   idiomOfDay,
 }: HomeProps) {
   const banners = [
@@ -97,6 +106,26 @@ function Home({
           </div>
         </div>
       )}
+
+      <button
+        type="button"
+        onClick={onAchievements}
+        className="mt-5 rounded-lg border border-warning-border bg-warning-soft p-4 text-left transition-colors hover:bg-warning-soft/70"
+      >
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <p className="text-sm font-bold text-text-primary">
+              Достижения: {achievementUnlocked}/{achievementTotal} 🏆
+            </p>
+            <p className="mt-1 truncate text-xs text-text-secondary">
+              {lastAchievement
+                ? `Последнее: ${lastAchievement.icon} ${lastAchievement.title}`
+                : 'Первые награды ждут тебя'}
+            </p>
+          </div>
+          <span className="text-sm font-semibold text-warning">→</span>
+        </div>
+      </button>
 
       <section className="mt-5 rounded-lg border border-border bg-surface p-4">
         <div className="flex items-start justify-between gap-4">

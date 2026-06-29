@@ -1,23 +1,16 @@
-import type { Word } from '../data/words'
-import type { GeneratedWord } from '../types/api'
+import type { GeneratedWord, Word } from '../types'
+import { readJsonStorage, writeJsonStorage } from './storage'
 
 const MY_WORDS_KEY = 'english-app:my-words:v1'
 
 export function getMyWords(): Word[] {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(MY_WORDS_KEY) ?? '[]')
-    return Array.isArray(parsed) ? (parsed as Word[]) : []
-  } catch {
-    return []
-  }
+  return readJsonStorage(MY_WORDS_KEY, [], (value) =>
+    Array.isArray(value) ? (value as Word[]) : [],
+  )
 }
 
 function saveMyWords(words: Word[]) {
-  try {
-    localStorage.setItem(MY_WORDS_KEY, JSON.stringify(words))
-  } catch {
-    // Keep the current screen usable when storage is unavailable.
-  }
+  writeJsonStorage(MY_WORDS_KEY, words)
 }
 
 export function addMyWord(generated: GeneratedWord): Word[] {

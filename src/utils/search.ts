@@ -1,6 +1,7 @@
-import { categories, type Category, type Word } from '../data/words'
-import { idioms, type Idiom } from '../data/idioms'
-import { phrasalVerbs, type PhrasalVerb } from '../data/phrasalVerbs'
+import { idioms } from '../data/idioms'
+import { phrasalVerbs } from '../data/phrasalVerbs'
+import { categories } from '../data/words'
+import type { Category, Idiom, PhrasalVerb, Word } from '../types'
 
 export type SearchResultType = 'word' | 'idiom' | 'phrasalVerb'
 export type SearchMatchedField = 'english' | 'russian' | 'phrase' | 'meaning'

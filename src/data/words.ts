@@ -1,21 +1,6 @@
-export type WordDifficulty = 'easy' | 'medium' | 'hard'
+import type { Category, Word, WordDifficulty } from '../types/vocabulary'
 
-export interface Word {
-  id: string
-  english: string
-  russian: string
-  transcription: string
-  example: string
-  exampleRu: string
-  difficulty: WordDifficulty
-}
-
-export interface Category {
-  id: string
-  title: string
-  emoji: string
-  words: Word[]
-}
+export type { Category, Word, WordDifficulty } from '../types/vocabulary'
 
 type WordEntry = [
   english: string,

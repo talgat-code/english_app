@@ -1,4 +1,5 @@
-﻿import VocabularyTabs from '../components/VocabularyTabs'
+import { useMemo } from 'react'
+import VocabularyTabs from '../components/VocabularyTabs'
 import { categories } from '../data/words'
 import { knownInCategory, useProgress } from '../hooks/useProgress'
 
@@ -20,6 +21,20 @@ function Categories({
   onPhrasalVerbs,
 }: CategoriesProps) {
   const progress = useProgress()
+  const categoryProgress = useMemo(
+    () =>
+      categories.map((category) => {
+        const total = category.words.length
+        const learned = knownInCategory(
+          progress,
+          category.words.map((word) => word.id),
+        )
+        const percent = total > 0 ? Math.round((learned / total) * 100) : 0
+
+        return { category, learned, percent, total }
+      }),
+    [progress],
+  )
 
   return (
     <div className="flex min-h-screen w-full flex-col px-4 py-8">
@@ -57,13 +72,7 @@ function Categories({
       />
 
       <ul className="flex flex-col gap-3">
-        {categories.map((category) => {
-          const total = category.words.length
-          const learned = knownInCategory(
-            progress,
-            category.words.map((w) => w.id),
-          )
-          const percent = total > 0 ? Math.round((learned / total) * 100) : 0
+        {categoryProgress.map(({ category, learned, percent, total }) => {
           return (
           <li
             key={category.id}

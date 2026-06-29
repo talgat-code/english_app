@@ -1,10 +1,23 @@
 ﻿import { useState } from 'react'
 import { getCategoryById } from '../data/words'
+import { recordHangmanWin } from '../hooks/useProgress'
 import { playableWords } from '../utils/games'
 
 const ALPHABET = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
 const FACES = ['😊', '😐', '😟', '😨', '😰', '😱', '💀']
 const MAX_ERRORS = 6
+const CONFETTI_COLORS = [
+  'var(--color-primary)',
+  'var(--color-success)',
+  'var(--color-warning)',
+  'var(--color-error)',
+]
+const CONFETTI_PARTICLES = Array.from({ length: 18 }, (_, index) => ({
+  id: `confetti-${index}`,
+  left: `${(index * 37) % 100}%`,
+  animationDelay: `${(index % 6) * 0.08}s`,
+  backgroundColor: CONFETTI_COLORS[index % CONFETTI_COLORS.length],
+}))
 
 interface HangmanProps {
   categoryId: string
@@ -54,6 +67,7 @@ function Hangman({ categoryId, onOtherCategory, onGamesMenu }: HangmanProps) {
     const isWon = [...answer].every((character) => nextGuesses.has(character))
 
     if (isWon) {
+      recordHangmanWin()
       setStatus('won')
       setWins((current) => current + 1)
     } else if (nextErrors >= MAX_ERRORS) {
@@ -231,19 +245,14 @@ function Hangman({ categoryId, onOtherCategory, onGamesMenu }: HangmanProps) {
 function Confetti() {
   return (
     <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-64 overflow-hidden">
-      {Array.from({ length: 18 }, (_, index) => (
+      {CONFETTI_PARTICLES.map((particle) => (
         <span
-          key={index}
+          key={particle.id}
           className="game-confetti"
           style={{
-            left: `${(index * 37) % 100}%`,
-            animationDelay: `${(index % 6) * 0.08}s`,
-            backgroundColor: [
-              'var(--color-primary)',
-              'var(--color-success)',
-              'var(--color-warning)',
-              'var(--color-error)',
-            ][index % 4],
+            left: particle.left,
+            animationDelay: particle.animationDelay,
+            backgroundColor: particle.backgroundColor,
           }}
         />
       ))}

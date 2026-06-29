@@ -1,4 +1,4 @@
-﻿import type { Word } from '../data/words'
+import type { Word } from '../types'
 
 interface QuizResultProps {
   score: number

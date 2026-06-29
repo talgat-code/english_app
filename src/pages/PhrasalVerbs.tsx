@@ -1,12 +1,11 @@
-﻿import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import CategoryChips from '../components/CategoryChips'
+import ExpressionCard from '../components/ExpressionCard'
 import VocabularyTabs from '../components/VocabularyTabs'
 import {
   getPhrasalVerbById,
   getPhrasalVerbsByCategory,
   phrasalVerbCategories,
-  type PhrasalVerb,
-  type PhrasalVerbFilter,
 } from '../data/phrasalVerbs'
 import {
   knownInPhrasalVerbCategory,
@@ -16,6 +15,7 @@ import {
   useProgress,
 } from '../hooks/useProgress'
 import { useSpeech } from '../hooks/useSpeech'
+import type { PhrasalVerb, PhrasalVerbFilter } from '../types'
 
 interface PhrasalVerbsProps {
   initialCategory?: PhrasalVerbFilter
@@ -63,10 +63,17 @@ function PhrasalVerbs({
     })
   }, [initialExpandedPhrasalVerb])
 
-  const visiblePhrasalVerbs = getPhrasalVerbsByCategory(activeCategory)
+  const visiblePhrasalVerbs = useMemo(
+    () => getPhrasalVerbsByCategory(activeCategory),
+    [activeCategory],
+  )
+  const visiblePhrasalVerbIds = useMemo(
+    () => visiblePhrasalVerbs.map((phrasalVerb) => phrasalVerb.id),
+    [visiblePhrasalVerbs],
+  )
   const visibleKnown = knownInPhrasalVerbCategory(
     progress,
-    visiblePhrasalVerbs.map((phrasalVerb) => phrasalVerb.id),
+    visiblePhrasalVerbIds,
   )
   const totalKnown = knownPhrasalVerbsCount(progress)
 
@@ -194,74 +201,38 @@ function PhrasalVerbs({
           const showDetails = !hasMultipleMeanings || isExpanded
           const primaryMeaning = phrasalVerb.meanings[0]
           const status = progress.phrasalVerbProgress[phrasalVerb.id]?.status
-          const heading = (
-            <>
-              <div className="flex flex-wrap items-center gap-2">
-                <h2 className="text-xl font-semibold tracking-tight text-text-primary">
-                  {phrasalVerb.phrase}
-                </h2>
-                {status === 'known' && (
-                  <span className="rounded-full bg-success-soft px-2.5 py-1 text-xs font-semibold text-success">
-                    Знаю
-                  </span>
-                )}
-                {status === 'learning' && (
-                  <span className="rounded-full bg-warning-soft px-2.5 py-1 text-xs font-semibold text-warning">
-                    Учу
-                  </span>
-                )}
-                {hasMultipleMeanings && (
+
+          return (
+            <ExpressionCard
+              key={phrasalVerb.id}
+              cardId={`phrasal-verb-card-${phrasalVerb.id}`}
+              title={phrasalVerb.phrase}
+              status={status}
+              isHighlighted={isExpanded}
+              onToggle={
+                hasMultipleMeanings
+                  ? () => toggleExpanded(phrasalVerb.id)
+                  : undefined
+              }
+              onSpeak={isSupported ? () => speak(phrasalVerb.phrase) : undefined}
+              speakLabel={`Произнести ${phrasalVerb.phrase}`}
+              extraBadges={
+                hasMultipleMeanings && (
                   <span className="rounded-full bg-primary-soft px-2.5 py-1 text-xs font-semibold text-primary dark:text-text-primary">
                     {phrasalVerb.meanings.length} значения
                   </span>
-                )}
-              </div>
-              {!hasMultipleMeanings && (
-                <p className="mt-3 text-sm leading-relaxed text-text-secondary">
-                  {primaryMeaning.russian}
-                </p>
-              )}
-            </>
-          )
-
-          return (
-            <li
-              key={phrasalVerb.id}
-              id={`phrasal-verb-card-${phrasalVerb.id}`}
-              className={`rounded-2xl border bg-surface p-4 shadow-sm transition-colors ${
-                isExpanded
-                  ? 'border-primary-border shadow-md'
-                  : 'border-border-subtle hover:border-border'
-              }`}
+                )
+              }
+              summary={
+                !hasMultipleMeanings && (
+                  <p className="mt-3 text-sm leading-relaxed text-text-secondary">
+                    {primaryMeaning.russian}
+                  </p>
+                )
+              }
             >
-              <div className="flex items-start gap-3">
-                {hasMultipleMeanings ? (
-                  <button
-                    type="button"
-                    onClick={() => toggleExpanded(phrasalVerb.id)}
-                    aria-expanded={isExpanded}
-                    className="flex-1 text-left"
-                  >
-                    {heading}
-                  </button>
-                ) : (
-                  <div className="flex-1 text-left">{heading}</div>
-                )}
-
-                {isSupported && (
-                  <button
-                    type="button"
-                    onClick={() => speak(phrasalVerb.phrase)}
-                    aria-label={`Произнести ${phrasalVerb.phrase}`}
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary-soft text-xl transition-transform hover:scale-105 active:scale-95"
-                  >
-                    🔊
-                  </button>
-                )}
-              </div>
-
               {showDetails && (
-                <div className="mt-4 border-t border-border-subtle pt-4">
+                <>
                   {renderMeanings(phrasalVerb)}
 
                   <div className="mt-4 flex gap-2">
@@ -288,9 +259,9 @@ function PhrasalVerbs({
                       ✓ Знаю
                     </button>
                   </div>
-                </div>
+                </>
               )}
-            </li>
+            </ExpressionCard>
           )
         })}
       </ul>

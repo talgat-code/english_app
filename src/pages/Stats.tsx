@@ -1,4 +1,5 @@
-﻿import { getIdiomsByCategory, idiomCategories, totalIdiomCount } from '../data/idioms'
+import { useMemo } from 'react'
+import { getIdiomsByCategory, idiomCategories, totalIdiomCount } from '../data/idioms'
 import {
   getPhrasalVerbsByCategory,
   phrasalVerbCategories,
@@ -40,19 +41,33 @@ function ProgressBar({ value }: { value: number }) {
 
 interface StatsProps {
   onSettings: () => void
+  onAchievements: () => void
 }
 
-function Stats({ onSettings }: StatsProps) {
+function Stats({ onSettings, onAchievements }: StatsProps) {
   const progress = useProgress()
-
-  const known = knownWordsCount(progress)
-  const knownIdioms = knownIdiomsCount(progress)
-  const knownPhrasalVerbs = knownPhrasalVerbsCount(progress)
-  const average = averageScore(progress)
-  const idiomAverage = averageIdiomScore(progress)
-  const phrasalVerbAverage = averagePhrasalVerbScore(progress)
-  const streak = progress.stats.streak
-  const hard = difficultWords(progress, 5)
+  const {
+    average,
+    hard,
+    idiomAverage,
+    known,
+    knownIdioms,
+    knownPhrasalVerbs,
+    phrasalVerbAverage,
+    streak,
+  } = useMemo(
+    () => ({
+      average: averageScore(progress),
+      hard: difficultWords(progress, 5),
+      idiomAverage: averageIdiomScore(progress),
+      known: knownWordsCount(progress),
+      knownIdioms: knownIdiomsCount(progress),
+      knownPhrasalVerbs: knownPhrasalVerbsCount(progress),
+      phrasalVerbAverage: averagePhrasalVerbScore(progress),
+      streak: progress.stats.streak,
+    }),
+    [progress],
+  )
 
   return (
     <div className="flex min-h-screen w-full flex-col px-4 py-8">
@@ -65,13 +80,23 @@ function Stats({ onSettings }: StatsProps) {
             Твой прогресс в изучении английского
           </p>
         </div>
-        <button
-          type="button"
-          onClick={onSettings}
-          className="rounded-2xl border border-border px-3 py-2 text-xs font-semibold text-text-secondary transition-colors hover:bg-surface-muted"
-        >
-          Настройки
-        </button>
+        <div className="flex shrink-0 gap-2">
+          <button
+            type="button"
+            onClick={onAchievements}
+            aria-label="Открыть достижения"
+            className="flex h-10 w-10 items-center justify-center rounded-2xl border border-warning-border bg-warning-soft text-lg transition-colors hover:bg-warning-soft/70"
+          >
+            🏆
+          </button>
+          <button
+            type="button"
+            onClick={onSettings}
+            className="rounded-2xl border border-border px-3 py-2 text-xs font-semibold text-text-secondary transition-colors hover:bg-surface-muted"
+          >
+            Настройки
+          </button>
+        </div>
       </header>
 
       {/* Streak */}

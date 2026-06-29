@@ -1,16 +1,15 @@
 import {
   getPhrasalVerbsByCategory,
   phrasalVerbs,
-  type PhrasalVerb,
-  type PhrasalVerbFilter,
 } from '../data/phrasalVerbs'
+import type {
+  PhrasalVerb,
+  PhrasalVerbFilter,
+  PhrasalVerbQuizQuestion,
+} from '../types'
 import { QUESTIONS_PER_ROUND } from './quiz'
 
-export interface PhrasalVerbQuizQuestion {
-  phrasalVerb: PhrasalVerb
-  options: string[]
-  correct: string
-}
+export type { PhrasalVerbQuizQuestion } from '../types'
 
 function shuffle<T>(items: T[]): T[] {
   const result = [...items]

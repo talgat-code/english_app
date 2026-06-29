@@ -1,5 +1,7 @@
 ﻿import { type FormEvent, useMemo, useState } from 'react'
-import { irregularVerbs, type IrregularVerb } from '../data/irregularVerbs'
+import { irregularVerbs } from '../data/irregularVerbs'
+import type { IrregularVerb } from '../types'
+import { readJsonStorage, writeJsonStorage } from '../utils/storage'
 
 const LEARNED_KEY = 'english-app:irregular-verbs-learned:v1'
 const HARD_KEY = 'english-app:irregular-verbs-hard:v1'
@@ -28,20 +30,17 @@ const FORM_LABELS: Record<VerbForm, string> = {
 }
 
 function loadSet(key: string): Set<string> {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(key) ?? '[]')
-    return new Set(Array.isArray(parsed) ? parsed.filter((item) => typeof item === 'string') : [])
-  } catch {
-    return new Set()
-  }
+  return readJsonStorage(key, new Set<string>(), (value) =>
+    new Set(
+      Array.isArray(value)
+        ? value.filter((item): item is string => typeof item === 'string')
+        : [],
+    ),
+  )
 }
 
 function saveSet(key: string, value: Set<string>) {
-  try {
-    localStorage.setItem(key, JSON.stringify([...value]))
-  } catch {
-    // Progress remains available until the page is reloaded.
-  }
+  writeJsonStorage(key, [...value])
 }
 
 function includesQuery(verb: IrregularVerb, query: string): boolean {

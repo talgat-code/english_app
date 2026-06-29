@@ -1,16 +1,11 @@
 import {
   getIdiomsByCategory,
   idioms,
-  type Idiom,
-  type IdiomFilter,
 } from '../data/idioms'
+import type { Idiom, IdiomFilter, IdiomQuizQuestion } from '../types'
 import { QUESTIONS_PER_ROUND } from './quiz'
 
-export interface IdiomQuizQuestion {
-  idiom: Idiom
-  options: string[]
-  correct: string
-}
+export type { IdiomQuizQuestion } from '../types'
 
 function shuffle<T>(items: T[]): T[] {
   const result = [...items]
