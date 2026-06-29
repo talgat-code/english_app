@@ -249,17 +249,20 @@ export async function checkAndShowReminder(lastActiveDate?: string): Promise<boo
 
   reminderCheckInFlightDate = today
 
-  const shown = await showNotification(
-    'Время учить английский! 📚',
-    'Не теряй свою серию занятий 🔥',
-  )
+  try {
+    const shown = await showNotification(
+      'Время учить английский! 📚',
+      'Не теряй свою серию занятий 🔥',
+    )
 
-  if (shown) {
-    await markNotificationShown(today, lastActiveDate)
+    if (shown) {
+      await markNotificationShown(today, lastActiveDate)
+    }
+
+    return shown
+  } finally {
+    reminderCheckInFlightDate = undefined
   }
-
-  reminderCheckInFlightDate = undefined
-  return shown
 }
 
 export async function hydrateReminderState(): Promise<void> {
