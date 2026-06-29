@@ -1,5 +1,6 @@
 ﻿import { useState } from 'react'
 import { getCategoryById } from '../data/words'
+import { recordWordBuilderScore } from '../hooks/useProgress'
 import { buildLetterTiles, playableWords, type LetterTile } from '../utils/games'
 import { EmptyGame, GameResult } from './Hangman'
 import { readStorageItem, writeStorageItem } from '../utils/storage'
@@ -129,6 +130,7 @@ function WordBuilder({ categoryId, onOtherCategory, onGamesMenu }: WordBuilderPr
       const nextBest = Math.max(bestScore, score)
       setBestScore(nextBest)
       saveBestScore(categoryId, nextBest)
+      recordWordBuilderScore(nextBest)
       setFinished(true)
       return
     }

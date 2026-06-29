@@ -12,9 +12,30 @@ export interface QuizStats {
   quizPercentSum: number
 }
 
+export interface QuizMilestones {
+  bestPercent: number
+  perfectStreak: number
+}
+
 export interface OverallStats extends QuizStats {
   streak: number
   lastActiveDate?: string
+}
+
+export interface GameStats {
+  hangmanWins: number
+  wordBuilderBestScore: number
+}
+
+export interface SpecialStats {
+  usedAiTutor: boolean
+  studiedOnWeekend: boolean
+  studiedAfter23: boolean
+}
+
+export interface UnlockedAchievement {
+  id: string
+  unlockedAt: string
 }
 
 export interface ProgressState {
@@ -24,9 +45,15 @@ export interface ProgressState {
   stats: OverallStats
   idiomStats: QuizStats
   phrasalVerbStats: QuizStats
+  quizMilestones: QuizMilestones
+  gameStats: GameStats
+  specialStats: SpecialStats
   completedLessons: string[]
   lessonScores: Record<string, number>
+  unlockedAchievements: UnlockedAchievement[]
 }
+
+export type UserProgress = ProgressState
 
 export interface QuizAnswer {
   wordId: string

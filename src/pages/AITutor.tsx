@@ -1,4 +1,5 @@
 ﻿import { useEffect, useRef, useState } from 'react'
+import { recordAITutorUsed } from '../hooks/useProgress'
 import type { AiMessage } from '../types'
 import { askOpenAI } from '../utils/openaiApi'
 import { readJsonStorage, writeJsonStorage } from '../utils/storage'
@@ -69,6 +70,7 @@ function AITutor({ onBack }: AITutorProps) {
     setInput('')
     setError('')
     setLoading(true)
+    recordAITutorUsed()
 
     try {
       const answer = await askOpenAI({

@@ -41,9 +41,10 @@ function ProgressBar({ value }: { value: number }) {
 
 interface StatsProps {
   onSettings: () => void
+  onAchievements: () => void
 }
 
-function Stats({ onSettings }: StatsProps) {
+function Stats({ onSettings, onAchievements }: StatsProps) {
   const progress = useProgress()
   const {
     average,
@@ -79,13 +80,23 @@ function Stats({ onSettings }: StatsProps) {
             Твой прогресс в изучении английского
           </p>
         </div>
-        <button
-          type="button"
-          onClick={onSettings}
-          className="rounded-2xl border border-border px-3 py-2 text-xs font-semibold text-text-secondary transition-colors hover:bg-surface-muted"
-        >
-          Настройки
-        </button>
+        <div className="flex shrink-0 gap-2">
+          <button
+            type="button"
+            onClick={onAchievements}
+            aria-label="Открыть достижения"
+            className="flex h-10 w-10 items-center justify-center rounded-2xl border border-warning-border bg-warning-soft text-lg transition-colors hover:bg-warning-soft/70"
+          >
+            🏆
+          </button>
+          <button
+            type="button"
+            onClick={onSettings}
+            className="rounded-2xl border border-border px-3 py-2 text-xs font-semibold text-text-secondary transition-colors hover:bg-surface-muted"
+          >
+            Настройки
+          </button>
+        </div>
       </header>
 
       {/* Streak */}

@@ -1,5 +1,6 @@
 ﻿import { useState } from 'react'
 import { getCategoryById } from '../data/words'
+import { recordHangmanWin } from '../hooks/useProgress'
 import { playableWords } from '../utils/games'
 
 const ALPHABET = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
@@ -66,6 +67,7 @@ function Hangman({ categoryId, onOtherCategory, onGamesMenu }: HangmanProps) {
     const isWon = [...answer].every((character) => nextGuesses.has(character))
 
     if (isWon) {
+      recordHangmanWin()
       setStatus('won')
       setWins((current) => current + 1)
     } else if (nextErrors >= MAX_ERRORS) {

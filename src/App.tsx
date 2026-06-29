@@ -1,4 +1,6 @@
 ﻿import { useState } from 'react'
+import AchievementToast from './components/AchievementToast'
+import { achievements, getAchievementById } from './data/achievements'
 import { getIdiomOfDay } from './data/idioms'
 import { getLevelInfo } from './data/lessons'
 import {
@@ -12,6 +14,7 @@ import { useTheme } from './hooks/useTheme'
 import AIHome from './pages/AIHome'
 import AITutor from './pages/AITutor'
 import AIWords from './pages/AIWords'
+import Achievements from './pages/Achievements'
 import Categories from './pages/Categories'
 import Flashcards from './pages/Flashcards'
 import Games from './pages/Games'
@@ -53,6 +56,7 @@ type Screen =
   | { name: 'my-words-quiz' }
   | { name: 'review' }
   | { name: 'stats' }
+  | { name: 'achievements'; from: 'home' | 'stats' }
   | { name: 'settings' }
   | { name: 'search'; from?: 'categories' | 'idioms' | 'phrasal-verbs' }
   | { name: 'irregular-verbs' }
@@ -81,6 +85,12 @@ function App() {
   const nextLesson = nextAvailableLesson(progress)
   const currentLevel = nextLesson ? getLevelInfo(nextLesson.level) : undefined
   const idiomOfDay = getIdiomOfDay()
+  const unlockedAchievements = progress.unlockedAchievements.length
+  const lastUnlockedAchievementId =
+    progress.unlockedAchievements[progress.unlockedAchievements.length - 1]?.id
+  const lastUnlockedAchievement = lastUnlockedAchievementId
+    ? getAchievementById(lastUnlockedAchievementId)
+    : undefined
 
   useReminderCheck(progress.stats.lastActiveDate)
 
@@ -153,6 +163,10 @@ function App() {
             onAITutor={() => setScreen({ name: 'ai-tutor' })}
             onAIWords={() => setScreen({ name: 'ai-words' })}
             onIrregularVerbs={() => setScreen({ name: 'irregular-verbs' })}
+            onAchievements={() => setScreen({ name: 'achievements', from: 'home' })}
+            achievementTotal={achievements.length}
+            achievementUnlocked={unlockedAchievements}
+            lastAchievement={lastUnlockedAchievement}
           />
         )}
 
@@ -198,7 +212,20 @@ function App() {
         )}
 
         {appReady && screen.name === 'stats' && (
-          <Stats onSettings={() => setScreen({ name: 'settings' })} />
+          <Stats
+            onSettings={() => setScreen({ name: 'settings' })}
+            onAchievements={() => setScreen({ name: 'achievements', from: 'stats' })}
+          />
+        )}
+
+        {appReady && screen.name === 'achievements' && (
+          <Achievements
+            onBack={() =>
+              setScreen(
+                screen.from === 'stats' ? { name: 'stats' } : { name: 'home' },
+              )
+            }
+          />
         )}
 
         {appReady && screen.name === 'settings' && (
@@ -374,6 +401,7 @@ function App() {
       </main>
 
       {showTabBar && <TabBar active={activeTab} onNavigate={goToTab} />}
+      <AchievementToast />
     </div>
   )
 }

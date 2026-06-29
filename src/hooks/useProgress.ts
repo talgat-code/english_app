@@ -6,10 +6,13 @@ import type {
   IdiomQuizAnswer,
   PhrasalVerbQuizAnswer,
   ProgressState,
+  QuizMilestones,
   QuizAnswer,
+  SpecialStats,
   Word,
   WordStatus,
 } from '../types'
+import { checkAchievements } from '../utils/achievementChecker'
 import {
   applyActivity,
   applyQuizAnswers,
@@ -28,12 +31,17 @@ export type {
   DifficultIdiom,
   DifficultPhrasalVerb,
   DifficultWord,
+  GameStats,
   IdiomQuizAnswer,
   OverallStats,
   PhrasalVerbQuizAnswer,
   ProgressState,
+  QuizMilestones,
   QuizAnswer,
   QuizStats,
+  SpecialStats,
+  UnlockedAchievement,
+  UserProgress,
   WordProgress,
   WordStatus,
 } from '../types'
@@ -66,6 +74,7 @@ function loadState(): ProgressState {
 
 let state: ProgressState = loadState()
 const listeners = new Set<() => void>()
+const achievementListeners = new Set<(achievementIds: string[]) => void>()
 
 function persist() {
   if (!canUseBrowserStorage()) return
@@ -84,16 +93,53 @@ function notify() {
   }
 }
 
+function notifyAchievements(achievementIds: string[]) {
+  if (achievementIds.length === 0) return
+
+  for (const listener of achievementListeners) {
+    listener(achievementIds)
+  }
+}
+
+function withUnlockedAchievements(nextState: ProgressState): {
+  nextState: ProgressState
+  achievementIds: string[]
+} {
+  const achievementIds = checkAchievements(nextState)
+
+  if (achievementIds.length === 0) {
+    return { nextState, achievementIds }
+  }
+
+  const unlockedAt = new Date().toISOString()
+
+  return {
+    nextState: {
+      ...nextState,
+      unlockedAchievements: [
+        ...nextState.unlockedAchievements,
+        ...achievementIds.map((id) => ({ id, unlockedAt })),
+      ],
+    },
+    achievementIds,
+  }
+}
+
 function commit(nextState: ProgressState, shouldPersist = true) {
   if (nextState === state) return
 
-  state = nextState
+  const checked = shouldPersist
+    ? withUnlockedAchievements(nextState)
+    : { nextState, achievementIds: [] }
+
+  state = checked.nextState
 
   if (shouldPersist) {
     persist()
   }
 
   notify()
+  notifyAchievements(checked.achievementIds)
 }
 
 function subscribe(listener: () => void): () => void {
@@ -101,6 +147,16 @@ function subscribe(listener: () => void): () => void {
 
   return () => {
     listeners.delete(listener)
+  }
+}
+
+export function subscribeAchievementUnlocks(
+  listener: (achievementIds: string[]) => void,
+): () => void {
+  achievementListeners.add(listener)
+
+  return () => {
+    achievementListeners.delete(listener)
   }
 }
 
@@ -131,6 +187,60 @@ if (canUseBrowserStorage()) {
 
 // --- state helpers -----------------------------------------------------------
 
+function applySpecialStudyStats(
+  specialStats: SpecialStats,
+  date = new Date(),
+): SpecialStats {
+  const studiedOnWeekend =
+    specialStats.studiedOnWeekend || date.getDay() === 0 || date.getDay() === 6
+  const studiedAfter23 = specialStats.studiedAfter23 || date.getHours() >= 23
+
+  if (
+    studiedOnWeekend === specialStats.studiedOnWeekend &&
+    studiedAfter23 === specialStats.studiedAfter23
+  ) {
+    return specialStats
+  }
+
+  return {
+    ...specialStats,
+    studiedOnWeekend,
+    studiedAfter23,
+  }
+}
+
+function applyStudyActivity(progress: ProgressState): {
+  stats: ProgressState['stats']
+  specialStats: SpecialStats
+} {
+  const now = new Date()
+
+  return {
+    stats: applyActivity(progress.stats),
+    specialStats: applySpecialStudyStats(progress.specialStats, now),
+  }
+}
+
+function applyQuizMilestones(
+  milestones: QuizMilestones,
+  percent: number,
+): QuizMilestones {
+  const bestPercent = Math.max(milestones.bestPercent, percent)
+  const perfectStreak = percent === 100 ? milestones.perfectStreak + 1 : 0
+
+  if (
+    bestPercent === milestones.bestPercent &&
+    perfectStreak === milestones.perfectStreak
+  ) {
+    return milestones
+  }
+
+  return {
+    bestPercent,
+    perfectStreak,
+  }
+}
+
 function markTrackedItem(
   collectionKey: 'words' | 'idiomProgress' | 'phrasalVerbProgress',
   itemId: string,
@@ -142,6 +252,7 @@ function markTrackedItem(
 
   const collection = state[collectionKey]
   const previous = getTrackedProgress(collection, id)
+  const { stats, specialStats } = applyStudyActivity(state)
 
   commit({
     ...state,
@@ -153,7 +264,8 @@ function markTrackedItem(
         lastReviewed: new Date().toISOString(),
       },
     },
-    stats: applyActivity(state.stats),
+    stats,
+    specialStats,
   })
 }
 
@@ -172,15 +284,16 @@ export function markPhrasalVerb(phrasalVerbId: string, status: WordStatus) {
 }
 
 export function recordCardsViewed() {
-  const stats = applyActivity(state.stats)
+  const { stats, specialStats } = applyStudyActivity(state)
 
   // Do not rewrite localStorage and rerender components unnecessarily
   // when activity has already been recorded today.
-  if (stats === state.stats) return
+  if (stats === state.stats && specialStats === state.specialStats) return
 
   commit({
     ...state,
     stats,
+    specialStats,
   })
 }
 
@@ -198,16 +311,21 @@ export function recordQuizResult(answers: QuizAnswer[]) {
 
   const percent = Math.round((correctCount / answeredCount) * 100)
 
-  const stats = applyActivity({
-    ...state.stats,
-    totalQuizzes: state.stats.totalQuizzes + 1,
-    quizPercentSum: state.stats.quizPercentSum + percent,
+  const { stats, specialStats } = applyStudyActivity({
+    ...state,
+    stats: {
+      ...state.stats,
+      totalQuizzes: state.stats.totalQuizzes + 1,
+      quizPercentSum: state.stats.quizPercentSum + percent,
+    },
   })
 
   commit({
     ...state,
     words: nextCollection,
     stats,
+    specialStats,
+    quizMilestones: applyQuizMilestones(state.quizMilestones, percent),
   })
 }
 
@@ -223,6 +341,7 @@ export function recordIdiomQuizResult(answers: IdiomQuizAnswer[]) {
   if (answeredCount === 0) return
 
   const percent = Math.round((correctCount / answeredCount) * 100)
+  const { stats, specialStats } = applyStudyActivity(state)
 
   commit({
     ...state,
@@ -231,7 +350,9 @@ export function recordIdiomQuizResult(answers: IdiomQuizAnswer[]) {
       totalQuizzes: state.idiomStats.totalQuizzes + 1,
       quizPercentSum: state.idiomStats.quizPercentSum + percent,
     },
-    stats: applyActivity(state.stats),
+    stats,
+    specialStats,
+    quizMilestones: applyQuizMilestones(state.quizMilestones, percent),
   })
 }
 
@@ -247,6 +368,7 @@ export function recordPhrasalVerbQuizResult(answers: PhrasalVerbQuizAnswer[]) {
   if (answeredCount === 0) return
 
   const percent = Math.round((correctCount / answeredCount) * 100)
+  const { stats, specialStats } = applyStudyActivity(state)
 
   commit({
     ...state,
@@ -255,7 +377,9 @@ export function recordPhrasalVerbQuizResult(answers: PhrasalVerbQuizAnswer[]) {
       totalQuizzes: state.phrasalVerbStats.totalQuizzes + 1,
       quizPercentSum: state.phrasalVerbStats.quizPercentSum + percent,
     },
-    stats: applyActivity(state.stats),
+    stats,
+    specialStats,
+    quizMilestones: applyQuizMilestones(state.quizMilestones, percent),
   })
 }
 
@@ -287,17 +411,83 @@ export function completeLesson(
 
   const normalizedScore =
     typeof score === 'number' && Number.isFinite(score) ? Math.max(0, score) : 0
+  const { stats, specialStats } = applyStudyActivity(state)
 
   commit({
     ...state,
     words,
-    stats: applyActivity(state.stats),
+    stats,
+    specialStats,
     completedLessons: state.completedLessons.includes(id)
       ? state.completedLessons
       : [...state.completedLessons, id],
     lessonScores: {
       ...state.lessonScores,
       [id]: Math.max(state.lessonScores[id] ?? 0, normalizedScore),
+    },
+  })
+}
+
+export function recordAITutorUsed() {
+  const nextSpecialStats = state.specialStats.usedAiTutor
+    ? state.specialStats
+    : {
+        ...state.specialStats,
+        usedAiTutor: true,
+      }
+  const { stats, specialStats } = applyStudyActivity({
+    ...state,
+    specialStats: nextSpecialStats,
+  })
+
+  if (stats === state.stats && specialStats === state.specialStats) return
+
+  commit({
+    ...state,
+    stats,
+    specialStats,
+  })
+}
+
+export function recordHangmanWin() {
+  const { stats, specialStats } = applyStudyActivity(state)
+
+  commit({
+    ...state,
+    stats,
+    specialStats,
+    gameStats: {
+      ...state.gameStats,
+      hangmanWins: state.gameStats.hangmanWins + 1,
+    },
+  })
+}
+
+export function recordWordBuilderScore(score: number) {
+  if (typeof score !== 'number' || !Number.isFinite(score)) return
+
+  const normalizedScore = Math.max(0, Math.trunc(score))
+  const nextBestScore = Math.max(
+    state.gameStats.wordBuilderBestScore,
+    normalizedScore,
+  )
+  const { stats, specialStats } = applyStudyActivity(state)
+
+  if (
+    nextBestScore === state.gameStats.wordBuilderBestScore &&
+    stats === state.stats &&
+    specialStats === state.specialStats
+  ) {
+    return
+  }
+
+  commit({
+    ...state,
+    stats,
+    specialStats,
+    gameStats: {
+      ...state.gameStats,
+      wordBuilderBestScore: nextBestScore,
     },
   })
 }

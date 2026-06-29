@@ -1,7 +1,11 @@
 import type {
+  GameStats,
   OverallStats,
   ProgressState,
+  QuizMilestones,
   QuizStats,
+  SpecialStats,
+  UnlockedAchievement,
   WordProgress,
 } from '../types'
 
@@ -11,6 +15,28 @@ export function createEmptyQuizStats(): QuizStats {
   return {
     totalQuizzes: 0,
     quizPercentSum: 0,
+  }
+}
+
+export function createEmptyQuizMilestones(): QuizMilestones {
+  return {
+    bestPercent: 0,
+    perfectStreak: 0,
+  }
+}
+
+export function createEmptyGameStats(): GameStats {
+  return {
+    hangmanWins: 0,
+    wordBuilderBestScore: 0,
+  }
+}
+
+export function createEmptySpecialStats(): SpecialStats {
+  return {
+    usedAiTutor: false,
+    studiedOnWeekend: false,
+    studiedAfter23: false,
   }
 }
 
@@ -25,8 +51,12 @@ export function createEmptyState(): ProgressState {
     },
     idiomStats: createEmptyQuizStats(),
     phrasalVerbStats: createEmptyQuizStats(),
+    quizMilestones: createEmptyQuizMilestones(),
+    gameStats: createEmptyGameStats(),
+    specialStats: createEmptySpecialStats(),
     completedLessons: [],
     lessonScores: {},
+    unlockedAchievements: [],
   }
 }
 
@@ -91,6 +121,55 @@ function normalizeQuizStats(value: Record<string, unknown>): QuizStats {
     totalQuizzes: toNonNegativeInteger(value.totalQuizzes),
     quizPercentSum: toNonNegativeNumber(value.quizPercentSum),
   }
+}
+
+function normalizeQuizMilestones(value: unknown): QuizMilestones {
+  const raw = isRecord(value) ? value : {}
+
+  return {
+    bestPercent: Math.min(100, toNonNegativeNumber(raw.bestPercent)),
+    perfectStreak: toNonNegativeInteger(raw.perfectStreak),
+  }
+}
+
+function normalizeGameStats(value: unknown): GameStats {
+  const raw = isRecord(value) ? value : {}
+
+  return {
+    hangmanWins: toNonNegativeInteger(raw.hangmanWins),
+    wordBuilderBestScore: toNonNegativeInteger(raw.wordBuilderBestScore),
+  }
+}
+
+function normalizeSpecialStats(value: unknown): SpecialStats {
+  const raw = isRecord(value) ? value : {}
+
+  return {
+    usedAiTutor: raw.usedAiTutor === true,
+    studiedOnWeekend: raw.studiedOnWeekend === true,
+    studiedAfter23: raw.studiedAfter23 === true,
+  }
+}
+
+function normalizeUnlockedAchievements(value: unknown): UnlockedAchievement[] {
+  if (!Array.isArray(value)) return []
+
+  const seen = new Set<string>()
+  const unlocked: UnlockedAchievement[] = []
+
+  for (const item of value) {
+    if (!isRecord(item)) continue
+
+    const id = typeof item.id === 'string' ? item.id.trim() : ''
+    const unlockedAt = normalizeTimestamp(item.unlockedAt)
+
+    if (!id || !unlockedAt || seen.has(id)) continue
+
+    seen.add(id)
+    unlocked.push({ id, unlockedAt })
+  }
+
+  return unlocked
 }
 
 function normalizeProgressCollection(value: unknown): Record<string, WordProgress> {
@@ -158,8 +237,12 @@ function normalizeState(value: unknown): ProgressState {
     phrasalVerbStats: normalizeQuizStats(
       isRecord(value.phrasalVerbStats) ? value.phrasalVerbStats : {},
     ),
+    quizMilestones: normalizeQuizMilestones(value.quizMilestones),
+    gameStats: normalizeGameStats(value.gameStats),
+    specialStats: normalizeSpecialStats(value.specialStats),
     completedLessons,
     lessonScores,
+    unlockedAchievements: normalizeUnlockedAchievements(value.unlockedAchievements),
   }
 }
 

@@ -253,6 +253,27 @@
   }
 }
 
+@keyframes achievement-toast-enter {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -16px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+
+@keyframes achievement-toast-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 rgb(245 158 11 / 0);
+  }
+  50% {
+    box-shadow: 0 0 24px rgb(245 158 11 / 0.45);
+  }
+}
+
 .game-confetti {
   position: absolute;
   top: -14px;
@@ -290,6 +311,14 @@
   animation: page-enter 300ms var(--ease-app);
 }
 
+.achievement-toast-enter {
+  animation: achievement-toast-enter 260ms var(--ease-app);
+}
+
+.achievement-toast-glow {
+  animation: achievement-toast-glow 1200ms ease-in-out;
+}
+
 .empty-state {
   border: 1px dashed var(--color-border);
   border-radius: var(--radius-2xl);
@@ -304,7 +333,9 @@
   .game-success-pop,
   .game-shake,
   .ai-thinking-dot,
-  .page-transition {
+  .page-transition,
+  .achievement-toast-enter,
+  .achievement-toast-glow {
     animation: none;
   }
 }
