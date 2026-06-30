@@ -36,6 +36,8 @@ import Search from './pages/Search'
 import Settings from './pages/Settings'
 import Stats from './pages/Stats'
 import WordBuilder from './pages/WordBuilder'
+import Writing from './pages/Writing'
+import WritingHistory from './pages/WritingHistory'
 import type { IdiomFilter, LessonLevel, PhrasalVerbFilter } from './types'
 import type { GameType } from './utils/games'
 import { nextAvailableLesson } from './utils/lessonProgress'
@@ -51,6 +53,8 @@ type Screen =
   | { name: 'ai' }
   | { name: 'ai-tutor' }
   | { name: 'ai-words' }
+  | { name: 'writing' }
+  | { name: 'writing-history' }
   | { name: 'my-words' }
   | { name: 'my-words-flashcards' }
   | { name: 'my-words-quiz' }
@@ -162,6 +166,7 @@ function App() {
             onReview={() => setScreen({ name: 'review' })}
             onAITutor={() => setScreen({ name: 'ai-tutor' })}
             onAIWords={() => setScreen({ name: 'ai-words' })}
+            onWriting={() => setScreen({ name: 'writing' })}
             onIrregularVerbs={() => setScreen({ name: 'irregular-verbs' })}
             onAchievements={() => setScreen({ name: 'achievements', from: 'home' })}
             achievementTotal={achievements.length}
@@ -307,6 +312,7 @@ function App() {
           <AIHome
             onTutor={() => setScreen({ name: 'ai-tutor' })}
             onWords={() => setScreen({ name: 'ai-words' })}
+            onWriting={() => setScreen({ name: 'writing' })}
             onMyWords={() => setScreen({ name: 'my-words' })}
           />
         )}
@@ -320,6 +326,17 @@ function App() {
             onBack={() => setScreen({ name: 'ai' })}
             onMyWords={() => setScreen({ name: 'my-words' })}
           />
+        )}
+
+        {appReady && screen.name === 'writing' && (
+          <Writing
+            onBack={() => setScreen({ name: 'ai' })}
+            onHistory={() => setScreen({ name: 'writing-history' })}
+          />
+        )}
+
+        {appReady && screen.name === 'writing-history' && (
+          <WritingHistory onBack={() => setScreen({ name: 'writing' })} />
         )}
 
         {appReady && screen.name === 'my-words' && (

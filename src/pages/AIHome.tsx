@@ -4,10 +4,16 @@ import {
   hasStoredOpenAIApiKey,
   saveOpenAIApiKey,
 } from '../utils/openaiSettings'
+import {
+  hasBundledClaudeApiKey,
+  hasStoredClaudeApiKey,
+  saveClaudeApiKey,
+} from '../utils/claudeSettings'
 
 interface AIHomeProps {
   onTutor: () => void
   onWords: () => void
+  onWriting: () => void
   onMyWords: () => void
 }
 
@@ -27,6 +33,13 @@ const AI_TOOLS = [
     color: 'from-secondary to-primary dark:from-secondary-button-dark dark:to-primary-active-dark',
   },
   {
+    id: 'writing',
+    emoji: '✍️',
+    title: 'Письмо',
+    description: 'Напиши текст на английском и получи проверку от Claude.',
+    color: 'from-success to-secondary-hover dark:from-success-button-dark dark:to-secondary-button-dark',
+  },
+  {
     id: 'my-words',
     emoji: '💾',
     title: 'Мои слова',
@@ -35,14 +48,20 @@ const AI_TOOLS = [
   },
 ] as const
 
-function AIHome({ onTutor, onWords, onMyWords }: AIHomeProps) {
+function AIHome({ onTutor, onWords, onWriting, onMyWords }: AIHomeProps) {
   const [apiKeyInput, setApiKeyInput] = useState('')
   const [hasSavedApiKey, setHasSavedApiKey] = useState(hasStoredOpenAIApiKey)
+  const [claudeApiKeyInput, setClaudeApiKeyInput] = useState('')
+  const [hasSavedClaudeApiKey, setHasSavedClaudeApiKey] = useState(
+    hasStoredClaudeApiKey,
+  )
   const hasEnvApiKey = hasBundledOpenAIApiKey()
+  const hasEnvClaudeApiKey = hasBundledClaudeApiKey()
 
   function openTool(id: (typeof AI_TOOLS)[number]['id']) {
     if (id === 'tutor') onTutor()
     else if (id === 'words') onWords()
+    else if (id === 'writing') onWriting()
     else onMyWords()
   }
 
@@ -51,6 +70,19 @@ function AIHome({ onTutor, onWords, onMyWords }: AIHomeProps) {
     saveOpenAIApiKey(apiKeyInput)
     setHasSavedApiKey(hasStoredOpenAIApiKey())
     setApiKeyInput('')
+  }
+
+  function saveClaudeKey(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    saveClaudeApiKey(claudeApiKeyInput)
+    setHasSavedClaudeApiKey(hasStoredClaudeApiKey())
+    setClaudeApiKeyInput('')
+  }
+
+  function clearClaudeKey() {
+    saveClaudeApiKey('')
+    setHasSavedClaudeApiKey(false)
+    setClaudeApiKeyInput('')
   }
 
   function clearApiKey() {
@@ -114,9 +146,58 @@ function AIHome({ onTutor, onWords, onMyWords }: AIHomeProps) {
         </form>
       )}
 
+      {!hasEnvClaudeApiKey && (
+        <form
+          onSubmit={saveClaudeKey}
+          className="mb-5 rounded-3xl border border-secondary-border bg-surface p-4 shadow-sm"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="text-sm font-bold text-text-primary">Claude ключ</p>
+              <p className="mt-1 text-xs leading-relaxed text-text-secondary">
+                {hasSavedClaudeApiKey
+                  ? 'Ключ сохранён в этом браузере.'
+                  : 'Вставь Claude API ключ, чтобы проверять письмо через Claude.'}
+              </p>
+            </div>
+            {hasSavedClaudeApiKey && (
+              <button
+                type="button"
+                onClick={clearClaudeKey}
+                className="shrink-0 text-xs font-semibold text-error"
+              >
+                Удалить
+              </button>
+            )}
+          </div>
+          <div className="mt-3 flex gap-2">
+            <input
+              type="password"
+              value={claudeApiKeyInput}
+              onChange={(event) => setClaudeApiKeyInput(event.target.value)}
+              placeholder="sk-ant-..."
+              className="min-h-11 min-w-0 flex-1 rounded-2xl border border-border bg-surface-muted px-4 text-sm outline-none focus:border-secondary"
+            />
+            <button
+              type="submit"
+              disabled={!claudeApiKeyInput.trim()}
+              className="min-h-11 rounded-2xl bg-secondary px-4 text-sm font-semibold text-white disabled:opacity-40"
+            >
+              {hasSavedClaudeApiKey ? 'Обновить' : 'Сохранить'}
+            </button>
+          </div>
+        </form>
+      )}
+
       {hasEnvApiKey && (
         <p className="mb-5 rounded-3xl border border-success-border bg-success-soft px-4 py-3 text-sm font-semibold text-success">
           GPT подключён через .env
+        </p>
+      )}
+
+      {hasEnvClaudeApiKey && (
+        <p className="mb-5 rounded-3xl border border-success-border bg-success-soft px-4 py-3 text-sm font-semibold text-success">
+          Claude подключён через .env
         </p>
       )}
 

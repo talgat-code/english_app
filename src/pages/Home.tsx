@@ -18,6 +18,7 @@ interface HomeProps {
   onReview: () => void
   onAITutor: () => void
   onAIWords: () => void
+  onWriting: () => void
   onIrregularVerbs: () => void
   onAchievements: () => void
   achievementTotal: number
@@ -40,6 +41,7 @@ function Home({
   onReview,
   onAITutor,
   onAIWords,
+  onWriting,
   onIrregularVerbs,
   onAchievements,
   achievementTotal,
@@ -295,6 +297,13 @@ function Home({
             className="min-h-10 rounded-md bg-surface-muted px-3 text-xs font-semibold text-text-secondary transition-colors hover:bg-border"
           >
             Новые слова
+          </button>
+          <button
+            type="button"
+            onClick={onWriting}
+            className="col-span-2 min-h-10 rounded-md border border-border-strong px-3 text-xs font-semibold text-text-secondary transition-colors hover:bg-surface-muted"
+          >
+            Письмо
           </button>
         </div>
       </section>

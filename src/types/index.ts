@@ -55,3 +55,12 @@ export type {
   OpenAIResponse,
   OpenAITextFormat,
 } from './api'
+
+export type {
+  TranslationPrompt,
+  WritingCorrection,
+  WritingFeedbackResult,
+  WritingHistoryItem,
+  WritingMode,
+  WritingPrompt,
+} from './writing'
